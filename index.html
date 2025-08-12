@@ -4,222 +4,67 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tu Guía de Bienestar</title>
-    <!-- Incluye el CDN de Tailwind CSS para un estilizado rápido y responsive -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Referencia al archivo de estilos personalizado -->
-    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/markdown-it@13.0.1/dist/markdown-it.min.js"></script>
+    <style>
+        .prose img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+        }
+    </style>
 </head>
 <body class="bg-gray-50 font-sans leading-normal tracking-normal text-gray-800">
-    
-    <!-- Contenedor principal de la aplicación -->
     <div id="app" class="flex flex-col min-h-screen">
-        
-        <!-- Encabezado y navegación del blog -->
         <header class="bg-white shadow-md p-6">
-            <div class="container mx-auto flex flex-col md:flex-row items-center justify-between">
-                <div class="flex items-center space-x-4 mb-4 md:mb-0">
-                    <div id="home-link" class="text-3xl font-bold text-gray-900 cursor-pointer">Tu Guía de Bienestar</div>
-                    <button id="create-article-btn" class="bg-indigo-500 text-white rounded-full px-4 py-2 font-semibold text-sm shadow-md transition-all duration-300 hover:bg-indigo-600">Crear Artículo</button>
-                </div>
-                <!-- Barra de búsqueda (futura implementación) -->
-                <input type="text" placeholder="Buscar técnica..." class="w-full md:w-1/3 px-4 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            <div class="container mx-auto flex items-center justify-between">
+                <div id="home-link" class="text-3xl font-bold text-gray-900 cursor-pointer">Tu Guía de Bienestar</div>
             </div>
         </header>
-
-        <!-- Contenido principal: publicaciones y filtros -->
         <main class="container mx-auto mt-8 p-4 flex-grow">
-            <!-- Vista de los artículos del blog -->
             <div id="blog-view" class="flex flex-col lg:flex-row gap-8">
-                
-                <!-- Barra lateral para filtros de categorías -->
                 <aside class="w-full lg:w-1/4">
                     <div class="bg-white rounded-xl shadow-lg p-6 sticky top-8">
                         <h3 class="font-semibold text-lg text-gray-900 mb-4">Categorías</h3>
-                        <div id="category-filters" class="flex flex-wrap lg:flex-col gap-2">
-                            <!-- Los botones de categoría se renderizarán aquí -->
-                        </div>
+                        <div id="category-filters" class="flex flex-wrap lg:flex-col gap-2"></div>
                     </div>
                 </aside>
-
-                <!-- Sección principal para mostrar las publicaciones -->
                 <section class="w-full lg:w-3/4">
-                    <div id="blog-posts" class="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2">
-                        <!-- Las publicaciones del blog se renderizarán aquí -->
-                    </div>
+                    <div id="blog-posts" class="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2"></div>
                 </section>
-
-            </div>
-
-            <!-- Vista del editor de artículos -->
-            <div id="editor-view" class="hidden max-w-2xl mx-auto bg-white rounded-xl shadow-lg p-8">
-                <h2 class="text-3xl font-bold text-gray-900 mb-6 text-center">Crear Nuevo Artículo</h2>
-                <form id="new-article-form" class="space-y-6">
-                    <div>
-                        <label for="article-title" class="block text-sm font-medium text-gray-700">Título</label>
-                        <input type="text" id="article-title" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2" required>
-                    </div>
-                    <div>
-                        <label for="article-category" class="block text-sm font-medium text-gray-700">Categoría</label>
-                        <select id="article-category" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2" required>
-                            <option value="">Selecciona una categoría</option>
-                            <option value="Regulación Emocional">Regulación Emocional</option>
-                            <option value="Atención Plena (Mindfulness)">Atención Plena (Mindfulness)</option>
-                            <option value="Reestructuración Cognitiva">Reestructuración Cognitiva</option>
-                            <option value="Habilidades Interpersonales">Habilidades Interpersonales</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="article-summary" class="block text-sm font-medium text-gray-700">Resumen</label>
-                        <textarea id="article-summary" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2" required></textarea>
-                    </div>
-                    <div>
-                        <label for="article-content" class="block text-sm font-medium text-gray-700">Contenido (HTML)</label>
-                        <textarea id="article-content" rows="8" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2" required></textarea>
-                    </div>
-                    <div>
-                        <label for="article-media" class="block text-sm font-medium text-gray-700">URL Multimedia (opcional)</label>
-                        <input type="url" id="article-media" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2">
-                    </div>
-                    <div class="flex justify-end space-x-4">
-                        <button type="button" id="cancel-btn" class="px-4 py-2 text-sm font-medium rounded-md text-gray-700 bg-gray-200 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Cancelar</button>
-                        <button type="submit" class="px-4 py-2 text-sm font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Guardar Artículo</button>
-                    </div>
-                </form>
             </div>
         </main>
-
-        <!-- Pie de página con el aviso legal -->
         <footer class="bg-gray-800 text-white p-6 mt-8">
             <div class="container mx-auto text-center text-sm">
                 <p class="mb-2">© 2024 Tu Guía de Bienestar. Todos los derechos reservados.</p>
                 <p class="text-gray-400">
-                    Aviso Legal: Este blog es una herramienta educativa de apoyo y no debe ser considerado un sustituto de la terapia profesional, el diagnóstico o el tratamiento médico. Si necesitas ayuda, consulta a un profesional de la salud mental calificado.
+                    Aviso Legal: Este blog es una herramienta educativa de apoyo y no debe ser considerado un sustituto de la terapia profesional.
                 </p>
             </div>
         </footer>
-
     </div>
-
-    <!-- Script para la lógica del blog -->
     <script>
-        // Array de objetos para almacenar el contenido del blog
-        // Este es el lugar donde agregarías tus publicaciones
-        const blogPosts = [
-            {
-                title: 'Anclaje a los 5 Sentidos',
-                category: 'Regulación Emocional',
-                summary: 'Una técnica de grounding ideal para momentos de ansiedad o pensamientos intrusivos.',
-                content: `
-                    <h4 class="font-bold text-lg mb-2">Pasos para la Técnica:</h4>
-                    <ul class="list-disc list-inside space-y-1">
-                        <li>**Mira 5 cosas:** Nombra cinco objetos que puedas ver a tu alrededor.</li>
-                        <li>**Toca 4 cosas:** Toca cuatro objetos diferentes y siente su textura.</li>
-                        <li>**Escucha 3 cosas:** Escucha tres sonidos a tu alrededor.</li>
-                        <li>**Huele 2 cosas:** Identifica dos olores que puedas percibir.</li>
-                        <li>**Prueba 1 cosa:** Identifica un sabor en tu boca.</li>
-                    </ul>
-                `
-            },
-            {
-                title: 'Respiración Diafragmática en 3 Pasos',
-                category: 'Regulación Emocional',
-                summary: 'Un ejercicio simple para calmar el sistema nervioso y reducir el estrés.',
-                content: `
-                    <h4 class="font-bold text-lg mb-2">Instrucciones:</h4>
-                    <ol class="list-decimal list-inside space-y-1">
-                        <li>Coloca una mano sobre el pecho y la otra sobre el abdomen.</li>
-                        <li>Inhala lentamente por la nariz, sintiendo cómo se expande tu abdomen. Mantén el pecho quieto.</li>
-                        <li>Exhala suavemente por la boca o nariz, soltando el aire del abdomen. Repite 5-10 veces.</li>
-                    </ol>
-                `
-            },
-            {
-                title: 'Mindfulness al Caminar',
-                category: 'Atención Plena (Mindfulness)',
-                summary: 'Practica la atención plena mientras te mueves, conectando con cada paso.',
-                content: `
-                    <h4 class="font-bold text-lg mb-2">¿Cómo se hace?</h4>
-                    <p>Mientras caminas, presta atención a las sensaciones en tus pies. Siente cómo se levanta un pie, cómo se mueve por el aire y cómo vuelve a tocar el suelo. No juzgues ni analices; solo observa la experiencia física de cada paso. Si tu mente divaga, tráela de vuelta suavemente a la sensación de tus pies.</p>
-                `
-            },
-            {
-                title: 'La Fórmula DESC para la Comunicación',
-                category: 'Habilidades Interpersonales',
-                summary: 'Una herramienta para expresar tus sentimientos y necesidades de manera clara y respetuosa.',
-                content: `
-                    <h4 class="font-bold text-lg mb-2">La Fórmula DESC:</h4>
-                    <p class="font-semibold mt-2">D - Describe:</p><p>Describe la situación de manera objetiva, sin juicios. ("Cuando veo que...")</p>
-                    <p class="font-semibold mt-2">E - Expresa:</p><p>Expresa tus sentimientos. ("Yo me siento...")</p>
-                    <p class="font-semibold mt-2">S - Sugiere:</p><p>Sugiere una solución o cambio específico. ("Me gustaría que...")</p>
-                    <p class="font-semibold mt-2">C - Consecuencias:</p><p>Explica las consecuencias positivas de la solución. ("Así ambos podremos...")</p>
-                `
-            },
-            {
-                title: 'Diario de Pensamientos Alternativos',
-                category: 'Reestructuración Cognitiva',
-                summary: 'Una plantilla simple para desafiar pensamientos automáticos y generar perspectivas más equilibradas.',
-                content: `
-                    <h4 class="font-bold text-lg mb-2">Paso a paso:</h4>
-                    <p class="mt-2">1. Anota la <strong>Situación</strong> que desencadenó el pensamiento.</p>
-                    <p class="mt-2">2. Escribe el <strong>Pensamiento Automático</strong> que tuviste. Ej: "Todo me sale mal".</p>
-                    <p class="mt-2">3. Busca <strong>Evidencia a Favor y en Contra</strong> de ese pensamiento.</p>
-                    <p class="mt-2">4. Formula un <strong>Pensamiento Alternativo</strong> más realista y equilibrado. Ej: "Hoy tuve un error, pero he logrado otras cosas importantes".</p>
-                `
-            },
-            {
-                title: 'Identifica tus Valores',
-                category: 'Atención Plena (Mindfulness)',
-                summary: 'Un ejercicio para alinear tus acciones con lo que realmente te importa.',
-                content: `
-                    <h4 class="font-bold text-lg mb-2">¿Cómo lo hago?</h4>
-                    <p>Toma una lista de valores (ej. honestidad, creatividad, familia, salud). Escoge los 5 más importantes para ti. Luego, piensa en una situación reciente y pregúntate si tu comportamiento estuvo alineado con esos valores. Este ejercicio no es para juzgarte, sino para guiarte.</p>
-                `
-            },
-            {
-                title: 'Visualización Guiada',
-                category: 'Regulación Emocional',
-                summary: 'Usa tu imaginación para crear un lugar seguro y calmo en tu mente.',
-                content: `
-                    <h4 class="font-bold text-lg mb-2">Paso a paso:</h4>
-                    <p>Siéntate en un lugar cómodo. Cierra los ojos y respira profundamente. Imagina un lugar que te de paz y seguridad. Puede ser una playa, un bosque o un recuerdo feliz. Presta atención a los detalles: los sonidos, los olores, la temperatura. Permanece en ese lugar el tiempo que necesites.</p>
-                `
-            }
-        ];
-
-        // Referencias a los elementos del DOM
-        const blogView = document.getElementById('blog-view');
-        const editorView = document.getElementById('editor-view');
-        const createArticleBtn = document.getElementById('create-article-btn');
-        const homeLink = document.getElementById('home-link');
-        const newArticleForm = document.getElementById('new-article-form');
-        const cancelBtn = document.getElementById('cancel-btn');
+        // Este marcador de posición será reemplazado por el script de construcción
+        // __BLOG_POSTS_DATA__
+        
         const blogPostsContainer = document.getElementById('blog-posts');
         const filterContainer = document.getElementById('category-filters');
+        const md = new markdownit();
 
-        // Función para cambiar de vista
-        function showView(viewId) {
-            if (viewId === 'blog') {
-                blogView.classList.remove('hidden');
-                editorView.classList.add('hidden');
-            } else {
-                blogView.classList.add('hidden');
-                editorView.classList.remove('hidden');
-            }
-        }
-
-        // Función para renderizar las publicaciones en la página
         function renderPosts(postsToRender) {
-            blogPostsContainer.innerHTML = ''; // Limpiar publicaciones anteriores
-            postsToRender.forEach(post => {
+            blogPostsContainer.innerHTML = '';
+            postsToRender.forEach((post) => {
                 const article = document.createElement('article');
-                article.className = 'bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden';
+                article.className = 'bg-white rounded-xl shadow-lg transition-shadow duration-300 overflow-hidden';
+                const formattedContent = post.content; // El script de construcción ya lo convirtió a HTML
                 article.innerHTML = `
                     <div class="p-6">
                         <span class="text-sm font-semibold text-indigo-600">${post.category}</span>
                         <h2 class="mt-2 text-2xl font-bold text-gray-900">${post.title}</h2>
                         <p class="mt-2 text-gray-600">${post.summary}</p>
                         <div class="mt-4 prose prose-indigo text-gray-600">
-                            ${post.content}
+                            ${formattedContent}
                         </div>
                     </div>
                 `;
@@ -227,17 +72,13 @@
             });
         }
 
-        // Función para renderizar los botones de filtro
         function renderFilters() {
-            filterContainer.innerHTML = ''; // Limpiar botones anteriores
-            
+            filterContainer.innerHTML = '';
             const categories = [...new Set(blogPosts.map(post => post.category))];
-            
-            // Botón para mostrar todos
             const allButton = document.createElement('button');
             allButton.textContent = 'Todas';
             allButton.className = 'bg-indigo-500 text-white rounded-full px-4 py-2 font-semibold text-sm shadow-md transition-all duration-300 hover:bg-indigo-600';
-            allButton.onclick = () => filterPosts('all');
+            allButton.onclick = () => filterPosts('all', allButton);
             filterContainer.appendChild(allButton);
 
             categories.forEach(category => {
@@ -249,19 +90,16 @@
             });
         }
 
-        // Función para filtrar las publicaciones por categoría
         function filterPosts(category, clickedButton = null) {
             const allButtons = document.querySelectorAll('#category-filters button');
             allButtons.forEach(btn => {
                 btn.className = 'bg-gray-200 text-gray-700 rounded-full px-4 py-2 font-semibold text-sm transition-colors duration-300 hover:bg-gray-300';
             });
-
             if (clickedButton) {
                 clickedButton.className = 'bg-indigo-500 text-white rounded-full px-4 py-2 font-semibold text-sm shadow-md transition-all duration-300 hover:bg-indigo-600';
             } else {
                 document.querySelector('#category-filters button').className = 'bg-indigo-500 text-white rounded-full px-4 py-2 font-semibold text-sm shadow-md transition-all duration-300 hover:bg-indigo-600';
             }
-
             if (category === 'all') {
                 renderPosts(blogPosts);
             } else {
@@ -269,44 +107,11 @@
                 renderPosts(filteredPosts);
             }
         }
-
-        // Manejadores de eventos
-        createArticleBtn.addEventListener('click', () => showView('editor'));
-        homeLink.addEventListener('click', () => showView('blog'));
-        cancelBtn.addEventListener('click', () => showView('blog'));
         
-        newArticleForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            
-            const title = document.getElementById('article-title').value;
-            const category = document.getElementById('article-category').value;
-            const summary = document.getElementById('article-summary').value;
-            const content = document.getElementById('article-content').value;
-            const mediaUrl = document.getElementById('article-media').value;
-            
-            const newArticle = {
-                title,
-                category,
-                summary,
-                content: mediaUrl ? `<div class="mb-4"><img src="${mediaUrl}" alt="Contenido multimedia" class="rounded-lg w-full"></div>` + content : content
-            };
-            
-            blogPosts.push(newArticle);
-            
-            // Regresar a la vista del blog y renderizar los nuevos posts
-            showView('blog');
-            renderFilters();
-            renderPosts(blogPosts);
-            newArticleForm.reset(); // Limpiar el formulario
-        });
-
-        // Se ejecuta cuando la página se carga
         document.addEventListener('DOMContentLoaded', () => {
             renderFilters();
-            renderPosts(blogPosts); // Renderizar todas las publicaciones por defecto
-            showView('blog');
+            renderPosts(blogPosts);
         });
-
     </script>
 </body>
 </html>
