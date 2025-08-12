@@ -53,3 +53,5 @@ const outputPath = path.join(distDir, 'index.html');
 fs.writeFileSync(outputPath, templateHtml);
 
 console.log('Blog generado con éxito en la carpeta dist!');
+console.log(`Archivos encontrados: ${fs.readdirSync(articlesPath).join(', ')}`);
+console.log(`Posts procesados:`, blogPosts);
