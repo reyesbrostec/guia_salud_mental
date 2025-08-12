@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Guía de Salud Mental</title>
     <!-- CDN de Tailwind CSS para el estilizado -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -18,23 +18,26 @@
     </style>
 </head>
 <body class="bg-gray-50 font-sans leading-normal tracking-normal text-gray-800">
-    
+
     <!-- Contenedor principal de la aplicación -->
     <div id="app" class="flex flex-col min-h-screen">
-        
+
         <!-- Encabezado y navegación del blog -->
         <header class="bg-white shadow-md p-6">
             <div class="container mx-auto flex items-center justify-between">
                 <div id="home-link" class="text-3xl font-bold text-gray-900 cursor-pointer">Guía de Salud Mental</div>
-                <input type="text" placeholder="Buscar técnica..." class="w-full md:w-1/3 px-4 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-500 hidden">
+                <input
+                    type="text"
+                    placeholder="Buscar técnica..."
+                    class="w-full md:w-1/3 px-4 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-500 hidden"
+                />
             </div>
         </header>
 
         <!-- Contenido principal: publicaciones y filtros -->
         <main class="container mx-auto mt-8 p-4 flex-grow">
-            <!-- Vista de los artículos del blog -->
             <div id="blog-view" class="flex flex-col lg:flex-row gap-8">
-                
+
                 <!-- Barra lateral para filtros de categorías -->
                 <aside class="w-full lg:w-1/4">
                     <div class="bg-white rounded-xl shadow-lg p-6 sticky top-8">
@@ -47,11 +50,13 @@
 
                 <!-- Sección principal para mostrar las publicaciones -->
                 <section class="w-full lg:w-3/4">
-                    <div id="blog-posts" class="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2">
+                    <div
+                        id="blog-posts"
+                        class="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2"
+                    >
                         <!-- Las publicaciones del blog se renderizarán aquí -->
                     </div>
                 </section>
-
             </div>
         </main>
 
@@ -68,9 +73,8 @@
 
     <!-- Script para la lógica del blog -->
     <script>
-        // Se añade una declaración de array vacío como "fallback"
-        // para evitar el error de referencia en la plantilla sin procesar.
-        const blogPosts = [];
+        // <-- NO DECLARES blogPosts aquí para evitar redeclaración -->
+
         // ESTE ES EL MARCADOR DE POSICIÓN. El script build.js
         // reemplazará esta línea con un arreglo de tus publicaciones.
         const blogPosts = [{"title":"SOBRE EL ALCOHOLISMO","category":"General","summary":"El estudio de Engel et al en el 2015 menciona que altos niveles de estres se pueden establecer como ...","content":"<p>El estudio de Engel et al en el 2015 menciona que altos niveles de estres se pueden establecer como indicadores de riesgo de recaida en el consumo de alcohol, siendo indicadores tales como el uso de psicometricos especificos para el estres como SCL-90 donde a mayor rango de estres mayor riesgo de consumo, a su vez tambien se menciona que los sub factores como Sensibilidad Interpersonal, ansiedad, y psicoticismo tienden a estar elevados en hasta dos puntos de diferencia sobre un grupo absitnente. Dado el modeo de investigacion se modela que el grupo abstinente se mantiene en ese estado en tanto los niveles de estres sean bajos especialmente en sub factores como estres somatico, depresion y ansiedad.\nEngel, Katharina &amp; Schaefer, Martin &amp; Stickel, Anna &amp; Binder, Hennriette &amp; Heinz, Andreas &amp; Richter, Christoph. (2015). The Role of Psychological Distress in Relapse Prevention of Alcohol Addiction. Can High Scores on the SCL-90-R Predict Alcohol Relapse?. Alcohol and alcoholism (Oxford, Oxfordshire). 51. 10.1093/alcalc/agv062.</p>\n"}];
@@ -78,20 +82,18 @@
         // Referencias a los elementos del DOM
         const blogPostsContainer = document.getElementById('blog-posts');
         const filterContainer = document.getElementById('category-filters');
-        
+
         // Inicializa el parser de Markdown
-        // NOTA: Esta línea ya no es necesaria en el front-end si el script build.js
-        // ya convirtió el Markdown a HTML. Pero la mantenemos por si quieres usarla.
+        // Nota: Solo es necesario si usarás Markdown en el cliente
         const md = new markdownit();
 
         // Función para renderizar las publicaciones en la página
         function renderPosts(postsToRender) {
             blogPostsContainer.innerHTML = '';
-            postsToRender.forEach((post) => {
+            postsToRender.forEach(post => {
                 const article = document.createElement('article');
                 article.className = 'bg-white rounded-xl shadow-lg transition-shadow duration-300 overflow-hidden';
-                
-                // Usamos directamente el contenido HTML ya procesado por build.js
+
                 const formattedContent = post.content;
 
                 article.innerHTML = `
@@ -111,10 +113,9 @@
         // Función para renderizar los botones de filtro
         function renderFilters() {
             filterContainer.innerHTML = '';
-            
-            // Se asegura de que blogPosts esté definido antes de intentar mapear
+
             const categories = [...new Set(blogPosts.map(post => post.category))];
-            
+
             // Botón para mostrar todas las publicaciones
             const allButton = document.createElement('button');
             allButton.textContent = 'Todas';
@@ -126,39 +127,4 @@
             categories.forEach(category => {
                 const button = document.createElement('button');
                 button.textContent = category;
-                button.className = 'bg-gray-200 text-gray-700 rounded-full px-4 py-2 font-semibold text-sm transition-colors duration-300 hover:bg-gray-300';
-                button.onclick = () => filterPosts(category, button);
-                filterContainer.appendChild(button);
-            });
-        }
-
-        // Función para filtrar las publicaciones por categoría
-        function filterPosts(category, clickedButton = null) {
-            const allButtons = document.querySelectorAll('#category-filters button');
-            allButtons.forEach(btn => {
-                btn.className = 'bg-gray-200 text-gray-700 rounded-full px-4 py-2 font-semibold text-sm transition-colors duration-300 hover:bg-gray-300';
-            });
-
-            if (clickedButton) {
-                clickedButton.className = 'bg-indigo-500 text-white rounded-full px-4 py-2 font-semibold text-sm shadow-md transition-all duration-300 hover:bg-indigo-600';
-            } else {
-                document.querySelector('#category-filters button').className = 'bg-indigo-500 text-white rounded-full px-4 py-2 font-semibold text-sm shadow-md transition-all duration-300 hover:bg-indigo-600';
-            }
-
-            if (category === 'all') {
-                renderPosts(blogPosts);
-            } else {
-                const filteredPosts = blogPosts.filter(post => post.category === category);
-                renderPosts(filteredPosts);
-            }
-        }
-        
-        // Se ejecuta cuando la página se carga
-        document.addEventListener('DOMContentLoaded', () => {
-            renderFilters();
-            renderPosts(blogPosts);
-        });
-
-    </script>
-</body>
-</html>
+                button.className = 'bg-gray-200 text-gray
