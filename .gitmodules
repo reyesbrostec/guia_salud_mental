@@ -1,6 +1,3 @@
-[submodule "publicaciones"]
-    path = publicaciones
-    url = https://github.com/reyesbrostec/publicaciones.git
 [submodule "src/publicaciones"]
-	path = src/publicaciones
-	url = https://github.com/reyesbrostec/publicaciones
+    path = src/publicaciones
+    url = https://github.com/reyesbrostec/publicaciones.git
