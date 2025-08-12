@@ -1,0 +1,22 @@
+/*
+ * Custom styles for Guía de Bienestar Blog
+ * Este archivo contiene estilos personalizados para mejorar la apariencia del blog.
+ */
+
+/* Estilo para la barra de desplazamiento (scrollbar) */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1; /* Color de fondo del track */
+}
+
+::-webkit-scrollbar-thumb {
+    background: #cbd5e1; /* gray-300 - Color del pulgar de la barra */
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8; /* gray-400 - Color del pulgar al pasar el ratón */
+}
