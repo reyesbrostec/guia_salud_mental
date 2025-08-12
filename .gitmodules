@@ -1,0 +1,3 @@
+[submodule "publicaciones"]
+    path = publicaciones
+    url = https://github.com/reyesbrostec/publicaciones.git
