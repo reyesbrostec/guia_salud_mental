@@ -3,20 +3,51 @@
  * Este archivo contiene estilos personalizados para mejorar la apariencia del blog.
  */
 
+/* Variables CSS para los colores de la marca */
+:root {
+    --color-primary: #4CAF50;    /* Un verde suave para la marca */
+    --color-secondary: #FF9800;  /* Un naranja cálido para acentos */
+    --color-tertiary: #2196F3;   /* Un azul tranquilo para botones y enlaces */
+    --color-bg-light: #f3f4f6;   /* gris-100 para fondos claros */
+    --color-text-dark: #1f2937;  /* gris-800 para texto principal */
+}
+
 /* Estilo para la barra de desplazamiento (scrollbar) */
 ::-webkit-scrollbar {
     width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-    background: #f1f1f1; /* Color de fondo del track */
+    background: var(--color-bg-light);
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #cbd5e1; /* gray-300 - Color del pulgar de la barra */
+    background: var(--color-primary);
     border-radius: 4px;
+    transition: background 0.3s ease-in-out;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: #94a3b8; /* gray-400 - Color del pulgar al pasar el ratón */
+    background: var(--color-secondary);
 }
+
+/* Transiciones suaves para los botones en el HTML */
+.bg-indigo-500 {
+    transition: background-color 0.3s ease-in-out;
+}
+
+.bg-indigo-600 {
+    transition: background-color 0.3s ease-in-out;
+}
+
+/* Estilos de botones de filtro */
+.bg-gray-200 {
+    transition: background-color 0.3s ease-in-out;
+}
+
+.bg-gray-300:hover {
+    transition: background-color 0.3s ease-in-out;
+}
+
+/* Puedes añadir más estilos aquí para usar los colores de marca en otras partes del sitio */
+
