@@ -68,6 +68,9 @@
 
     <!-- Script para la lógica del blog -->
     <script>
+        // Se añade una declaración de array vacío como "fallback"
+        // para evitar el error de referencia en la plantilla sin procesar.
+        const blogPosts = [];
         // ESTE ES EL MARCADOR DE POSICIÓN. El script build.js
         // reemplazará esta línea con un arreglo de tus publicaciones.
         // __BLOG_POSTS_DATA__
@@ -109,6 +112,7 @@
         function renderFilters() {
             filterContainer.innerHTML = '';
             
+            // Se asegura de que blogPosts esté definido antes de intentar mapear
             const categories = [...new Set(blogPosts.map(post => post.category))];
             
             // Botón para mostrar todas las publicaciones
