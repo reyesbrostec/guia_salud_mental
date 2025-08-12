@@ -73,28 +73,21 @@
 
     <!-- Script para la lógica del blog -->
     <script>
-        // <-- NO DECLARES blogPosts aquí para evitar redeclaración -->
-
-        // ESTE ES EL MARCADOR DE POSICIÓN. El script build.js
-        // reemplazará esta línea con un arreglo de tus publicaciones.
+        // Aquí se define el array blogPosts que será reemplazado por build.js
+        let blogPosts = [];
         // __BLOG_POSTS_DATA__
 
-        // Referencias a los elementos del DOM
         const blogPostsContainer = document.getElementById('blog-posts');
         const filterContainer = document.getElementById('category-filters');
 
-        // Inicializa el parser de Markdown
-        // Nota: Solo es necesario si usarás Markdown en el cliente
+        // No es necesario usar Markdown-it en el cliente, pero lo dejamos por si acaso
         const md = new markdownit();
 
-        // Función para renderizar las publicaciones en la página
         function renderPosts(postsToRender) {
             blogPostsContainer.innerHTML = '';
             postsToRender.forEach(post => {
                 const article = document.createElement('article');
                 article.className = 'bg-white rounded-xl shadow-lg transition-shadow duration-300 overflow-hidden';
-
-                const formattedContent = post.content;
 
                 article.innerHTML = `
                     <div class="p-6">
@@ -102,7 +95,7 @@
                         <h2 class="mt-2 text-2xl font-bold text-gray-900">${post.title}</h2>
                         <p class="mt-2 text-gray-600">${post.summary}</p>
                         <div class="mt-4 prose prose-indigo text-gray-600">
-                            ${formattedContent}
+                            ${post.content}
                         </div>
                     </div>
                 `;
@@ -110,21 +103,50 @@
             });
         }
 
-        // Función para renderizar los botones de filtro
         function renderFilters() {
             filterContainer.innerHTML = '';
 
             const categories = [...new Set(blogPosts.map(post => post.category))];
 
-            // Botón para mostrar todas las publicaciones
             const allButton = document.createElement('button');
             allButton.textContent = 'Todas';
             allButton.className = 'bg-indigo-500 text-white rounded-full px-4 py-2 font-semibold text-sm shadow-md transition-all duration-300 hover:bg-indigo-600';
             allButton.onclick = () => filterPosts('all', allButton);
             filterContainer.appendChild(allButton);
 
-            // Botones para cada categoría
             categories.forEach(category => {
                 const button = document.createElement('button');
                 button.textContent = category;
-                button.className = 'bg-gray-200 text-gray
+                button.className = 'bg-gray-200 text-gray-700 rounded-full px-4 py-2 font-semibold text-sm transition-colors duration-300 hover:bg-gray-300';
+                button.onclick = () => filterPosts(category, button);
+                filterContainer.appendChild(button);
+            });
+        }
+
+        function filterPosts(category, clickedButton = null) {
+            const allButtons = document.querySelectorAll('#category-filters button');
+            allButtons.forEach(btn => {
+                btn.className = 'bg-gray-200 text-gray-700 rounded-full px-4 py-2 font-semibold text-sm transition-colors duration-300 hover:bg-gray-300';
+            });
+
+            if (clickedButton) {
+                clickedButton.className = 'bg-indigo-500 text-white rounded-full px-4 py-2 font-semibold text-sm shadow-md transition-all duration-300 hover:bg-indigo-600';
+            } else {
+                document.querySelector('#category-filters button').className = 'bg-indigo-500 text-white rounded-full px-4 py-2 font-semibold text-sm shadow-md transition-all duration-300 hover:bg-indigo-600';
+            }
+
+            if (category === 'all') {
+                renderPosts(blogPosts);
+            } else {
+                const filteredPosts = blogPosts.filter(post => post.category === category);
+                renderPosts(filteredPosts);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderFilters();
+            renderPosts(blogPosts);
+        });
+    </script>
+</body>
+</html>
