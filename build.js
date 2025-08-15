@@ -29,12 +29,17 @@ fs.readdirSync(articlesPath).forEach(file => {
 
 const postsData = JSON.stringify(blogPosts);
 
-if (!templateHtml.includes('let blogPosts = [];')) {
-  console.error('ERROR: No se encontró el marcador "let blogPosts = [];" en index.html');
+// Intentar reemplazar una asignación previa de blogPosts (vacía o poblada)
+const varRegex = /let\s+blogPosts\s*=\s*\[.*?\];/s;
+if (varRegex.test(templateHtml)) {
+  templateHtml = templateHtml.replace(varRegex, `let blogPosts = ${postsData};`);
+} else if (templateHtml.includes('// __BLOG_POSTS_DATA__')) {
+  // respaldo: insertar donde esté el comentario marcador
+  templateHtml = templateHtml.replace('// __BLOG_POSTS_DATA__', `let blogPosts = ${postsData};`);
+} else {
+  console.error('ERROR: No se encontró el marcador para insertar los posts en index.html');
   process.exit(1);
 }
-
-templateHtml = templateHtml.replace('let blogPosts = [];', `let blogPosts = ${postsData};`);
 
 const distDir = path.join(__dirname, 'dist');
 if (!fs.existsSync(distDir)) {
