@@ -15,6 +15,20 @@ if (!fs.existsSync(articlesPath)) {
   process.exit(1);
 }
 
+function collectMarkdownFiles(dir) {
+  const results = [];
+  const entries = fs.readdirSync(dir, { withFileTypes: true });
+  for (const e of entries) {
+    const full = path.join(dir, e.name);
+    if (e.isDirectory()) {
+      results.push(...collectMarkdownFiles(full));
+    } else if (e.isFile() && path.extname(e.name).toLowerCase() === '.md') {
+      results.push(full);
+    }
+  }
+  return results;
+}
+
 function parseFrontmatter(markdown) {
   const fmRegex = /^---\s*([\s\S]*?)\s*---\s*/;
   const res = { meta: {}, body: markdown };
@@ -26,10 +40,10 @@ function parseFrontmatter(markdown) {
 
   const lines = fm.split(/\r?\n/);
   lines.forEach(line => {
-    const kv = line.match(/^\s*([a-zA-Z0-9_\-]+)\s*:\s*(.*)$/);
+    const kv = line.match(/^\s*([^\s:]+)\s*:\s*(.*)$/);
     if (!kv) return;
     const rawKey = kv[1].trim();
-    const key = rawKey.toLowerCase();
+    const key = rawKey.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''); // normalizar acentos
     let value = kv[2].trim();
 
     // eliminar comillas envolventes
@@ -41,7 +55,6 @@ function parseFrontmatter(markdown) {
       value = value.trim();
       try {
         if (value.startsWith('[')) {
-          // normalizar palabras no citadas para JSON.parse
           const normalized = value.replace(/(['"])?([a-zA-Z0-9_\-\s]+)(['"])?/g, (s, q1, inner) => {
             if (/^\s*[\[,\]]\s*$/.test(s)) return s;
             return `"${inner.trim()}"`;
@@ -53,8 +66,7 @@ function parseFrontmatter(markdown) {
       } catch (e) {
         res.meta.tags = value.replace(/[\[\]']/g, '').split(',').map(t => t.trim()).filter(Boolean);
       }
-    } else if (key === 'categories' || key === 'category') {
-      // puede ser "cat1, cat2" o ["a","b"] o single string
+    } else if (key === 'category' || key === 'categories' || key === 'cat' || key === 'categoria') {
       try {
         if (value.startsWith('[')) {
           const normalized = value.replace(/(['"])?([a-zA-Z0-9_\-\s]+)(['"])?/g, (s, q1, inner) => {
@@ -100,33 +112,42 @@ function makeUniqueSlug(base, existing) {
 
 const existingSlugs = new Set();
 
-fs.readdirSync(articlesPath).forEach(file => {
-  const ext = path.extname(file).toLowerCase();
-  if (ext !== '.md') return;
-  const filePath = path.join(articlesPath, file);
-  const markdownContent = fs.readFileSync(filePath, 'utf8');
-  const parsed = parseFrontmatter(markdownContent);
-  const body = parsed.body || '';
-  const contentHtml = md.render(body);
-  const filenameTitle = file.replace(/\.md$/i, '').replace(/[-_]+/g, ' ').trim();
-  const title = (parsed.meta.title && String(parsed.meta.title).trim()) || filenameTitle || 'Sin título';
-  const description = (parsed.meta.description && String(parsed.meta.description).trim()) || extractSummaryFromBody(body);
-  const tags = Array.isArray(parsed.meta.tags) ? parsed.meta.tags : (parsed.meta.tags ? String(parsed.meta.tags).split(',').map(t => t.trim()).filter(Boolean) : []);
-  const category = parsed.meta.category || parsed.meta.cat || '';
-  const summary = description ? (description.length > 140 ? description.slice(0, 140) + '...' : description) : (extractSummaryFromBody(body).slice(0, 140) + '...');
-  const baseSlug = filenameTitle.toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-');
-  const slug = makeUniqueSlug((parsed.meta.slug && String(parsed.meta.slug).trim()) || baseSlug || title.toLowerCase().replace(/\s+/g, '-'), existingSlugs);
+// Recoger todos los archivos .md (recursivo)
+const mdFiles = collectMarkdownFiles(articlesPath);
 
-  blogPosts.push({
-    title,
-    description,
-    tags,
-    category: category || '',
-    summary,
-    slug,
-    raw: markdownContent,
-    content: contentHtml
-  });
+mdFiles.forEach(filePath => {
+  try {
+    const markdownContent = fs.readFileSync(filePath, 'utf8');
+    const parsed = parseFrontmatter(markdownContent);
+    const body = parsed.body || '';
+    const contentHtml = md.render(body);
+    const rel = path.relative(articlesPath, filePath);
+    const dirName = path.dirname(rel);
+    const folderCategory = (dirName && dirName !== '.' ) ? path.basename(dirName) : '';
+    const filenameTitle = path.basename(filePath).replace(/\.md$/i, '').replace(/[-_]+/g, ' ').trim();
+    const title = (parsed.meta.title && String(parsed.meta.title).trim()) || filenameTitle || 'Sin título';
+    const description = (parsed.meta.description && String(parsed.meta.description).trim()) || extractSummaryFromBody(body);
+    const tags = Array.isArray(parsed.meta.tags) ? parsed.meta.tags : (parsed.meta.tags ? String(parsed.meta.tags).split(',').map(t => t.trim()).filter(Boolean) : []);
+    // categoría: frontmatter -> primer tag -> carpeta -> vacío
+    const categoryFromFM = parsed.meta.category || parsed.meta.cat || '';
+    const category = (categoryFromFM && String(categoryFromFM).trim()) || (tags[0] ? String(tags[0]).trim() : '') || folderCategory || '';
+    const summary = description ? (description.length > 140 ? description.slice(0, 140) + '...' : description) : (extractSummaryFromBody(body).slice(0, 140) + '...');
+    const baseSlug = filenameTitle.toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-');
+    const slug = makeUniqueSlug((parsed.meta.slug && String(parsed.meta.slug).trim()) || baseSlug || title.toLowerCase().replace(/\s+/g, '-'), existingSlugs);
+
+    blogPosts.push({
+      title,
+      description,
+      tags,
+      category: category || '',
+      summary,
+      slug,
+      raw: markdownContent,
+      content: contentHtml
+    });
+  } catch (err) {
+    console.error('Error procesando', filePath, err.message);
+  }
 });
 
 let postsData = JSON.stringify(blogPosts, null, 2);
@@ -161,6 +182,7 @@ const outputPath = path.join(distDir, 'index.html');
 fs.writeFileSync(outputPath, templateHtml, 'utf8');
 
 console.log('Blog generado con éxito en la carpeta dist!');
-console.log(`Archivos encontrados: ${fs.readdirSync(articlesPath).join(', ')}`);
+console.log(`Archivos encontrados (md): ${mdFiles.length}`);
+mdFiles.forEach(f => console.log(`- ${path.relative(articlesPath, f)}`));
 console.log(`Posts procesados: ${blogPosts.length}`);
 blogPosts.forEach(p => console.log(`- ${p.title} (slug: ${p.slug}) category: ${p.category || 'Sin categoría'}`));
