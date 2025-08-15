@@ -4,6 +4,7 @@
   "description": "Un blog que se genera a partir de archivos Markdown",
   "main": "build.js",
   "scripts": {
+    "prebuild": "git submodule update --init --remote",
     "build": "node build.js"
   },
   "dependencies": {
