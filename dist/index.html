@@ -1,80 +1,78 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Guía de Salud Mental</title>
-    <!-- CDN de Tailwind CSS para el estilizado -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía de Salud Mental - Vista Kanban</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Referencia a la librería de Markdown-it -->
-    <script src="https://cdn.jsdelivr.net/npm/markdown-it@13.0.1/dist/markdown-it.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        .prose img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 0.5rem; /* rounded-lg */
-            margin-bottom: 1rem; /* mb-4 */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .kanban-container::-webkit-scrollbar {
+            height: 8px;
+        }
+        .kanban-container::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 10px;
+        }
+        .kanban-container::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+        .kanban-container::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
         }
     </style>
 </head>
-<body class="bg-gray-50 font-sans leading-normal tracking-normal text-gray-800">
+<body class="bg-slate-50 text-slate-800">
 
-    <!-- Contenedor principal de la aplicación -->
-    <div id="app" class="flex flex-col min-h-screen">
+    <!-- Header -->
+    <header class="bg-white/90 backdrop-blur-lg sticky top-0 z-50 border-b border-slate-200">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+            <a href="#" class="text-xl font-bold text-teal-600">BienestarMental</a>
+            <a href="#" class="bg-teal-500 text-white px-4 py-2 rounded-lg hover:bg-teal-600 transition-colors shadow-md shadow-teal-500/20 font-semibold">
+                Buscar Ayuda
+            </a>
+        </nav>
+    </header>
 
-        <!-- Encabezado y navegación del blog -->
-        <header class="bg-white shadow-md p-6">
-            <div class="container mx-auto flex items-center justify-between">
-                <div id="home-link" class="text-3xl font-bold text-gray-900 cursor-pointer">Guía de Salud Mental</div>
-                <input
-                    type="text"
-                    placeholder="Buscar técnica..."
-                    class="w-full md:w-1/3 px-4 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-500 hidden"
-                />
-            </div>
-        </header>
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+        <!-- Board Title -->
+        <div class="mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold text-slate-900">Tu Camino hacia el Bienestar</h1>
+            <p class="text-slate-500 mt-2 text-lg">Explora estos recursos a tu propio ritmo. Empieza por donde más lo necesites.</p>
+        </div>
 
-        <!-- Contenido principal: publicaciones y filtros -->
-        <main class="container mx-auto mt-8 p-4 flex-grow">
-            <div id="blog-view" class="flex flex-col lg:flex-row gap-8">
+        <!-- Kanban Board (rellenado dinámicamente por JS) -->
+        <div id="kanban-board" class="kanban-container flex space-x-6 overflow-x-auto pb-4"></div>
+    </main>
 
-                <!-- Barra lateral para filtros de categorías -->
-                <aside class="w-full lg:w-1/4">
-                    <div class="bg-white rounded-xl shadow-lg p-6 sticky top-8">
-                        <h3 class="font-semibold text-lg text-gray-900 mb-4">Categorías</h3>
-                        <div id="category-filters" class="flex flex-wrap lg:flex-col gap-2">
-                            <!-- Los botones de categoría se renderizarán aquí -->
-                        </div>
-                    </div>
-                </aside>
-
-                <!-- Sección principal para mostrar las publicaciones -->
-                <section class="w-full lg:w-3/4">
-                    <div
-                        id="blog-posts"
-                        class="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2"
-                    >
-                        <!-- Las publicaciones del blog se renderizarán aquí -->
-                    </div>
-                </section>
-            </div>
-        </main>
-
-        <!-- Pie de página con el aviso legal -->
-        <footer class="bg-gray-800 text-white p-6 mt-8">
-            <div class="container mx-auto text-center text-sm">
-                <p class="mb-2">© 2024 Guía de Salud Mental. Todos los derechos reservados.</p>
-                <p class="text-gray-400">
-                    Aviso Legal: Este blog es una herramienta educativa de apoyo y no debe ser considerado un sustituto de la terapia profesional, el diagnóstico o el tratamiento médico. Si necesitas ayuda, consulta a un profesional de la salud mental calificado.
-                </p>
-            </div>
-        </footer>
+    <!-- Modal para artículo completo -->
+    <div id="article-modal" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 hidden">
+      <div class="bg-white rounded-xl shadow-lg max-w-2xl w-full p-8 relative overflow-y-auto max-h-[90vh]">
+        <button class="absolute top-4 right-4 text-gray-400 hover:text-red-500 text-2xl font-bold modal-close-btn">&times;</button>
+        <div id="modal-content"></div>
+      </div>
     </div>
 
-    <!-- Script para la lógica del blog -->
+    <!-- Footer -->
+    <footer class="bg-white mt-8 border-t border-slate-200">
+        <div class="container mx-auto px-6 py-8 text-center text-slate-500">
+            <p>&copy; 2024 BienestarMental. Todos los derechos reservados.</p>
+            <p class="text-sm mt-1">Este sitio web ofrece información y no sustituye el consejo médico profesional.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/markdown-it@13.0.2/dist/markdown-it.min.js"></script>
     <script>
-        // build.js debe insertar aquí la variable blogPosts
-        let blogPosts = [
+    // build.js debe insertar aquí la variable blogPosts
+    let blogPosts = [
   {
     "title": "Sobre el alcoholismo y su tratamiento desde el MBS",
     "description": "Revisión sobre riesgo de recaída, rigidez psicológica y estrategias basadas en la aceptación y compromiso (MBS).",
@@ -91,158 +89,99 @@
     "content": "<h1>Introducción</h1>\n<p>El camino hacia la recuperación del consumo de alcohol es un proceso complejo. Una investigación crucial de Engel et al. (2015) revela que los niveles elevados de estrés psicológico pueden ser un factor de riesgo significativo para la recaída. Comprender y gestionar estos indicadores es un paso fundamental para mantener un estado de abstinencia y bienestar a largo plazo.</p>\n<p><img src=\"https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&amp;fit=crop&amp;w=600&amp;q=80\" alt=\"Ilustración sobre recuperación\"></p>\n<h2>Señales y síntomas</h2>\n<p>El estudio identifica indicadores específicos de estrés que se asocian con un mayor riesgo de recaída. A través de evaluaciones psicométricas como el SCL-90, se observa que cuanto mayor es el rango de estrés, mayor es el riesgo de consumo.</p>\n<p>Los siguientes subfactores de estrés suelen estar notablemente elevados en hasta dos puntos en personas que recaen, en comparación con aquellas que se mantienen estables:</p>\n<ul>\n<li><strong>Sensibilidad Interpersonal:</strong> Mayor susceptibilidad a las interacciones sociales y a las críticas.</li>\n<li><strong>Ansiedad:</strong> Sentimientos de preocupación, inquietud y nerviosismo.</li>\n<li><strong>Psicoticismo:</strong> Aislamiento social y desorganización en los pensamientos.</li>\n</ul>\n<blockquote>\n<p>Escucha este audio sobre estrategias de afrontamiento:</p>\n<p><audio controls src=\"https://www.w3schools.com/html/horse.mp3\"></audio></p>\n</blockquote>\n<p>Por otro lado, se ha observado que los grupos que mantienen su abstinencia se caracterizan por bajos niveles de estrés, particularmente en subfactores como el estrés somático, la depresión y la ansiedad.</p>\n<h2>Estrategias y recomendaciones</h2>\n<p>Para contrarrestar estos riesgos, el marco terapéutico promueve un cambio desde el individuo. En lugar de la imposición, se fomenta el desarrollo de la <strong>autoconciencia</strong>, la <strong>aceptación de las experiencias</strong> y la <strong>clarificación de los valores personales</strong>.</p>\n<p>La concientización se practica a través del <em>mindfulness</em>, que invita a observar pasivamente las emociones y pensamientos en lugar de evitarlos. Esta aproximación busca confrontar la <strong>evitación experiencial</strong>, una tendencia natural que ofrece alivio a corto plazo pero que refuerza el malestar a largo plazo.</p>\n<div style=\"margin: 1em 0;\">\n<video controls width=\"320\" src=\"https://www.w3schools.com/html/mov_bbb.mp4\"></video>\n</div>\n<p>El modelo propone una primera posición &quot;incómoda&quot;: vivir la experiencia inmediata sin reaccionar para desarrollar una perspectiva sobre lo que realmente importa. Esto aborda la <strong>rigidez psicológica</strong>, la cual se manifiesta en seis procesos nucleares que pueden ser trabajados:</p>\n<ul>\n<li><strong>Evitación Experiencial:</strong> Aceptar el malestar emocional en la búsqueda de objetivos.</li>\n<li><strong>Atención Inflexible:</strong> Enfocarse en el presente en vez de quedar atrapado en el pasado o el futuro.</li>\n<li><strong>Apego a un Yo Conceptualizado:</strong> Verse a uno mismo como un contexto de experiencias, no como una etiqueta fija.</li>\n<li><strong>Fusión Cognitiva:</strong> Reconocer que los pensamientos y emociones no son directrices absolutas de acción.</li>\n<li><strong>Disrupción de los Valores Escogidos:</strong> Asegurar que las acciones estén alineadas con los valores personales.</li>\n<li><strong>Inacción o Impulsividad:</strong> Reemplazar las respuestas de gratificación inmediata con acciones comprometidas.</li>\n</ul>\n<h2>Referencias</h2>\n<ul>\n<li>Engel, K. et al. (2015). The Role of Psychological Distress in Relapse Prevention of Alcohol Addiction. Can High Scores on the SCL-90-R Predict Alcohol Relapse?. <em>Alcohol and alcoholism (Oxford, Oxfordshire)</em>, 51. DOI: 10.1093/alcalc/agv062.</li>\n<li>MBS, 14.</li>\n</ul>\n"
   }
 ];
-        // __BLOG_POSTS_DATA__
+    // __BLOG_POSTS_DATA__
 
-        const md = window.markdownit ? window.markdownit() : null;
+    // Configura las columnas Kanban
+    const columns = [
+        { key: 'fundamentos', title: 'Fundamentos', color: 'slate', count: 0 },
+        { key: 'guias', title: 'Guías Detalladas', color: 'blue', count: 0 },
+        { key: 'bienestar', title: 'Estrategias de Bienestar', color: 'amber', count: 0 },
+        { key: 'apoyo', title: 'Recursos y Apoyo', color: 'emerald', count: 0 }
+    ];
 
-        function ensure(selector) {
-            const el = document.querySelector(selector);
-            if (!el) console.warn('No existe', selector);
-            return el;
-        }
+    // Asigna cada post a una columna según su categoría (ajusta según tus datos reales)
+    function getColumnKey(post) {
+        const cat = (post.category || '').toLowerCase();
+        if (cat.includes('fundamento')) return 'fundamentos';
+        if (cat.includes('guía') || cat.includes('guia') || cat.includes('adicciones') || cat.includes('ansiedad') || cat.includes('depresión')) return 'guias';
+        if (cat.includes('bienestar') || cat.includes('mindfulness') || cat.includes('sueño') || cat.includes('límites')) return 'bienestar';
+        if (cat.includes('apoyo') || cat.includes('terapeuta') || cat.includes('grupo')) return 'apoyo';
+        // Fallback
+        return 'fundamentos';
+    }
 
-        /* Pestañas y renderizado */
-        function initTabsArea() {
-            const blogView = ensure('#blog-view');
-            if (!blogView) return;
-            if (document.getElementById('tabsWrapper')) return;
-            const tabsWrapper = document.createElement('div');
-            tabsWrapper.id = 'tabsWrapper';
-            tabsWrapper.className = 'mb-6';
-            tabsWrapper.innerHTML = `
-                <div id="tabsHeader" class="flex items-center gap-2 overflow-x-auto pb-2"></div>
-                <div id="tabsContent" class="space-y-4"></div>
-            `;
-            blogView.insertBefore(tabsWrapper, blogView.firstChild);
-        }
-
-        const openTabs = new Map();
-
-        function activateTab(slug) {
-            document.querySelectorAll('#tabsHeader [data-slug]').forEach(h => h.classList.toggle('bg-white', h.dataset.slug === slug));
-            document.querySelectorAll('#tabsContent [data-slug]').forEach(p => p.classList.toggle('hidden', p.dataset.slug !== slug));
-            // actualizar hash sin crear historial extra
-            if (slug && location.hash !== `#${slug}`) history.replaceState(null, '', `#${slug}`);
-        }
-
-        function closeTab(slug) {
-            const head = document.querySelector(`#tabsHeader [data-slug="${slug}"]`);
-            const panel = document.querySelector(`#tabsContent [data-slug="${slug}"]`);
-            if (head) head.remove();
-            if (panel) panel.remove();
-            openTabs.delete(slug);
-            const last = Array.from(openTabs.keys()).pop();
-            if (last) activateTab(last);
-            else history.replaceState(null, '', location.pathname + location.search);
-        }
-
-        function openTabForPost(post) {
-            initTabsArea();
-            const slug = post.slug || (post.title || 'post').toLowerCase().replace(/\s+/g, '-');
-            if (openTabs.has(slug)) { activateTab(slug); return; }
-
-            const headerBtn = document.createElement('button');
-            headerBtn.dataset.slug = slug;
-            headerBtn.className = 'px-4 py-2 rounded-full bg-white shadow text-sm flex items-center gap-2';
-            headerBtn.innerHTML = `<span class="font-medium truncate max-w-xs">${post.title || 'Sin título'}</span><span class="ml-2 text-gray-400 hover:text-red-500 cursor-pointer close-tab">✕</span>`;
-            headerBtn.addEventListener('click', (e) => {
-                if (e.target && e.target.classList && e.target.classList.contains('close-tab')) { closeTab(slug); e.stopPropagation(); return; }
-                activateTab(slug);
-            });
-            document.getElementById('tabsHeader').appendChild(headerBtn);
-
-            const panel = document.createElement('div');
-            panel.dataset.slug = slug;
-            panel.className = 'bg-white rounded-xl shadow-lg p-6';
-            panel.innerHTML = `
-                <div class="mb-4">
-                    <span class="text-sm font-semibold text-indigo-600">${post.category || 'Sin categoría'}</span>
-                    <h1 class="mt-2 text-2xl font-bold text-gray-900">${post.title || ''}</h1>
-                    <p class="mt-2 text-gray-600">${post.description || post.summary || ''}</p>
-                </div>
-                <div class="prose max-w-none mt-4 text-gray-700">
-                    ${post.content || (md ? md.render(post.raw || '') : (post.raw || ''))}
-                </div>
-            `;
-            document.getElementById('tabsContent').appendChild(panel);
-
-            openTabs.set(slug, { header: headerBtn, panel });
-            activateTab(slug);
-            headerBtn.scrollIntoView({ behavior: 'smooth', inline: 'end' });
-        }
-
-        /* Renderizado de listado y filtros */
-        function renderPosts(container, posts) {
-            container.innerHTML = '';
-            posts.forEach(post => {
-                const article = document.createElement('article');
-                article.className = 'bg-white rounded-xl shadow-lg transition-shadow duration-300 overflow-hidden';
-                const category = post.category || 'Sin categoría';
-                article.innerHTML = `
-                    <div class="p-6">
-                        <span class="text-sm font-semibold text-indigo-600">${category}</span>
-                        <h2 class="mt-2 text-2xl font-bold text-gray-900 cursor-pointer title-link">${post.title || 'Sin título'}</h2>
-                        <p class="mt-2 text-gray-600">${post.summary || ''}</p>
-                        <div class="mt-4 prose prose-indigo text-gray-600 hidden">${post.content || (md ? md.render(post.raw || '') : '')}</div>
-                        <div class="mt-4 flex gap-2">
-                            <button class="open-tab-btn bg-indigo-500 text-white px-3 py-1 rounded-full text-sm">Abrir</button>
-                            <button class="view-inline-btn bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm">Ver rápido</button>
-                        </div>
-                    </div>
-                `;
-                article.querySelector('.open-tab-btn').addEventListener('click', () => openTabForPost(post));
-                article.querySelector('.title-link').addEventListener('click', () => openTabForPost(post));
-                article.querySelector('.view-inline-btn').addEventListener('click', () => {
-                    const preview = article.querySelector('.prose');
-                    if (preview) preview.classList.toggle('hidden');
-                });
-                container.appendChild(article);
-            });
-        }
-
-        function renderFilters(container, posts) {
-            container.innerHTML = '';
-            const categories = [...new Set(posts.map(p => p.category || 'Sin categoría'))].filter(Boolean);
-            const allButton = document.createElement('button');
-            allButton.textContent = 'Todas';
-            allButton.className = 'bg-indigo-500 text-white rounded-full px-4 py-2 font-semibold text-sm shadow-md';
-            allButton.onclick = () => filterPosts('all', container);
-            container.appendChild(allButton);
-            categories.forEach(cat => {
-                const btn = document.createElement('button');
-                btn.textContent = cat;
-                btn.className = 'bg-gray-200 text-gray-700 rounded-full px-4 py-2 font-semibold text-sm';
-                btn.onclick = () => filterPosts(cat, container);
-                container.appendChild(btn);
-            });
-        }
-
-        function filterPosts(category, filtersContainer) {
-            const postsContainer = ensure('#blog-posts');
-            if (!postsContainer) return;
-            if (category === 'all') renderPosts(postsContainer, blogPosts);
-            else renderPosts(postsContainer, blogPosts.filter(p => (p.category || 'Sin categoría') === category));
-        }
-
-        /* Deep linking: abrir pestaña si hay hash */
-        function openFromHash() {
-            const hash = location.hash.replace('#', '');
-            if (!hash) return;
-            const post = blogPosts.find(p => p.slug === hash);
-            if (post) openTabForPost(post);
-        }
-
-        /* Inicialización */
-        window.addEventListener('DOMContentLoaded', () => {
-            initTabsArea();
-            const postsContainer = ensure('#blog-posts');
-            const filtersContainer = ensure('#category-filters');
-            if (postsContainer && Array.isArray(blogPosts)) renderPosts(postsContainer, blogPosts);
-            if (filtersContainer && Array.isArray(blogPosts)) renderFilters(filtersContainer, blogPosts);
-            openFromHash();
+    function renderKanban(posts) {
+        const board = document.getElementById('kanban-board');
+        if (!board) return;
+        board.innerHTML = '';
+        // Agrupa los posts por columna
+        const grouped = {};
+        columns.forEach(col => grouped[col.key] = []);
+        posts.forEach(post => {
+            const key = getColumnKey(post);
+            grouped[key] = grouped[key] || [];
+            grouped[key].push(post);
         });
+        // Renderiza cada columna
+        columns.forEach(col => {
+            const colPosts = grouped[col.key] || [];
+            col.count = colPosts.length;
+            const colDiv = document.createElement('div');
+            colDiv.className = 'flex-shrink-0 w-80';
+            colDiv.innerHTML = `
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="font-semibold text-slate-700">${col.title}</h2>
+                    <span class="bg-${col.color}-100 text-${col.color}-600 text-sm font-medium px-2 py-1 rounded-full">${col.count}</span>
+                </div>
+                <div class="space-y-4"></div>
+            `;
+            const cardsContainer = colDiv.querySelector('.space-y-4');
+            colPosts.forEach(post => {
+                // Busca la primera imagen en el markdown
+                let imgMatch = post.raw && post.raw.match(/!\[.*?\]\((.*?)\)/);
+                let imgTag = imgMatch ? `<img src="${imgMatch[1]}" class="rounded mb-3 aspect-video object-cover" alt="Miniatura">` : '';
+                const card = document.createElement('article');
+                card.className = 'bg-white p-5 rounded-xl shadow-sm border border-slate-100';
+                card.innerHTML = `
+                    ${imgTag}
+                    <h3 class="font-bold text-slate-800">${post.title}</h3>
+                    <p class="text-sm text-slate-500 mt-2">${post.summary || post.description || ''}</p>
+                    <a href="#" class="text-${col.color}-600 hover:text-${col.color}-700 text-sm font-semibold mt-4 inline-block ver-mas-link">Ver más &rarr;</a>
+                `;
+                card.querySelector('.ver-mas-link').onclick = (e) => {
+                    e.preventDefault();
+                    openModal(post, col.color);
+                };
+                cardsContainer.appendChild(card);
+            });
+            board.appendChild(colDiv);
+        });
+    }
 
-        window.addEventListener('hashchange', openFromHash);
+    function openModal(post, color) {
+        const modal = document.getElementById('article-modal');
+        const content = document.getElementById('modal-content');
+        if (!modal || !content) return;
+        const md = window.markdownit({ html: true });
+        content.innerHTML = `
+            <span class="text-xs font-semibold text-${color}-600 mb-1">${post.category || ''}</span>
+            <h2 class="font-bold text-2xl mb-2">${post.title}</h2>
+            <p class="text-gray-600 mb-4">${post.description || ''}</p>
+            <div class="prose max-w-none">${md.render(post.raw || '')}</div>
+            <div class="flex flex-wrap gap-2 mt-4">
+              ${(post.tags || []).map(tag => `<span class="bg-${color}-100 text-${color}-700 px-2 py-1 rounded text-xs">${tag}</span>`).join('')}
+            </div>
+        `;
+        modal.classList.remove('hidden');
+        modal.querySelector('.modal-close-btn').onclick = () => modal.classList.add('hidden');
+        modal.onclick = e => { if (e.target === modal) modal.classList.add('hidden'); };
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+        if (typeof blogPosts !== 'undefined') {
+            renderKanban(blogPosts);
+        }
+    });
     </script>
 </body>
 </html>

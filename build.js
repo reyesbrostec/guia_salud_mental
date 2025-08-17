@@ -1,22 +1,10 @@
+// build.js - Generador de blog estático para Guía de Salud Mental
 const fs = require('fs');
 const path = require('path');
-const MarkdownIt = require('markdown-it');
 const { execSync } = require('child_process');
+const MarkdownIt = require('markdown-it');
 
-const md = new MarkdownIt({ html: true });
-
-const articlesPath = path.join(__dirname, 'src', 'publicaciones');
-const templatePath = path.join(__dirname, 'index.html');
-let templateHtml = fs.readFileSync(templatePath, 'utf8');
-
-const blogPosts = [];
-
-if (!fs.existsSync(articlesPath)) {
-  console.error(`ERROR: La carpeta de publicaciones no existe en ${articlesPath}`);
-  process.exit(1);
-}
-
-// Actualizar submódulo antes de procesar publicaciones
+// Actualiza el submódulo antes de procesar
 try {
   console.log('Actualizando submódulo publicaciones...');
   execSync('git submodule update --init --remote', { stdio: 'inherit' });
@@ -24,6 +12,13 @@ try {
   console.error('Error actualizando submódulo:', err.message);
   process.exit(1);
 }
+
+const md = new MarkdownIt({ html: true });
+const articlesPath = path.join(__dirname, 'src', 'publicaciones');
+const templatePath = path.join(__dirname, 'index.html');
+let templateHtml = fs.readFileSync(templatePath, 'utf8');
+
+const blogPosts = [];
 
 function collectMarkdownFiles(dir) {
   const results = [];
@@ -44,23 +39,18 @@ function parseFrontmatter(markdown) {
   const res = { meta: {}, body: markdown };
   const m = markdown.match(fmRegex);
   if (!m) return res;
-
   const fm = m[1];
   res.body = markdown.slice(m[0].length).trim();
-
   const lines = fm.split(/\r?\n/);
   lines.forEach(line => {
     const kv = line.match(/^\s*([^\s:]+)\s*:\s*(.*)$/);
     if (!kv) return;
     const rawKey = kv[1].trim();
-    const key = rawKey.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''); // normalizar acentos
+    const key = rawKey.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
     let value = kv[2].trim();
-
-    // eliminar comillas envolventes
     if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
       value = value.slice(1, -1);
     }
-
     if (key === 'tags') {
       value = value.trim();
       try {
@@ -97,7 +87,6 @@ function parseFrontmatter(markdown) {
       res.meta[key] = value;
     }
   });
-
   return res;
 }
 
@@ -121,10 +110,7 @@ function makeUniqueSlug(base, existing) {
 }
 
 const existingSlugs = new Set();
-
-// Recoger todos los archivos .md (recursivo)
 const mdFiles = collectMarkdownFiles(articlesPath);
-
 mdFiles.forEach(filePath => {
   try {
     const markdownContent = fs.readFileSync(filePath, 'utf8');
@@ -138,13 +124,11 @@ mdFiles.forEach(filePath => {
     const title = (parsed.meta.title && String(parsed.meta.title).trim()) || filenameTitle || 'Sin título';
     const description = (parsed.meta.description && String(parsed.meta.description).trim()) || extractSummaryFromBody(body);
     const tags = Array.isArray(parsed.meta.tags) ? parsed.meta.tags : (parsed.meta.tags ? String(parsed.meta.tags).split(',').map(t => t.trim()).filter(Boolean) : []);
-    // categoría: frontmatter -> primer tag -> carpeta -> vacío
     const categoryFromFM = parsed.meta.category || parsed.meta.cat || '';
     const category = (categoryFromFM && String(categoryFromFM).trim()) || (tags[0] ? String(tags[0]).trim() : '') || folderCategory || '';
     const summary = description ? (description.length > 140 ? description.slice(0, 140) + '...' : description) : (extractSummaryFromBody(body).slice(0, 140) + '...');
     const baseSlug = filenameTitle.toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-');
     const slug = makeUniqueSlug((parsed.meta.slug && String(parsed.meta.slug).trim()) || baseSlug || title.toLowerCase().replace(/\s+/g, '-'), existingSlugs);
-
     blogPosts.push({
       title,
       description,
@@ -161,10 +145,8 @@ mdFiles.forEach(filePath => {
 });
 
 let postsData = JSON.stringify(blogPosts, null, 2);
-// escapar cierre de script para insertar de forma segura en template HTML
 postsData = postsData.replace(/<\/script>/gi, '<\\/script>');
 
-// Intentar reemplazar una asignación previa de blogPosts (vacía o poblada)
 const varRegex = /let\s+blogPosts\s*=\s*\[.*?\];/s;
 if (varRegex.test(templateHtml)) {
   templateHtml = templateHtml.replace(varRegex, `let blogPosts = ${postsData};`);
@@ -196,4 +178,3 @@ console.log(`Archivos encontrados (md): ${mdFiles.length}`);
 mdFiles.forEach(f => console.log(`- ${path.relative(articlesPath, f)}`));
 console.log(`Posts procesados: ${blogPosts.length}`);
 blogPosts.forEach(p => console.log(`- ${p.title} (slug: ${p.slug}) category: ${p.category || 'Sin categoría'}`));
-// ...el resto del código Node.js para el build...
