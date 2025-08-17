@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const MarkdownIt = require('markdown-it');
+const { execSync } = require('child_process');
 
 const md = new MarkdownIt();
 
@@ -12,6 +13,15 @@ const blogPosts = [];
 
 if (!fs.existsSync(articlesPath)) {
   console.error(`ERROR: La carpeta de publicaciones no existe en ${articlesPath}`);
+  process.exit(1);
+}
+
+// Actualizar submódulo antes de procesar publicaciones
+try {
+  console.log('Actualizando submódulo publicaciones...');
+  execSync('git submodule update --init --remote', { stdio: 'inherit' });
+} catch (err) {
+  console.error('Error actualizando submódulo:', err.message);
   process.exit(1);
 }
 
