@@ -196,18 +196,3 @@ console.log(`Archivos encontrados (md): ${mdFiles.length}`);
 mdFiles.forEach(f => console.log(`- ${path.relative(articlesPath, f)}`));
 console.log(`Posts procesados: ${blogPosts.length}`);
 blogPosts.forEach(p => console.log(`- ${p.title} (slug: ${p.slug}) category: ${p.category || 'Sin categoría'}`));
-
-<div id="kanban-board" class="grid grid-cols-1 md:grid-cols-3 gap-6">
-    <div class="kanban-col" data-status="nuevo">
-        <h2 class="text-xl font-bold mb-4">Nuevo</h2>
-        <div class="kanban-list" id="kanban-nuevo"></div>
-    </div>
-    <div class="kanban-col" data-status="en-progreso">
-        <h2 class="text-xl font-bold mb-4">En progreso</h2>
-        <div class="kanban-list" id="kanban-en-progreso"></div>
-    </div>
-    <div class="kanban-col" data-status="completado">
-        <h2 class="text-xl font-bold mb-4">Completado</h2>
-        <div class="kanban-list" id="kanban-completado"></div>
-    </div>
-</div>
