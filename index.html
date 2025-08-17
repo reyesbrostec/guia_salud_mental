@@ -324,9 +324,13 @@
     // Accesibilidad: panel y acciones
     const accBtn = document.getElementById('accessibility-btn');
     const accPanel = document.getElementById('accessibility-panel');
-    accBtn.onclick = () => accPanel.classList.toggle('active');
+    accBtn.onclick = (e) => {
+        e.stopPropagation();
+        accPanel.classList.toggle('active');
+    };
+    accPanel.onclick = (e) => e.stopPropagation();
     document.addEventListener('click', e => {
-        if (!accPanel.contains(e.target) && e.target !== accBtn) {
+        if (accPanel.classList.contains('active')) {
             accPanel.classList.remove('active');
         }
     });
