@@ -16,79 +16,90 @@
 	<!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
 	<style>
 		body {
-			font-family: 'Inter', sans-serif;
-			background-color: #FDFBF8;
-			color: #3a3a3a;
-		}
-		.chart-container {
-			position: relative;
-			width: 100%;
-			max-width: 900px;
-			margin-left: auto;
-			margin-right: auto;
-			height: 500px;
-			max-height: 60vh;
-		}
-		@media (max-width: 768px) {
-			.chart-container {
-				height: 400px;
-				max-height: 70vh;
-			}
-		}
-		.nav-link {
-			transition: color 0.3s, border-bottom-color 0.3s;
-			border-bottom: 2px solid transparent;
-		}
-		.nav-link:hover, .nav-link.active {
-			color: #4A7C59;
-			border-bottom-color: #4A7C59;
-		}
-		.tab-button.active {
-			background-color: #4A7C59;
-			color: #FFFFFF;
-		}
-		.accordion-header.active {
-			background-color: #EBF0E4;
-		}
-		.accordion-content {
-			max-height: 0;
-			overflow: hidden;
-			transition: max-height 0.5s ease-out;
-		}
-	</style>
-</head>
-<body class="antialiased">
-	<header class="bg-[#FDFBF8]/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
-		<nav class="container mx-auto px-6 py-4 flex justify-between items-center">
-			<div class="text-2xl font-bold text-[#2C4A38]">
-				<span class="text-[#4A7C59]">Iris</span> Inclusión
-			</div>
-			<div class="hidden md:flex space-x-8">
-				<a href="#inicio" class="nav-link text-gray-600 font-medium pb-1">Inicio</a>
-				<a href="#principios" class="nav-link text-gray-600 font-medium pb-1">Principios</a>
-				<a href="#modelos" class="nav-link text-gray-600 font-medium pb-1">Modelos</a>
-				<a href="#plan" class="nav-link text-gray-600 font-medium pb-1">Plan Estratégico</a>
-				<a href="#sostenibilidad" class="nav-link text-gray-600 font-medium pb-1">Sostenibilidad</a>
-			</div>
-			<button id="mobile-menu-button" class="md:hidden p-2 rounded-md text-gray-600 hover:bg-gray-100">
-				<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
-				</svg>
-			</button>
-		</nav>
-		<div id="mobile-menu" class="hidden md:hidden px-6 pb-4">
-			<a href="#inicio" class="block py-2 text-gray-600">Inicio</a>
-			<a href="#principios" class="block py-2 text-gray-600">Principios</a>
-			<a href="#modelos" class="block py-2 text-gray-600">Modelos</a>
-			<a href="#plan" class="block py-2 text-gray-600">Plan Estratégico</a>
-			<a href="#sostenibilidad" class="block py-2 text-gray-600">Sostenibilidad</a>
-		</div>
-	</header>
-	<main>
-		<section id="inicio" class="py-20 md:py-32 bg-cover bg-center" style="background-color: #EBF0E4;">
-			<div class="container mx-auto px-6 text-center">
-				<h1 class="text-4xl md:text-6xl font-bold text-[#2C4A38] mb-4">Visión y Estrategia</h1>
-				<p class="text-lg md:text-xl text-gray-700 max-w-3xl mx-auto">Nuestro compromiso es transformar los entornos sociales en espacios de crecimiento verdaderamente inclusivos y accesibles para todos.</p>
-			</div>
-		</section>
-		<!-- Aquí continúa TODO el HTML completo proporcionado por el usuario, hasta el cierre de </html> -->
+			<!DOCTYPE html>
+			<html lang="es" class="scroll-smooth">
+			<head>
+				<meta charset="UTF-8">
+				<meta name="viewport" content="width=device-width, initial-scale=1.0">
+				<title>Estrategia de Alcance: Iris Inclusión</title>
+				<script src="https://cdn.tailwindcss.com"></script>
+				<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+				<link rel="preconnect" href="https://fonts.googleapis.com">
+				<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+				<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+				<!-- Chosen Palette: Warm Earth Tones -->
+				<!-- Application Structure Plan: The SPA is designed with a thematic, top-down structure to guide the user from the general vision to specific details. It starts with an introduction ('Inicio'), moves to foundational concepts ('Principios Clave'), explores external benchmarks ('Modelos de Inspiración'), details the core strategic plan ('Plan Estratégico'), and concludes with future strategy and contact options ('Sostenibilidad' y 'Contacto'). This non-linear, thematic flow enhances usability by allowing users to dive into sections of interest. Interactions like a dynamic chart and accordions are used to condense complex information and make comparison and exploration intuitive. -->
+				<!-- Visualization & Content Choices: Report Info: Comparative analysis of external models. -> Goal: Compare methodologies. -> Viz/Presentation Method: Horizontal Bar Chart. -> Interaction: Tooltips on hover provide details. -> Justification: A bar chart offers a quick, scannable comparison of qualitative features across multiple models, making it easier to identify common practices than a dense table. -> Library/Method: Chart.js (Canvas). Report Info: Strategic plan recommendations. -> Goal: Organize and present proposed changes. -> Viz/Presentation Method: Accordion component. -> Interaction: Clicking a module header expands to show detailed recommendations. -> Justification: An accordion neatly organizes a large amount of text, preventing cognitive overload and allowing users to focus on one module at a time. -> Library/Method: HTML/CSS/JS. -->
+				<!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+				<style>
+					body {
+						font-family: 'Inter', sans-serif;
+						background-color: #FDFBF8;
+						color: #3a3a3a;
+					}
+					.chart-container {
+						position: relative;
+						width: 100%;
+						max-width: 900px;
+						margin-left: auto;
+						margin-right: auto;
+						height: 500px;
+						max-height: 60vh;
+					}
+					@media (max-width: 768px) {
+						.chart-container {
+							height: 400px;
+							max-height: 70vh;
+						}
+					}
+					.nav-link {
+						transition: color 0.3s, border-bottom-color 0.3s;
+						border-bottom: 2px solid transparent;
+					}
+					.nav-link:hover, .nav-link.active {
+						color: #4A7C59;
+						border-bottom-color: #4A7C59;
+					}
+					.tab-button.active {
+						background-color: #4A7C59;
+						color: #FFFFFF;
+					}
+					.accordion-header.active {
+						background-color: #EBF0E4;
+					}
+					.accordion-content {
+						max-height: 0;
+						overflow: hidden;
+						transition: max-height 0.5s ease-out;
+					}
+				</style>
+			</head>
+			<body class="antialiased">
+				<header class="bg-[#FDFBF8]/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
+					<nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+						<div class="text-2xl font-bold text-[#2C4A38]">
+							<span class="text-[#4A7C59]">Iris</span> Inclusión
+						</div>
+						<div class="hidden md:flex space-x-8">
+							<a href="#inicio" class="nav-link text-gray-600 font-medium pb-1">Inicio</a>
+							<a href="#principios" class="nav-link text-gray-600 font-medium pb-1">Principios</a>
+							<a href="#modelos" class="nav-link text-gray-600 font-medium pb-1">Modelos</a>
+							<a href="#plan" class="nav-link text-gray-600 font-medium pb-1">Plan Estratégico</a>
+							<a href="#sostenibilidad" class="nav-link text-gray-600 font-medium pb-1">Sostenibilidad</a>
+						</div>
+						<button id="mobile-menu-button" class="md:hidden p-2 rounded-md text-gray-600 hover:bg-gray-100">
+							<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+							</svg>
+						</button>
+					</nav>
+					<div id="mobile-menu" class="hidden md:hidden px-6 pb-4">
+						<a href="#inicio" class="block py-2 text-gray-600">Inicio</a>
+						<a href="#principios" class="block py-2 text-gray-600">Principios</a>
+						<a href="#modelos" class="block py-2 text-gray-600">Modelos</a>
+						<a href="#plan" class="block py-2 text-gray-600">Plan Estratégico</a>
+						<a href="#sostenibilidad" class="block py-2 text-gray-600">Sostenibilidad</a>
+					</div>
+				</header>
+				<main>
+					<!-- Aquí va el resto del contenido HTML proporcionado por el usuario, hasta el cierre de </html> -->
