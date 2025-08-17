@@ -114,6 +114,46 @@
             font-size: 1rem;
             cursor: pointer;
         }
+        body.dark-mode {
+            background: #18181b !important;
+            color: #f1f5f9 !important;
+        }
+        body.dark-mode .bg-white,
+        body.dark-mode .bg-slate-50,
+        body.dark-mode .bg-slate-100,
+        body.dark-mode .bg-slate-200,
+        body.dark-mode .bg-blue-100,
+        body.dark-mode .bg-amber-100,
+        body.dark-mode .bg-emerald-100 {
+            background: #27272a !important;
+        }
+        body.dark-mode .text-slate-800,
+        body.dark-mode .text-slate-900,
+        body.dark-mode .text-slate-700,
+        body.dark-mode .text-slate-500,
+        body.dark-mode .text-blue-600,
+        body.dark-mode .text-amber-600,
+        body.dark-mode .text-emerald-600 {
+            color: #f1f5f9 !important;
+        }
+        body.lineheight {
+            line-height: 2 !important;
+        }
+        body.big-cursor, body.big-cursor * {
+            cursor: url('https://cdn.jsdelivr.net/gh/ionic-team/ionicons@5.5.2/src/svg/accessibility-outline.svg'), auto !important;
+        }
+        body.underline-links a {
+            text-decoration: underline !important;
+        }
+        body.dyslexia-font, body.dyslexia-font .prose {
+            font-family: 'OpenDyslexic', 'Arial', sans-serif !important;
+        }
+        @font-face {
+            font-family: 'OpenDyslexic';
+            src: url('https://cdn.jsdelivr.net/npm/open-dyslexic-fonts@1.0.0/otf/OpenDyslexic-Regular.otf') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+        }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800">
@@ -165,6 +205,21 @@
         <label><input type="checkbox" id="toggle-font"> Fuente grande</label>
         <label><input type="checkbox" id="toggle-justify" checked disabled> Texto justificado</label>
         <label><input type="checkbox" id="toggle-links"> Resaltar enlaces</label>
+        <label><input type="checkbox" id="toggle-dark"> Modo oscuro</label>
+        <label><input type="checkbox" id="toggle-lineheight"> Espaciado de líneas</label>
+        <label><input type="checkbox" id="toggle-cursor"> Cursor grande</label>
+        <label><input type="checkbox" id="toggle-underline"> Subrayar enlaces</label>
+        <label><input type="checkbox" id="toggle-dyslexia"> Fuente dislexia</label>
+        <hr class="my-2">
+        <label for="disability-type" class="font-semibold">Tipo de discapacidad:</label>
+        <select id="disability-type" class="w-full mt-1 p-1 rounded border border-slate-300">
+            <option value="">Selecciona una opción</option>
+            <option value="visual">Visual</option>
+            <option value="auditiva">Auditiva</option>
+            <option value="motriz">Motriz</option>
+            <option value="cognitiva">Cognitiva</option>
+            <option value="dislexia">Dislexia</option>
+        </select>
     </div>
 
     <!-- Scripts -->
@@ -305,6 +360,69 @@
     const chkLinks = document.getElementById('toggle-links');
     chkLinks.onchange = e => {
         document.body.classList.toggle('highlight-links', chkLinks.checked);
+    };
+    // Modo oscuro
+    const chkDark = document.getElementById('toggle-dark');
+    chkDark.onchange = e => {
+        document.body.classList.toggle('dark-mode', chkDark.checked);
+    };
+    // Espaciado de líneas
+    const chkLine = document.getElementById('toggle-lineheight');
+    chkLine.onchange = e => {
+        document.body.classList.toggle('lineheight', chkLine.checked);
+    };
+    // Cursor grande
+    const chkCursor = document.getElementById('toggle-cursor');
+    chkCursor.onchange = e => {
+        document.body.classList.toggle('big-cursor', chkCursor.checked);
+    };
+    // Subrayar enlaces
+    const chkUnderline = document.getElementById('toggle-underline');
+    chkUnderline.onchange = e => {
+        document.body.classList.toggle('underline-links', chkUnderline.checked);
+    };
+    // Fuente dislexia
+    const chkDyslexia = document.getElementById('toggle-dyslexia');
+    chkDyslexia.onchange = e => {
+        document.body.classList.toggle('dyslexia-font', chkDyslexia.checked);
+    };
+    // Selector de tipo de discapacidad
+    const disabilityType = document.getElementById('disability-type');
+    disabilityType.onchange = e => {
+        // Desactiva todo primero
+        [chkContrast, chkFont, chkLinks, chkDark, chkLine, chkCursor, chkUnderline, chkDyslexia].forEach(chk => chk.checked = false);
+        document.body.classList.remove('high-contrast','large-font','highlight-links','dark-mode','lineheight','big-cursor','underline-links','dyslexia-font');
+        switch (disabilityType.value) {
+            case 'visual':
+                chkContrast.checked = true;
+                chkFont.checked = true;
+                chkLinks.checked = true;
+                chkUnderline.checked = true;
+                chkDark.checked = false;
+                chkLine.checked = false;
+                chkCursor.checked = false;
+                chkDyslexia.checked = false;
+                document.body.classList.add('high-contrast','large-font','highlight-links','underline-links');
+                break;
+            case 'auditiva':
+                // No hay adaptación visual directa, pero podrías mostrar un mensaje sobre subtítulos/transcripciones
+                break;
+            case 'motriz':
+                chkCursor.checked = true;
+                chkFont.checked = true;
+                document.body.classList.add('big-cursor','large-font');
+                break;
+            case 'cognitiva':
+                chkFont.checked = true;
+                chkLine.checked = true;
+                document.body.classList.add('large-font','lineheight');
+                break;
+            case 'dislexia':
+                chkDyslexia.checked = true;
+                chkFont.checked = true;
+                document.body.classList.add('dyslexia-font','large-font');
+                break;
+        }
     };
     </script>
 </body>
