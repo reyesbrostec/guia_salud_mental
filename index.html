@@ -136,6 +136,28 @@
         body.dark-mode .text-emerald-600 {
             color: #f1f5f9 !important;
         }
+        /* Alto contraste para el panel de accesibilidad */
+        body.high-contrast .accessibility-panel {
+            background: #111 !important;
+            color: #fff !important;
+            border: 2px solid #fff;
+        }
+        body.high-contrast .accessibility-panel input[type="checkbox"]:not(:disabled) + label,
+        body.high-contrast .accessibility-panel label {
+            color: #fff !important;
+        }
+        body.high-contrast .accessibility-panel input[type="checkbox"] {
+            accent-color: #fff;
+            border: 2px solid #fff;
+        }
+        body.high-contrast .accessibility-panel select {
+            background: #222;
+            color: #fff;
+            border: 1px solid #fff;
+        }
+        body.high-contrast .accessibility-panel hr {
+            border-color: #fff;
+        }
         body.lineheight {
             line-height: 2 !important;
         }

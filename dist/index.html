@@ -136,6 +136,28 @@
         body.dark-mode .text-emerald-600 {
             color: #f1f5f9 !important;
         }
+        /* Alto contraste para el panel de accesibilidad */
+        body.high-contrast .accessibility-panel {
+            background: #111 !important;
+            color: #fff !important;
+            border: 2px solid #fff;
+        }
+        body.high-contrast .accessibility-panel input[type="checkbox"]:not(:disabled) + label,
+        body.high-contrast .accessibility-panel label {
+            color: #fff !important;
+        }
+        body.high-contrast .accessibility-panel input[type="checkbox"] {
+            accent-color: #fff;
+            border: 2px solid #fff;
+        }
+        body.high-contrast .accessibility-panel select {
+            background: #222;
+            color: #fff;
+            border: 1px solid #fff;
+        }
+        body.high-contrast .accessibility-panel hr {
+            border-color: #fff;
+        }
         body.lineheight {
             line-height: 2 !important;
         }
@@ -227,6 +249,21 @@
     <script>
     // build.js debe insertar aquí la variable blogPosts
     let blogPosts = [
+  {
+    "title": "¿Qué es la Salud Mental?",
+    "description": "Introducción a los conceptos básicos del bienestar emocional y psicológico.",
+    "tags": [
+      "\"salud mental\"",
+      "\"bienestar\"",
+      "\"emociones\"",
+      "\"psicología\""
+    ],
+    "category": "Psicología",
+    "summary": "Introducción a los conceptos básicos del bienestar emocional y psicológico.",
+    "slug": "qu-es-la-salud-mental",
+    "raw": "---\r\ntitle: \"¿Qué es la Salud Mental?\"\r\ndescription: \"Introducción a los conceptos básicos del bienestar emocional y psicológico.\"\r\ncategory: \"Psicología\"\r\ntags: [\"salud mental\",\"bienestar\",\"emociones\",\"psicología\"]\r\n---\r\n\r\n# Introducción\r\n\r\nLa **salud mental** es un componente esencial del bienestar general. No se limita únicamente a la ausencia de trastornos psicológicos, sino que abarca la capacidad de una persona para afrontar el estrés, establecer relaciones positivas, trabajar de forma productiva y contribuir a su comunidad. La Organización Mundial de la Salud (OMS) la define como un estado de bienestar en el que el individuo es consciente de sus capacidades, puede afrontar las tensiones normales de la vida y trabajar de forma productiva, contribuyendo a su entorno.\r\n\r\n![Ilustración sobre salud mental](https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=600&q=80)\r\n\r\n## Elementos clave de la salud mental\r\n\r\nLa salud mental incluye varios aspectos interconectados que determinan cómo pensamos, sentimos y actuamos:\r\n\r\n- **Bienestar emocional:** Capacidad de experimentar y regular emociones como alegría, tristeza, enojo o miedo.\r\n- **Funcionamiento cognitivo:** Habilidad para concentrarse, recordar, resolver problemas y tomar decisiones.\r\n- **Relaciones saludables:** Establecer vínculos de apoyo, empatía y comunicación asertiva con los demás.\r\n- **Resiliencia:** Enfrentar y superar las dificultades, adaptándose a los cambios de la vida.\r\n\r\n> Escucha este audio introductorio sobre el bienestar emocional:\r\n>\r\n> <audio controls src=\"https://www.w3schools.com/html/horse.mp3\"></audio>\r\n\r\n## Factores que influyen en la salud mental\r\n\r\nEl estado de la salud mental depende de una combinación de factores:\r\n\r\n- **Biológicos:** predisposiciones genéticas, funcionamiento cerebral, desequilibrios químicos.\r\n- **Psicológicos:** estrategias de afrontamiento, estilos de pensamiento, habilidades sociales.\r\n- **Sociales:** apoyo familiar, ambiente escolar o laboral, condiciones económicas y culturales.\r\n\r\nLa interacción entre estos elementos puede fortalecer el bienestar o, por el contrario, aumentar la vulnerabilidad a dificultades psicológicas.\r\n\r\n<div style=\"margin: 1em 0;\">\r\n<video controls width=\"320\" src=\"https://www.w3schools.com/html/mov_bbb.mp4\"></video>\r\n</div>\r\n\r\n## Estrategias para promover la salud mental\r\n\r\nExisten prácticas cotidianas que ayudan a mantener un equilibrio emocional y psicológico:\r\n\r\n- **Practicar el autocuidado:** descanso adecuado, alimentación equilibrada y ejercicio físico regular.\r\n- **Fomentar la conexión social:** mantener relaciones positivas con familiares y amigos.\r\n- **Desarrollar la autoconciencia:** reflexionar sobre pensamientos y emociones mediante técnicas como el mindfulness.\r\n- **Buscar ayuda profesional:** acudir a psicólogos, psiquiatras u otros profesionales de la salud cuando sea necesario.\r\n- **Mantener un propósito vital:** clarificar valores personales y orientar acciones hacia metas significativas.\r\n\r\n## Conclusión\r\n\r\nLa salud mental no es un estado estático, sino un proceso dinámico que puede variar a lo largo de la vida. Promoverla es fundamental no solo para prevenir trastornos, sino también para construir una vida plena, resiliente y con sentido.\r\n\r\n## Referencias\r\n\r\n- Organización Mundial de la Salud (2022). _Mental health: strengthening our response_. Disponible en: https://www.who.int/news-room/fact-sheets/detail/mental-health-strengthening-our-response  \r\n- Keyes, C. L. M. (2002). The Mental Health Continuum: From Languishing to Flourishing in Life. _Journal of Health and Social Behavior_, 43(2), 207–222.  \r\n",
+    "content": "<h1>Introducción</h1>\n<p>La <strong>salud mental</strong> es un componente esencial del bienestar general. No se limita únicamente a la ausencia de trastornos psicológicos, sino que abarca la capacidad de una persona para afrontar el estrés, establecer relaciones positivas, trabajar de forma productiva y contribuir a su comunidad. La Organización Mundial de la Salud (OMS) la define como un estado de bienestar en el que el individuo es consciente de sus capacidades, puede afrontar las tensiones normales de la vida y trabajar de forma productiva, contribuyendo a su entorno.</p>\n<p><img src=\"https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&amp;fit=crop&amp;w=600&amp;q=80\" alt=\"Ilustración sobre salud mental\"></p>\n<h2>Elementos clave de la salud mental</h2>\n<p>La salud mental incluye varios aspectos interconectados que determinan cómo pensamos, sentimos y actuamos:</p>\n<ul>\n<li><strong>Bienestar emocional:</strong> Capacidad de experimentar y regular emociones como alegría, tristeza, enojo o miedo.</li>\n<li><strong>Funcionamiento cognitivo:</strong> Habilidad para concentrarse, recordar, resolver problemas y tomar decisiones.</li>\n<li><strong>Relaciones saludables:</strong> Establecer vínculos de apoyo, empatía y comunicación asertiva con los demás.</li>\n<li><strong>Resiliencia:</strong> Enfrentar y superar las dificultades, adaptándose a los cambios de la vida.</li>\n</ul>\n<blockquote>\n<p>Escucha este audio introductorio sobre el bienestar emocional:</p>\n<p><audio controls src=\"https://www.w3schools.com/html/horse.mp3\"></audio></p>\n</blockquote>\n<h2>Factores que influyen en la salud mental</h2>\n<p>El estado de la salud mental depende de una combinación de factores:</p>\n<ul>\n<li><strong>Biológicos:</strong> predisposiciones genéticas, funcionamiento cerebral, desequilibrios químicos.</li>\n<li><strong>Psicológicos:</strong> estrategias de afrontamiento, estilos de pensamiento, habilidades sociales.</li>\n<li><strong>Sociales:</strong> apoyo familiar, ambiente escolar o laboral, condiciones económicas y culturales.</li>\n</ul>\n<p>La interacción entre estos elementos puede fortalecer el bienestar o, por el contrario, aumentar la vulnerabilidad a dificultades psicológicas.</p>\n<div style=\"margin: 1em 0;\">\n<video controls width=\"320\" src=\"https://www.w3schools.com/html/mov_bbb.mp4\"></video>\n</div>\n<h2>Estrategias para promover la salud mental</h2>\n<p>Existen prácticas cotidianas que ayudan a mantener un equilibrio emocional y psicológico:</p>\n<ul>\n<li><strong>Practicar el autocuidado:</strong> descanso adecuado, alimentación equilibrada y ejercicio físico regular.</li>\n<li><strong>Fomentar la conexión social:</strong> mantener relaciones positivas con familiares y amigos.</li>\n<li><strong>Desarrollar la autoconciencia:</strong> reflexionar sobre pensamientos y emociones mediante técnicas como el mindfulness.</li>\n<li><strong>Buscar ayuda profesional:</strong> acudir a psicólogos, psiquiatras u otros profesionales de la salud cuando sea necesario.</li>\n<li><strong>Mantener un propósito vital:</strong> clarificar valores personales y orientar acciones hacia metas significativas.</li>\n</ul>\n<h2>Conclusión</h2>\n<p>La salud mental no es un estado estático, sino un proceso dinámico que puede variar a lo largo de la vida. Promoverla es fundamental no solo para prevenir trastornos, sino también para construir una vida plena, resiliente y con sentido.</p>\n<h2>Referencias</h2>\n<ul>\n<li>Organización Mundial de la Salud (2022). <em>Mental health: strengthening our response</em>. Disponible en: https://www.who.int/news-room/fact-sheets/detail/mental-health-strengthening-our-response</li>\n<li>Keyes, C. L. M. (2002). The Mental Health Continuum: From Languishing to Flourishing in Life. <em>Journal of Health and Social Behavior</em>, 43(2), 207–222.</li>\n</ul>\n"
+  },
   {
     "title": "Sobre el alcoholismo y su tratamiento desde el MBS",
     "description": "Revisión sobre riesgo de recaída, rigidez psicológica y estrategias basadas en la aceptación y compromiso (MBS).",
