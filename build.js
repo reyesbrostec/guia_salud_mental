@@ -196,3 +196,4 @@ console.log(`Archivos encontrados (md): ${mdFiles.length}`);
 mdFiles.forEach(f => console.log(`- ${path.relative(articlesPath, f)}`));
 console.log(`Posts procesados: ${blogPosts.length}`);
 blogPosts.forEach(p => console.log(`- ${p.title} (slug: ${p.slug}) category: ${p.category || 'Sin categoría'}`));
+// ...el resto del código Node.js para el build...
