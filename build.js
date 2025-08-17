@@ -180,10 +180,10 @@ mdFiles.forEach(f => console.log(`- ${path.relative(articlesPath, f)}`));
 console.log(`Posts procesados: ${blogPosts.length}`);
 blogPosts.forEach(p => console.log(`- ${p.title} (slug: ${p.slug}) category: ${p.category || 'Sin categoría'}`));
 
-// Copiar inclusion.html a dist/
+// Copiar inclusion.html a dist/ (copia directa, sin procesamiento)
 const inclusionSrc = path.join(__dirname, 'src', 'inclusion.html');
 const inclusionDest = path.join(distDir, 'inclusion.html');
 if (fs.existsSync(inclusionSrc)) {
   fs.copyFileSync(inclusionSrc, inclusionDest);
-  console.log('inclusion.html copiado a dist/');
+  console.log('inclusion.html copiado a dist/ (copia directa, sin procesamiento)');
 }
