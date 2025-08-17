@@ -3,7 +3,7 @@ const path = require('path');
 const MarkdownIt = require('markdown-it');
 const { execSync } = require('child_process');
 
-const md = new MarkdownIt();
+const md = new MarkdownIt({ html: true });
 
 const articlesPath = path.join(__dirname, 'src', 'publicaciones');
 const templatePath = path.join(__dirname, 'index.html');
