@@ -206,7 +206,9 @@ if (fs.existsSync(inclusionSrc)) {
   const scriptMatch = distIndexHtml.match(scriptRegex);
   // Insertar después de <body ...>
   if (btnMatch && panelMatch) {
-    inclusionHtml = inclusionHtml.replace(/(<body[^>]*>)/i, `$1\n${btnMatch[0]}\n${panelMatch[0]}`);
+    inclusionHtml = inclusionHtml.replace(/(<body[^>]*>)/i, `$1
+${btnMatch[0]}
+${panelMatch[0]}`);
   }
   // Insertar botón flotante después de <main> o al inicio de <main>
   const floatingBtn = `\n<a href=\"index.html\" class=\"fixed bottom-6 right-6 z-50 bg-[#0d9488] hover:bg-[#0d7a6b] text-white font-semibold px-6 py-3 rounded-lg shadow-md transition-colors\" style=\"box-shadow: 0 2px 8px rgba(0,0,0,0.15);\">\n    Prisma: Salud Mental\n</a>\n`;
@@ -220,6 +222,10 @@ if (fs.existsSync(inclusionSrc)) {
   if (scriptMatch) {
     inclusionHtml = inclusionHtml.replace(/<\/body>/i, `${scriptMatch[0]}\n</body>`);
   }
+
+  // Ensure contact form has id contact-form so our script runs
+  inclusionHtml = inclusionHtml.replace(/<form class=\"space-y-6\">/i, '<form id="contact-form" class="space-y-6">');
+
   fs.writeFileSync(inclusionDest, inclusionHtml, 'utf8');
   console.log('inclusion.html copiado a dist/ e integrado protocolo de accesibilidad');
 }
