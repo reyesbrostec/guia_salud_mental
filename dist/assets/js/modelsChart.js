@@ -9,6 +9,10 @@
       }
       const el = document.getElementById('modelsChart');
       if (!el) return;
+
+      // Si el modo oscuro está activo en root, marcar el canvas para estilos
+      if (document.documentElement.classList.contains('iris-dark')) el.classList.add('iris-dark');
+
       const chartData = {
         labels: [
           'Modelo de Inclusión Comunitaria',

@@ -319,6 +319,64 @@
                 .iris-dark { background-color: #0b1220 !important; color: #e6eef8 !important; }
                 .iris-cursor-large * { cursor: pointer !important; }
                 #accessibility-panel[aria-hidden="true"] { display: none; }
+
+                /* Dark mode: force high-contrast text and dark backgrounds for common elements */
+                .iris-dark, .iris-dark body, .iris-dark .container, .iris-dark main, .iris-dark footer {
+                  background-color: #0b1220 !important;
+                  color: #e6eef8 !important;
+                }
+
+                /* Override frequently used light background utility classes so panels/cards switch to dark */
+                .iris-dark .bg-white, .iris-dark .bg-gray-50, .iris-dark .rounded-2xl, .iris-dark .rounded-xl, .iris-dark .p-6, .iris-dark .p-8, .iris-dark .p-12 {
+                  background-color: #0f1724 !important;
+                  color: #e6eef8 !important;
+                  box-shadow: none !important;
+                  border-color: rgba(255,255,255,0.06) !important;
+                }
+
+                /* Accessibility panel specific */
+                .iris-dark #accessibility-panel {
+                  background-color: #0f1724 !important;
+                  color: #e6eef8 !important;
+                  border-color: rgba(255,255,255,0.06) !important;
+                }
+                .iris-dark #accessibility-panel label,
+                .iris-dark #accessibility-panel option,
+                .iris-dark #accessibility-panel select,
+                .iris-dark #accessibility-panel input,
+                .iris-dark #accessibility-panel textarea {
+                  color: #e6eef8 !important;
+                  background-color: transparent !important;
+                  border-color: rgba(255,255,255,0.12) !important;
+                }
+
+                /* Floating accessibility button in dark mode */
+                .iris-dark #accessibility-btn {
+                  background-color: #1f2937 !important;
+                  color: #e6eef8 !important;
+                  box-shadow: 0 2px 8px rgba(0,0,0,0.45) !important;
+                }
+
+                /* Ensure headings, links and small text remain readable */
+                .iris-dark h1, .iris-dark h2, .iris-dark h3, .iris-dark h4, .iris-dark p, .iris-dark a, .iris-dark li, .iris-dark span {
+                  color: #e6eef8 !important;
+                }
+
+                /* Keep highlighted links visible in dark */
+                .iris-dark .iris-highlight-links a {
+                  background-color: rgba(255,243,191,0.08) !important;
+                  color: #fff3bf !important;
+                }
+
+                /* Chart canvas background neutrality */
+                .iris-dark .chart-container, .iris-dark .chart-container canvas {
+                  background-color: transparent !important;
+                }
+
+                /* Inputs focus visible in dark */
+                .iris-dark input:focus, .iris-dark select:focus, .iris-dark textarea:focus {
+                  outline: 2px solid rgba(255,255,255,0.12) !important;
+                }
                 `;
                 const style = document.createElement('style');
                 style.id = 'iris-accessibility-styles';
