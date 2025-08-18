@@ -147,22 +147,10 @@ mdFiles.forEach(filePath => {
 let postsData = JSON.stringify(blogPosts, null, 2);
 postsData = postsData.replace(/<\/script>/gi, '<\\/script>');
 
-const varRegex = /let\s+blogPosts\s*=\s*\[.*?\];/s;
+// Elimina la variable let blogPosts del HTML final, solo deja el HTML renderizado
+const varRegex = /let\s+blogPosts\s*=\s*\[.*?\];?/s;
 if (varRegex.test(templateHtml)) {
-  templateHtml = templateHtml.replace(varRegex, `let blogPosts = ${postsData};`);
-} else if (templateHtml.includes('// __BLOG_POSTS_DATA__')) {
-  templateHtml = templateHtml.replace('// __BLOG_POSTS_DATA__', `let blogPosts = ${postsData};`);
-} else {
-  const scriptInsertRegex = /(<script[^>]*>)([\s\S]*?)(<\/script>)/i;
-  const m = templateHtml.match(scriptInsertRegex);
-  if (m) {
-    const before = templateHtml.slice(0, m.index + m[0].indexOf(m[2]));
-    const after = templateHtml.slice(m.index + m[0].indexOf(m[2]) + m[2].length);
-    templateHtml = before + `\nlet blogPosts = ${postsData};\n` + after;
-  } else {
-    console.error('ERROR: No se encontró el marcador para insertar los posts en index.html');
-    process.exit(1);
-  }
+  templateHtml = templateHtml.replace(varRegex, '');
 }
 
 const distDir = path.join(__dirname, 'dist');
