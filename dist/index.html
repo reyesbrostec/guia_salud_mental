@@ -10,6 +10,14 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
     
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/favicon/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png">
+    <link rel="manifest" href="/favicon/site.webmanifest">
+    <meta name="theme-color" content="#0d9488">
+    
     <!-- Chosen Palette: Warm Earth Tones -->
     <!-- Application Structure Plan: The SPA is designed with a thematic, top-down structure to guide the user from the general vision to specific details. It starts with an introduction ('Inicio'), moves to foundational concepts ('Principios Clave'), explores external benchmarks ('Modelos de Inspiración'), details the core strategic plan ('Plan Estratégico'), and concludes with future strategy and contact options ('Sostenibilidad' y 'Contacto'). This non-linear, thematic flow enhances usability by allowing users to dive into sections of interest. Interactions like a dynamic chart and accordions are used to condense complex information and make comparison and exploration intuitive. -->
     <!-- Visualization & Content Choices: Report Info: Comparative analysis of external models. -> Goal: Compare methodologies. -> Viz/Presentation Method: Horizontal Bar Chart. -> Interaction: Tooltips on hover provide details. -> Justification: A bar chart offers a quick, scannable comparison of qualitative features across multiple models, making it easier to identify common practices than a dense table. -> Library/Method: Chart.js (Canvas). Report Info: Strategic plan recommendations. -> Goal: Organize and present proposed changes. -> Viz/Presentation Method: Accordion component. -> Interaction: Clicking a module header expands to show detailed recommendations. -> Justification: An accordion neatly organizes a large amount of text, preventing cognitive overload and allowing users to focus on one module at a time. -> Library/Method: HTML/CSS/JS. -->
@@ -562,7 +570,7 @@
                 });
             }
 
-            // Contact form: show confirmation on submit
+            // Contact form: validation and personalized confirmation
             const contactForm = document.getElementById('contact-form');
             if (contactForm) {
                 contactForm.addEventListener('submit', function(e){
@@ -577,16 +585,40 @@
                         status.setAttribute('aria-live', 'polite');
                         contactForm.appendChild(status);
                     }
+
+                    const nombre = (contactForm.querySelector('#nombre') || {}).value || '';
+                    const email = (contactForm.querySelector('#email') || {}).value || '';
+                    const mensaje = (contactForm.querySelector('#mensaje') || {}).value || '';
+
+                    const missing = [];
+                    if (!nombre.trim()) missing.push('nombre');
+                    if (!email.trim()) missing.push('correo electrónico');
+                    if (!mensaje.trim()) missing.push('mensaje');
+
+                    if (missing.length) {
+                        status.classList.remove('text-green-700');
+                        status.classList.add('text-red-600');
+                        status.textContent = 'Por favor completa los siguientes campos: ' + missing.join(', ') + '.';
+                        // focus first missing field
+                        const map = { 'nombre': 'nombre', 'correo electrónico': 'email', 'mensaje': 'mensaje' };
+                        const firstMissingId = map[missing[0]] || 'nombre';
+                        const firstMissingEl = contactForm.querySelector('#' + firstMissingId);
+                        if (firstMissingEl) firstMissingEl.focus();
+                        return;
+                    }
+
+                    status.classList.remove('text-red-600');
+                    status.classList.add('text-green-700');
+
                     if (submitBtn) {
                         submitBtn.disabled = true;
                         const originalText = submitBtn.textContent;
                         submitBtn.textContent = 'Mensaje recibido';
-                        status.textContent = 'Gracias — tu mensaje fue recibido.';
+                        status.textContent = 'Gracias, ' + nombre.trim() + ' — tu mensaje fue recibido.';
                         // restore after 4 segundos
                         setTimeout(() => {
                             submitBtn.disabled = false;
                             submitBtn.textContent = originalText;
-                            // opcional: limpiar el status
                             if (status) status.textContent = '';
                         }, 4000);
                     }

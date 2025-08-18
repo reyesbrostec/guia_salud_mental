@@ -181,6 +181,12 @@ function copyDirRecursive(src, dest) {
 copyDirRecursive(assetsSrc, assetsDest);
 if (fs.existsSync(assetsSrc)) console.log('Assets copiados a dist/assets');
 
+// Copiar carpeta favicon (si existe) a dist/favicon para que los favicons estén disponibles en producción
+const faviconSrc = path.join(__dirname, 'favicon');
+const faviconDest = path.join(distDir, 'favicon');
+copyDirRecursive(faviconSrc, faviconDest);
+if (fs.existsSync(faviconSrc)) console.log('Favicons copiados a dist/favicon');
+
 console.log('Blog generado con éxito en la carpeta dist!');
 console.log(`Archivos encontrados (md): ${mdFiles.length}`);
 mdFiles.forEach(f => console.log(`- ${path.relative(articlesPath, f)}`));
