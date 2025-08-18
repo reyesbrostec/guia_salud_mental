@@ -180,10 +180,30 @@ mdFiles.forEach(f => console.log(`- ${path.relative(articlesPath, f)}`));
 console.log(`Posts procesados: ${blogPosts.length}`);
 blogPosts.forEach(p => console.log(`- ${p.title} (slug: ${p.slug}) category: ${p.category || 'Sin categoría'}`));
 
-// Copiar inclusion.html a dist/ (copia directa, sin procesamiento)
+
+// Copiar inclusion.html a dist/ e inyectar protocolo de accesibilidad
 const inclusionSrc = path.join(__dirname, 'src', 'inclusion.html');
 const inclusionDest = path.join(distDir, 'inclusion.html');
 if (fs.existsSync(inclusionSrc)) {
-  fs.copyFileSync(inclusionSrc, inclusionDest);
-  console.log('inclusion.html copiado a dist/ (copia directa, sin procesamiento)');
+  let inclusionHtml = fs.readFileSync(inclusionSrc, 'utf8');
+  // Extraer bloque de accesibilidad de index.html generado
+  const distIndexPath = path.join(distDir, 'index.html');
+  let distIndexHtml = fs.existsSync(distIndexPath) ? fs.readFileSync(distIndexPath, 'utf8') : '';
+  // Extraer el botón, panel y script de accesibilidad
+  const btnRegex = /<button id="accessibility-btn"[\s\S]*?<\/button>/;
+  const panelRegex = /<div id="accessibility-panel"[\s\S]*?<\/div>/;
+  const scriptRegex = /<script>[\s\S]*?const accBtn = document.getElementById\('accessibility-btn'\);[\s\S]*?disabilityType\.onchange[\s\S]*?};[\s\S]*?<\/script>/;
+  const btnMatch = distIndexHtml.match(btnRegex);
+  const panelMatch = distIndexHtml.match(panelRegex);
+  const scriptMatch = distIndexHtml.match(scriptRegex);
+  // Insertar después de <body ...>
+  if (btnMatch && panelMatch) {
+    inclusionHtml = inclusionHtml.replace(/(<body[^>]*>)/i, `$1\n${btnMatch[0]}\n${panelMatch[0]}`);
+  }
+  // Insertar script antes de </body>
+  if (scriptMatch) {
+    inclusionHtml = inclusionHtml.replace(/<\/body>/i, `${scriptMatch[0]}\n</body>`);
+  }
+  fs.writeFileSync(inclusionDest, inclusionHtml, 'utf8');
+  console.log('inclusion.html copiado a dist/ e integrado protocolo de accesibilidad');
 }
