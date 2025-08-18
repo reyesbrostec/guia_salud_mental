@@ -161,6 +161,26 @@ if (!fs.existsSync(distDir)) {
 const outputPath = path.join(distDir, 'index.html');
 fs.writeFileSync(outputPath, templateHtml, 'utf8');
 
+// Copiar carpeta assets (si existe) a dist/assets para que scripts/estilos personalizados estén disponibles en producción
+const assetsSrc = path.join(__dirname, 'assets');
+const assetsDest = path.join(distDir, 'assets');
+function copyDirRecursive(src, dest) {
+  if (!fs.existsSync(src)) return;
+  if (!fs.existsSync(dest)) fs.mkdirSync(dest, { recursive: true });
+  const entries = fs.readdirSync(src, { withFileTypes: true });
+  for (const entry of entries) {
+    const srcPath = path.join(src, entry.name);
+    const destPath = path.join(dest, entry.name);
+    if (entry.isDirectory()) {
+      copyDirRecursive(srcPath, destPath);
+    } else if (entry.isFile()) {
+      fs.copyFileSync(srcPath, destPath);
+    }
+  }
+}
+copyDirRecursive(assetsSrc, assetsDest);
+if (fs.existsSync(assetsSrc)) console.log('Assets copiados a dist/assets');
+
 console.log('Blog generado con éxito en la carpeta dist!');
 console.log(`Archivos encontrados (md): ${mdFiles.length}`);
 mdFiles.forEach(f => console.log(`- ${path.relative(articlesPath, f)}`));
