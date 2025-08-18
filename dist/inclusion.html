@@ -473,8 +473,23 @@
             const accessibilityBtn = document.getElementById('accessibility-btn');
             const accessibilityPanel = document.getElementById('accessibility-panel');
 
-            accessibilityBtn.addEventListener('click', () => {
+            // Mostrar/ocultar panel al hacer clic en el botón
+            accessibilityBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
                 accessibilityPanel.classList.toggle('hidden');
+                if (!accessibilityPanel.classList.contains('hidden')) {
+                    accessibilityPanel.focus();
+                }
+            });
+
+            // Cerrar panel al hacer clic fuera
+            document.addEventListener('click', (e) => {
+                if (!accessibilityPanel.classList.contains('hidden')) {
+                    accessibilityPanel.classList.add('hidden');
+                }
+            });
+            accessibilityPanel.addEventListener('click', (e) => {
+                e.stopPropagation();
             });
 
         });
