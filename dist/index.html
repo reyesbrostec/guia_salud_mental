@@ -386,33 +386,35 @@
             }
 
             // Toggle via button
-            accBtn.addEventListener('click', function(e){
-                e.preventDefault();
-                if (accPanel.classList.contains('hidden') || accPanel.getAttribute('aria-hidden') === 'true') {
-                    openPanel();
-                } else {
-                    closePanel();
-                }
-            });
-
-            // Keyboard support on button
-            accBtn.addEventListener('keydown', function(e){
-                if (e.key === 'Enter' || e.key === ' ') {
+            if (accBtn) {
+                accBtn.addEventListener('click', function(e){
                     e.preventDefault();
-                    accBtn.click();
-                }
-            });
+                    if (accPanel.classList.contains('hidden') || accPanel.getAttribute('aria-hidden') === 'true') {
+                        openPanel();
+                    } else {
+                        closePanel();
+                    }
+                });
+
+                // Keyboard support on button
+                accBtn.addEventListener('keydown', function(e){
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        accBtn.click();
+                    }
+                });
+            }
 
             // Close when clicking outside
             document.addEventListener('click', function(e){
-                if (!accPanel.contains(e.target) && !accBtn.contains(e.target) && accPanel.getAttribute('aria-hidden') === 'false') {
+                if (accPanel && !accPanel.contains(e.target) && accBtn && !accBtn.contains(e.target) && accPanel.getAttribute('aria-hidden') === 'false') {
                     closePanel();
                 }
             });
 
             // Close with Escape
             document.addEventListener('keydown', function(e){
-                if (e.key === 'Escape' && accPanel.getAttribute('aria-hidden') === 'false') {
+                if (e.key === 'Escape' && accPanel && accPanel.getAttribute('aria-hidden') === 'false') {
                     closePanel();
                 }
             });

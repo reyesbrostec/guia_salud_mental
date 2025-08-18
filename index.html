@@ -303,8 +303,205 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // ...existing code...
-            // Aquí va el resto de tu lógica JS (chart, acordeón, accesibilidad, etc.)
+            // --- Inyectar estilos necesarios para las opciones de accesibilidad ---
+            (function injectAccessibilityStyles(){
+                if (document.getElementById('iris-accessibility-styles')) return;
+                const css = `
+                /* Accessibility helpers injected by build */
+                .iris-contrast { background-color: #ffffff !important; color: #000000 !important; }
+                .iris-font-large { font-size: 18px !important; }
+                .iris-lineheight { line-height: 1.9 !important; }
+                .iris-dyslexia { font-family: 'OpenDyslexic', 'Inter', Arial, sans-serif !important; }
+                .iris-underline-links a, .iris-underline-links a:visited { text-decoration: underline !important; }
+                .iris-highlight-links a { background-color: #fff3bf; padding: 0 2px; border-radius: 2px; }
+                .iris-dark { background-color: #0b1220 !important; color: #e6eef8 !important; }
+                .iris-cursor-large * { cursor: pointer !important; }
+                #accessibility-panel[aria-hidden="true"] { display: none; }
+                `;
+                const style = document.createElement('style');
+                style.id = 'iris-accessibility-styles';
+                style.appendChild(document.createTextNode(css));
+                document.head.appendChild(style);
+            })();
+
+            // --- Elementos ---
+            const accBtn = document.getElementById('accessibility-btn');
+            const accPanel = document.getElementById('accessibility-panel');
+            const toggleContrast = document.getElementById('toggle-contrast');
+            const toggleFont = document.getElementById('toggle-font');
+            const toggleJustify = document.getElementById('toggle-justify'); // readonly
+            const toggleLinks = document.getElementById('toggle-links');
+            const toggleDark = document.getElementById('toggle-dark');
+            const toggleLineheight = document.getElementById('toggle-lineheight');
+            const toggleCursor = document.getElementById('toggle-cursor');
+            const toggleUnderline = document.getElementById('toggle-underline');
+            const toggleDyslexia = document.getElementById('toggle-dyslexia');
+            const disabilityType = document.getElementById('disability-type');
+
+            const STORAGE_KEY = 'iris_accessibility_v1';
+
+            // --- Focus trap helpers ---
+            let lastFocused = null;
+            function trapFocus() {
+                lastFocused = document.activeElement;
+                const focusable = accPanel.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+                if (focusable.length) focusable[0].focus();
+                function handleTab(e) {
+                    if (e.key !== 'Tab') return;
+                    const focusables = accPanel.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+                    if (!focusables.length) return;
+                    const first = focusables[0];
+                    const last = focusables[focusables.length - 1];
+                    if (e.shiftKey && document.activeElement === first) {
+                        e.preventDefault();
+                        last.focus();
+                    } else if (!e.shiftKey && document.activeElement === last) {
+                        e.preventDefault();
+                        first.focus();
+                    }
+                }
+                accPanel.__tabHandler = handleTab;
+                document.addEventListener('keydown', handleTab);
+            }
+            function releaseFocus() {
+                if (accPanel.__tabHandler) {
+                    document.removeEventListener('keydown', accPanel.__tabHandler);
+                    accPanel.__tabHandler = null;
+                }
+                if (lastFocused && typeof lastFocused.focus === 'function') lastFocused.focus();
+            }
+
+            // --- Open / Close panel ---
+            function openPanel() {
+                accPanel.classList.remove('hidden');
+                accPanel.setAttribute('aria-hidden', 'false');
+                accBtn.setAttribute('aria-expanded', 'true');
+                trapFocus();
+            }
+            function closePanel() {
+                accPanel.classList.add('hidden');
+                accPanel.setAttribute('aria-hidden', 'true');
+                accBtn.setAttribute('aria-expanded', 'false');
+                releaseFocus();
+            }
+
+            // Toggle via button
+            if (accBtn) {
+                accBtn.addEventListener('click', function(e){
+                    e.preventDefault();
+                    if (accPanel.classList.contains('hidden') || accPanel.getAttribute('aria-hidden') === 'true') {
+                        openPanel();
+                    } else {
+                        closePanel();
+                    }
+                });
+
+                // Keyboard support on button
+                accBtn.addEventListener('keydown', function(e){
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        accBtn.click();
+                    }
+                });
+            }
+
+            // Close when clicking outside
+            document.addEventListener('click', function(e){
+                if (accPanel && !accPanel.contains(e.target) && accBtn && !accBtn.contains(e.target) && accPanel.getAttribute('aria-hidden') === 'false') {
+                    closePanel();
+                }
+            });
+
+            // Close with Escape
+            document.addEventListener('keydown', function(e){
+                if (e.key === 'Escape' && accPanel && accPanel.getAttribute('aria-hidden') === 'false') {
+                    closePanel();
+                }
+            });
+
+            // --- Apply / Persist settings ---
+            function readSaved() {
+                try {
+                    const raw = localStorage.getItem(STORAGE_KEY);
+                    return raw ? JSON.parse(raw) : {};
+                } catch (e) { return {}; }
+            }
+            function saveSettings(s) {
+                try { localStorage.setItem(STORAGE_KEY, JSON.stringify(s || {})); } catch(e){}
+            }
+
+            function applySettings(s){
+                const root = document.documentElement;
+                s = s || {};
+                // contrast
+                if (s.contrast) root.classList.add('iris-contrast'); else root.classList.remove('iris-contrast');
+                // font
+                if (s.font) root.classList.add('iris-font-large'); else root.classList.remove('iris-font-large');
+                // dark
+                if (s.dark) root.classList.add('iris-dark'); else root.classList.remove('iris-dark');
+                // lineheight
+                if (s.lineheight) root.classList.add('iris-lineheight'); else root.classList.remove('iris-lineheight');
+                // cursor
+                if (s.cursor) root.classList.add('iris-cursor-large'); else root.classList.remove('iris-cursor-large');
+                // dyslexia
+                if (s.dyslexia) root.classList.add('iris-dyslexia'); else root.classList.remove('iris-dyslexia');
+                // links highlight
+                if (s.links) root.classList.add('iris-highlight-links'); else root.classList.remove('iris-highlight-links');
+                // underline links
+                if (s.underline) root.classList.add('iris-underline-links'); else root.classList.remove('iris-underline-links');
+
+                // update controls state
+                if (toggleContrast) toggleContrast.checked = !!s.contrast;
+                if (toggleFont) toggleFont.checked = !!s.font;
+                if (toggleDark) toggleDark.checked = !!s.dark;
+                if (toggleLineheight) toggleLineheight.checked = !!s.lineheight;
+                if (toggleCursor) toggleCursor.checked = !!s.cursor;
+                if (toggleDyslexia) toggleDyslexia.checked = !!s.dyslexia;
+                if (toggleLinks) toggleLinks.checked = !!s.links;
+                if (toggleUnderline) toggleUnderline.checked = !!s.underline;
+            }
+
+            // Load saved on start
+            const saved = readSaved();
+            applySettings(saved);
+
+            // Handlers for controls
+            function onChangeHandler() {
+                const state = {
+                    contrast: !!(toggleContrast && toggleContrast.checked),
+                    font: !!(toggleFont && toggleFont.checked),
+                    dark: !!(toggleDark && toggleDark.checked),
+                    lineheight: !!(toggleLineheight && toggleLineheight.checked),
+                    cursor: !!(toggleCursor && toggleCursor.checked),
+                    dyslexia: !!(toggleDyslexia && toggleDyslexia.checked),
+                    links: !!(toggleLinks && toggleLinks.checked),
+                    underline: !!(toggleUnderline && toggleUnderline.checked)
+                };
+                applySettings(state);
+                saveSettings(state);
+            }
+
+            [toggleContrast, toggleFont, toggleDark, toggleLineheight, toggleCursor, toggleDyslexia, toggleLinks, toggleUnderline].forEach(el => {
+                if (!el) return;
+                el.addEventListener('change', onChangeHandler);
+            });
+
+            // Disability presets
+            if (disabilityType) {
+                disabilityType.addEventListener('change', function(){
+                    const v = disabilityType.value;
+                    const preset = {};
+                    if (v === 'visual') { preset.contrast = true; preset.font = true; preset.lineheight = true; }
+                    else if (v === 'auditiva') { /* no visual changes, maybe subtitles elsewhere */ }
+                    else if (v === 'motriz') { preset.cursor = true; }
+                    else if (v === 'cognitiva') { preset.lineheight = true; preset.underline = true; preset.dyslexia = true; }
+                    else if (v === 'dislexia') { preset.dyslexia = true; preset.underline = true; }
+                    const merged = Object.assign({}, readSaved(), preset);
+                    applySettings(merged);
+                    saveSettings(merged);
+                });
+            }
+
         });
     </script>
 </body>
