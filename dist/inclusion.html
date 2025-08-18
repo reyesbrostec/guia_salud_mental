@@ -477,29 +477,32 @@
             const navLinks = document.querySelectorAll('.nav-link, #mobile-menu a');
             const sections = document.querySelectorAll('section');
 
-            const observerOptions = {
-                root: null,
-                rootMargin: '0px',
-                threshold: 0.4
-            };
-
-            const observer = new IntersectionObserver((entries, observer) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        navLinks.forEach(link => {
-                            link.classList.remove('active');
-                            if (link.getAttribute('href').substring(1) === entry.target.id) {
-                                link.classList.add('active');
-                            }
-                        });
+            // Función para actualizar la sección activa
+            function updateActiveSection() {
+                let currentSection = null;
+                let minDistance = Number.POSITIVE_INFINITY;
+                const scrollPosition = window.scrollY || window.pageYOffset;
+                sections.forEach(section => {
+                    const rect = section.getBoundingClientRect();
+                    const sectionTop = rect.top + window.scrollY;
+                    const distance = Math.abs(scrollPosition - sectionTop + 100); // 100px de margen para mejor UX
+                    if (distance < minDistance) {
+                        minDistance = distance;
+                        currentSection = section;
                     }
                 });
-            }, observerOptions);
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (currentSection && link.getAttribute('href').substring(1) === currentSection.id) {
+                        link.classList.add('active');
+                    }
+                });
+            }
 
-            sections.forEach(section => {
-                observer.observe(section);
-            });
-            
+            window.addEventListener('scroll', updateActiveSection);
+            window.addEventListener('resize', updateActiveSection);
+            updateActiveSection();
+
             navLinks.forEach(link => {
                 link.addEventListener('click', () => {
                     if (mobileMenu.classList.contains('hidden') === false) {
