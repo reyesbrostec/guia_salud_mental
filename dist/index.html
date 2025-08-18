@@ -9,21 +9,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Transiciones suaves para botones */
-        button, .btn, a.bg-teal-600, a.bg-teal-700, .nav-link {
-            transition: background 0.3s, color 0.3s, box-shadow 0.3s, border 0.3s, transform 0.2s;
-        }
-        button:active, .btn:active, a.bg-teal-600:active, a.bg-teal-700:active {
-            transform: scale(0.97);
-        }
-        /* Transición de opacidad para el main al cambiar de página */
-        main.fade {
-            opacity: 0;
-            transition: opacity 0.5s;
-        }
-        main.fade.show {
-            opacity: 1;
-        }
         body {
             font-family: 'Inter', sans-serif;
         }
@@ -229,7 +214,7 @@
     </header>
 
     <!-- Main Content -->
-    <main id="main-content" class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12 fade">
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
         <!-- Board Title -->
         <div class="mb-8">
             <h1 class="text-3xl md:text-4xl font-bold text-slate-900">Tu Camino hacia el Bienestar</h1>
@@ -285,29 +270,6 @@
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/markdown-it@13.0.2/dist/markdown-it.min.js"></script>
     <script>
-    // Transición de fade-in al cargar la página
-    document.addEventListener('DOMContentLoaded', () => {
-        const main = document.getElementById('main-content');
-        if (main) {
-            setTimeout(() => main.classList.add('show'), 30);
-        }
-        // Transición de fade-out al navegar (solo para enlaces internos)
-        document.querySelectorAll('a').forEach(a => {
-            a.addEventListener('click', function(e) {
-                const href = a.getAttribute('href');
-                if (href && !href.startsWith('http') && !href.startsWith('mailto') && !href.startsWith('#') && !a.hasAttribute('download')) {
-                    const main = document.getElementById('main-content');
-                    if (main) {
-                        main.classList.remove('show');
-                        setTimeout(() => {
-                            window.location = href;
-                        }, 350);
-                        e.preventDefault();
-                    }
-                }
-            });
-        });
-    });
     // build.js debe insertar aquí la variable blogPosts
     let blogPosts = [
   {
