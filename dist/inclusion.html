@@ -55,6 +55,21 @@
             transition: max-height 0.5s ease-out;
         }
     </style>
+        /* Transiciones suaves para botones */
+        button, .btn, a.bg-teal-600, a.bg-teal-700, .nav-link {
+            transition: background 0.3s, color 0.3s, box-shadow 0.3s, border 0.3s, transform 0.2s;
+        }
+        button:active, .btn:active, a.bg-teal-600:active, a.bg-teal-700:active {
+            transform: scale(0.97);
+        }
+        /* Transición de opacidad para el main al cambiar de página */
+        main.fade {
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+        main.fade.show {
+            opacity: 1;
+        }
 </head>
 <body class="antialiased">
 <button id="accessibility-btn" aria-label="Opciones de accesibilidad" title="Accesibilidad">
@@ -109,7 +124,7 @@
         </div>
     </header>
 
-    <main>
+    <main id="main-content" class="fade">
         <div class="w-full flex justify-end p-4">
             <a href="index.html" class="inline-flex items-center px-4 py-2 bg-[#0d9488] text-white rounded-md shadow hover:bg-[#0d7a6b] transition-colors">
                 Prisma: Salud Mental
@@ -305,6 +320,29 @@
     </footer>
 
     <script>
+    // Transición de fade-in al cargar la página
+    document.addEventListener('DOMContentLoaded', () => {
+        const main = document.getElementById('main-content');
+        if (main) {
+            setTimeout(() => main.classList.add('show'), 30);
+        }
+        // Transición de fade-out al navegar (solo para enlaces internos)
+        document.querySelectorAll('a').forEach(a => {
+            a.addEventListener('click', function(e) {
+                const href = a.getAttribute('href');
+                if (href && !href.startsWith('http') && !href.startsWith('mailto') && !href.startsWith('#') && !a.hasAttribute('download')) {
+                    const main = document.getElementById('main-content');
+                    if (main) {
+                        main.classList.remove('show');
+                        setTimeout(() => {
+                            window.location = href;
+                        }, 350);
+                        e.preventDefault();
+                    }
+                }
+            });
+        });
+    });
         document.addEventListener('DOMContentLoaded', function () {
             const chartData = {
                 labels: [
