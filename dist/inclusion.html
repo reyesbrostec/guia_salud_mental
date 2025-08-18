@@ -9,7 +9,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
-    
     <!-- Chosen Palette: Warm Earth Tones -->
     <!-- Application Structure Plan: The SPA is designed with a thematic, top-down structure to guide the user from the general vision to specific details. It starts with an introduction ('Inicio'), moves to foundational concepts ('Principios Clave'), explores external benchmarks ('Modelos de Inspiración'), details the core strategic plan ('Plan Estratégico'), and concludes with future strategy and contact options ('Sostenibilidad' y 'Contacto'). This non-linear, thematic flow enhances usability by allowing users to dive into sections of interest. Interactions like a dynamic chart and accordions are used to condense complex information and make comparison and exploration intuitive. -->
     <!-- Visualization & Content Choices: Report Info: Comparative analysis of external models. -> Goal: Compare methodologies. -> Viz/Presentation Method: Horizontal Bar Chart. -> Interaction: Tooltips on hover provide details. -> Justification: A bar chart offers a quick, scannable comparison of qualitative features across multiple models, making it easier to identify common practices than a dense table. -> Library/Method: Chart.js (Canvas). Report Info: Strategic plan recommendations. -> Goal: Organize and present proposed changes. -> Viz/Presentation Method: Accordion component. -> Interaction: Clicking a module header expands to show detailed recommendations. -> Justification: An accordion neatly organizes a large amount of text, preventing cognitive overload and allowing users to focus on one module at a time. -> Library/Method: HTML/CSS/JS. -->
@@ -58,12 +57,9 @@
     </style>
 </head>
 <body class="antialiased">
-
-<!-- Botón flotante de accesibilidad (Ubicado correctamente en la esquina inferior derecha) -->
 <button id="accessibility-btn" aria-label="Opciones de accesibilidad" title="Accesibilidad" class="fixed bottom-6 right-6 z-50 bg-[#0d9488] hover:bg-[#0d7a6b] text-white font-semibold px-5 py-3 rounded-full shadow-lg transition-colors" style="box-shadow: 0 2px 8px rgba(0,0,0,0.15);">
     <span aria-hidden="true">&#9881;</span>
 </button>
-
 <div id="accessibility-panel" role="dialog" aria-modal="true" aria-label="Opciones de accesibilidad" class="hidden fixed bottom-20 right-6 z-50 bg-white border border-slate-200 rounded-xl shadow-lg p-6 w-72">
     <label><input type="checkbox" id="toggle-contrast"> Alto contraste</label><br>
     <label><input type="checkbox" id="toggle-font"> Fuente grande</label><br>
@@ -114,9 +110,15 @@
     </header>
 
     <main>
+<a href="index.html" class="fixed bottom-6 right-6 z-50 bg-[#0d9488] hover:bg-[#0d7a6b] text-white font-semibold px-6 py-3 rounded-lg shadow-md transition-colors" style="box-shadow: 0 2px 8px rgba(0,0,0,0.15);">
+    Prisma: Salud Mental
+</a>
 
-        <!-- Se ha eliminado el botón duplicado aquí para evitar la confusión y asegurar que solo el de accesibilidad sea flotante. -->
-
+        <div class="w-full flex justify-end p-4">
+            <a href="index.html" class="inline-flex items-center px-4 py-2 bg-[#0d9488] text-white rounded-md shadow hover:bg-[#0d7a6b] transition-colors">
+                Prisma: Salud Mental
+            </a>
+        </div>
         <section id="inicio" class="py-20 md:py-32 bg-cover bg-center" style="background-color: #EBF0E4;">
             <div class="container mx-auto px-6 text-center">
                 <h1 class="text-4xl md:text-6xl font-bold text-[#2C4A38] mb-4">Visión y Estrategia</h1>
@@ -296,6 +298,11 @@
     </main>
 
     <footer class="bg-[#0d9488] text-white py-12">
+        <div class="w-full flex justify-end p-4">
+            <a href="index.html" class="inline-flex items-center px-4 py-2 bg-[#4A7C59] text-white rounded-md shadow hover:bg-[#3A6B4A] transition-colors">
+                Ir a página secundaria
+            </a>
+        </div>
         <div class="container mx-auto px-6 text-center">
             <p>&copy; 2025 Iris Inclusión. Creando un futuro más inclusivo y sostenible.</p>
         </div>
@@ -461,37 +468,45 @@
                 });
             });
 
-            // Mobile menu functionality
             const mobileMenuButton = document.getElementById('mobile-menu-button');
             const mobileMenu = document.getElementById('mobile-menu');
-
             mobileMenuButton.addEventListener('click', () => {
                 mobileMenu.classList.toggle('hidden');
             });
+
+            const navLinks = document.querySelectorAll('.nav-link, #mobile-menu a');
+            const sections = document.querySelectorAll('section');
+
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.4
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        navLinks.forEach(link => {
+                            link.classList.remove('active');
+                            if (link.getAttribute('href').substring(1) === entry.target.id) {
+                                link.classList.add('active');
+                            }
+                        });
+                    }
+                });
+            }, observerOptions);
+
+            sections.forEach(section => {
+                observer.observe(section);
+            });
             
-            // Accessibility Panel Functionality
-            const accessibilityBtn = document.getElementById('accessibility-btn');
-            const accessibilityPanel = document.getElementById('accessibility-panel');
-
-            // Mostrar/ocultar panel al hacer clic en el botón
-            accessibilityBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                accessibilityPanel.classList.toggle('hidden');
-                if (!accessibilityPanel.classList.contains('hidden')) {
-                    accessibilityPanel.focus();
-                }
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    if (mobileMenu.classList.contains('hidden') === false) {
+                        mobileMenu.classList.add('hidden');
+                    }
+                });
             });
-
-            // Cerrar panel al hacer clic fuera
-            document.addEventListener('click', (e) => {
-                if (!accessibilityPanel.classList.contains('hidden')) {
-                    accessibilityPanel.classList.add('hidden');
-                }
-            });
-            accessibilityPanel.addEventListener('click', (e) => {
-                e.stopPropagation();
-            });
-
         });
     </script>
 </body>
