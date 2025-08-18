@@ -200,6 +200,14 @@ if (fs.existsSync(inclusionSrc)) {
   if (btnMatch && panelMatch) {
     inclusionHtml = inclusionHtml.replace(/(<body[^>]*>)/i, `$1\n${btnMatch[0]}\n${panelMatch[0]}`);
   }
+  // Insertar botón flotante después de <main> o al inicio de <main>
+  const floatingBtn = `\n<a href=\"index.html\" class=\"fixed bottom-6 right-6 z-50 bg-[#0d9488] hover:bg-[#0d7a6b] text-white font-semibold px-6 py-3 rounded-lg shadow-md transition-colors\" style=\"box-shadow: 0 2px 8px rgba(0,0,0,0.15);\">\n    Prisma: Salud Mental\n</a>\n`;
+  if (/<main[^>]*>/.test(inclusionHtml)) {
+    inclusionHtml = inclusionHtml.replace(/(<main[^>]*>)/i, `$1${floatingBtn}`);
+  } else {
+    // fallback: insert before first <section>
+    inclusionHtml = inclusionHtml.replace(/(<section[^>]*>)/i, `${floatingBtn}$1`);
+  }
   // Insertar script antes de </body>
   if (scriptMatch) {
     inclusionHtml = inclusionHtml.replace(/<\/body>/i, `${scriptMatch[0]}\n</body>`);
