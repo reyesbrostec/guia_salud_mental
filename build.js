@@ -147,22 +147,10 @@ mdFiles.forEach(filePath => {
 let postsData = JSON.stringify(blogPosts, null, 2);
 postsData = postsData.replace(/<\/script>/gi, '<\\/script>');
 
-const varRegex = /let\s+blogPosts\s*=\s*\[.*?\];/s;
+// Elimina la variable let blogPosts del HTML final, solo deja el HTML renderizado
+const varRegex = /let\s+blogPosts\s*=\s*\[.*?\];?/s;
 if (varRegex.test(templateHtml)) {
-  templateHtml = templateHtml.replace(varRegex, `let blogPosts = ${postsData};`);
-} else if (templateHtml.includes('// __BLOG_POSTS_DATA__')) {
-  templateHtml = templateHtml.replace('// __BLOG_POSTS_DATA__', `let blogPosts = ${postsData};`);
-} else {
-  const scriptInsertRegex = /(<script[^>]*>)([\s\S]*?)(<\/script>)/i;
-  const m = templateHtml.match(scriptInsertRegex);
-  if (m) {
-    const before = templateHtml.slice(0, m.index + m[0].indexOf(m[2]));
-    const after = templateHtml.slice(m.index + m[0].indexOf(m[2]) + m[2].length);
-    templateHtml = before + `\nlet blogPosts = ${postsData};\n` + after;
-  } else {
-    console.error('ERROR: No se encontró el marcador para insertar los posts en index.html');
-    process.exit(1);
-  }
+  templateHtml = templateHtml.replace(varRegex, '');
 }
 
 const distDir = path.join(__dirname, 'dist');
@@ -173,6 +161,32 @@ if (!fs.existsSync(distDir)) {
 const outputPath = path.join(distDir, 'index.html');
 fs.writeFileSync(outputPath, templateHtml, 'utf8');
 
+// Copiar carpeta assets (si existe) a dist/assets para que scripts/estilos personalizados estén disponibles en producción
+const assetsSrc = path.join(__dirname, 'assets');
+const assetsDest = path.join(distDir, 'assets');
+function copyDirRecursive(src, dest) {
+  if (!fs.existsSync(src)) return;
+  if (!fs.existsSync(dest)) fs.mkdirSync(dest, { recursive: true });
+  const entries = fs.readdirSync(src, { withFileTypes: true });
+  for (const entry of entries) {
+    const srcPath = path.join(src, entry.name);
+    const destPath = path.join(dest, entry.name);
+    if (entry.isDirectory()) {
+      copyDirRecursive(srcPath, destPath);
+    } else if (entry.isFile()) {
+      fs.copyFileSync(srcPath, destPath);
+    }
+  }
+}
+copyDirRecursive(assetsSrc, assetsDest);
+if (fs.existsSync(assetsSrc)) console.log('Assets copiados a dist/assets');
+
+// Copiar carpeta favicon (si existe) a dist/favicon para que los favicons estén disponibles en producción
+const faviconSrc = path.join(__dirname, 'favicon');
+const faviconDest = path.join(distDir, 'favicon');
+copyDirRecursive(faviconSrc, faviconDest);
+if (fs.existsSync(faviconSrc)) console.log('Favicons copiados a dist/favicon');
+
 console.log('Blog generado con éxito en la carpeta dist!');
 console.log(`Archivos encontrados (md): ${mdFiles.length}`);
 mdFiles.forEach(f => console.log(`- ${path.relative(articlesPath, f)}`));
@@ -180,10 +194,44 @@ mdFiles.forEach(f => console.log(`- ${path.relative(articlesPath, f)}`));
 console.log(`Posts procesados: ${blogPosts.length}`);
 blogPosts.forEach(p => console.log(`- ${p.title} (slug: ${p.slug}) category: ${p.category || 'Sin categoría'}`));
 
-// Copiar inclusion.html a dist/ (copia directa, sin procesamiento)
+
+// Copiar inclusion.html a dist/ e inyectar protocolo de accesibilidad
 const inclusionSrc = path.join(__dirname, 'src', 'inclusion.html');
 const inclusionDest = path.join(distDir, 'inclusion.html');
 if (fs.existsSync(inclusionSrc)) {
-  fs.copyFileSync(inclusionSrc, inclusionDest);
-  console.log('inclusion.html copiado a dist/ (copia directa, sin procesamiento)');
+  let inclusionHtml = fs.readFileSync(inclusionSrc, 'utf8');
+  // Extraer bloque de accesibilidad de index.html generado
+  const distIndexPath = path.join(distDir, 'index.html');
+  let distIndexHtml = fs.existsSync(distIndexPath) ? fs.readFileSync(distIndexPath, 'utf8') : '';
+  // Extraer el botón, panel y script de accesibilidad
+  const btnRegex = /<button id="accessibility-btn"[\s\S]*?<\/button>/;
+  const panelRegex = /<div id="accessibility-panel"[\s\S]*?<\/div>/;
+  const scriptRegex = /<script>[\s\S]*?const accBtn = document.getElementById\('accessibility-btn'\);[\s\S]*?disabilityType\.onchange[\s\S]*?};[\s\S]*?<\/script>/;
+  const btnMatch = distIndexHtml.match(btnRegex);
+  const panelMatch = distIndexHtml.match(panelRegex);
+  const scriptMatch = distIndexHtml.match(scriptRegex);
+  // Insertar después de <body ...>
+  if (btnMatch && panelMatch) {
+    inclusionHtml = inclusionHtml.replace(/(<body[^>]*>)/i, `$1
+${btnMatch[0]}
+${panelMatch[0]}`);
+  }
+  // Insertar botón flotante después de <main> o al inicio de <main>
+  const floatingBtn = `\n<a href=\"index.html\" class=\"fixed bottom-6 right-6 z-50 bg-[#0d9488] hover:bg-[#0d7a6b] text-white font-semibold px-6 py-3 rounded-lg shadow-md transition-colors\" style=\"box-shadow: 0 2px 8px rgba(0,0,0,0.15);\">\n    Prisma: Salud Mental\n</a>\n`;
+  if (/<main[^>]*>/.test(inclusionHtml)) {
+    inclusionHtml = inclusionHtml.replace(/(<main[^>]*>)/i, `$1${floatingBtn}`);
+  } else {
+    // fallback: insert before first <section>
+    inclusionHtml = inclusionHtml.replace(/(<section[^>]*>)/i, `${floatingBtn}$1`);
+  }
+  // Insertar script antes de </body>
+  if (scriptMatch) {
+    inclusionHtml = inclusionHtml.replace(/<\/body>/i, `${scriptMatch[0]}\n</body>`);
+  }
+
+  // Ensure contact form has id contact-form so our script runs
+  inclusionHtml = inclusionHtml.replace(/<form class=\"space-y-6\">/i, '<form id="contact-form" class="space-y-6">');
+
+  fs.writeFileSync(inclusionDest, inclusionHtml, 'utf8');
+  console.log('inclusion.html copiado a dist/ e integrado protocolo de accesibilidad');
 }
