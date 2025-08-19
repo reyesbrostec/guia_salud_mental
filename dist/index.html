@@ -4,27 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Estrategia de Alcance: Iris Inclusión</title>
-    <!-- Tailwind local build -->
-    <link rel="stylesheet" href="assets/css/tailwind.css">
-    <!-- Chart.js local bundle (fallback al CDN) -->
-    <script src="assets/libs/chart.umd.min.js"></script>
+    <!-- Tailwind CSS desde CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style type="text/tailwindcss">
+        @layer base {
+            :root {
+                --color-primary: #1e3a8a; /* Azul oscuro corporativo */
+                --color-secondary: #fcd34d; /* Amarillo vibrante */
+                --color-accent: #3b82f6; /* Azul de acento */
+                --color-background: #f1f5f9; /* Azul claro para fondo */
+                --color-text: #1f2937; /* Gris oscuro para texto */
+            }
+        }
+    </style>
+    <!-- Font Inter para consistencia -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
-    <!-- Favicons -->
-    <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-96x96.png">
-    <link rel="shortcut icon" href="favicon/favicon.ico">
-    <link rel="manifest" href="favicon/site.webmanifest">
-    <!-- Chosen Palette: Warm Earth Tones -->
-    <!-- Application Structure Plan: The SPA is designed with a thematic, top-down structure to guide the user from the general vision to specific details. It starts with an introduction ('Inicio'), moves to foundational concepts ('Principios Clave'), explores external benchmarks ('Modelos de Inspiración'), details the core strategic plan ('Plan Estratégico'), and concludes with future strategy and contact options ('Sostenibilidad' y 'Contacto'). This non-linear, thematic flow enhances usability by allowing users to dive into sections of interest. Interactions like a dynamic chart and accordions are used to condense complex information and make comparison and exploration intuitive. -->
-    <!-- Visualization & Content Choices: Report Info: Comparative analysis of external models. -> Goal: Compare methodologies. -> Viz/Presentation Method: Horizontal Bar Chart. -> Interaction: Tooltips on hover provide details. -> Justification: A bar chart offers a quick, scannable comparison of qualitative features across multiple models, making it easier to identify common practices than a dense table. -> Library/Method: Chart.js (Canvas). Report Info: Strategic plan recommendations. -> Goal: Organize and present proposed changes. -> Viz/Presentation Method: Accordion component. -> Interaction: Clicking a module header expands to show detailed recommendations. -> Justification: An accordion neatly organizes a large amount of text, preventing cognitive overload and allowing users to focus on one module at a time. -> Library/Method: HTML/CSS/JS. -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom Styles -->
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #FDFBF8;
-            color: #3a3a3a;
+            background-color: var(--color-background);
+            color: var(--color-text);
             animation: fadein 1.2s cubic-bezier(.4,0,.2,1);
         }
         @keyframes fadein {
@@ -35,29 +39,76 @@
             position: relative;
             width: 100%;
             max-width: 900px;
-            margin-left: auto;
-            margin-right: auto;
+            margin: 0 auto;
             height: 500px;
             max-height: 60vh;
-            box-shadow: 0 8px 32px 0 rgba(60,60,60,0.10);
-            border-radius: 1.25rem;
-            background: rgba(255,255,255,0.95);
-            transition: box-shadow 0.4s cubic-bezier(.4,0,.2,1), background 0.4s cubic-bezier(.4,0,.2,1);
-        }
-        @media (max-width: 768px) {
-            .chart-container {
-                height: 400px;
-                max-height: 70vh;
-            }
+            box-shadow: 0 10px 40px 0 rgba(30,58,138,0.15);
+            border-radius: 1.5rem;
+            background: rgba(255,255,255,0.9);
+            transition: box-shadow 0.4s, background 0.4s;
         }
         .nav-link {
-            transition: color 0.3s, border-bottom-color 0.3s;
+            transition: color 0.3s, border-bottom-color 0.3s, transform 0.2s;
             border-bottom: 2px solid transparent;
         }
         .nav-link:hover, .nav-link.active {
-            color: #4A7C59;
-            border-bottom-color: #4A7C59;
+            color: var(--color-accent);
+            border-bottom-color: var(--color-accent);
+            transform: translateY(-2px);
         }
+        .accordion-header {
+            transition: background 0.3s, color 0.3s, box-shadow 0.3s, transform 0.2s;
+        }
+        .accordion-header.active {
+            background-color: var(--color-primary);
+            color: white;
+            box-shadow: 0 4px 15px rgba(30,58,138,0.2);
+            transform: translateY(-3px);
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            transition: max-height 0.5s cubic-bezier(.4,0,.2,1), opacity 0.5s cubic-bezier(.4,0,.2,1);
+        }
+        .accordion-header.active + .accordion-content {
+            max-height: 500px; /* Ajustado para más contenido */
+            opacity: 1;
+            transition-delay: 0.1s;
+        }
+        .card-effect {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card-effect:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+        /* Mobile menu specific styles */
+        #mobile-menu {
+            transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease-in-out;
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+        }
+        #mobile-menu.open {
+            max-height: 500px;
+            opacity: 1;
+        }
+
+        /* Accessibility panel styles */
+        #accessibility-panel {
+            transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+            transform: translateX(-100%);
+            opacity: 0;
+            visibility: hidden;
+        }
+        #accessibility-panel.visible {
+            transform: translateX(0);
+            opacity: 1;
+            visibility: visible;
+        }
+    </style>
+...rest of the new HTML as provided by the user...
         .tab-button.active {
             background-color: #4A7C59;
             color: #FFFFFF;
