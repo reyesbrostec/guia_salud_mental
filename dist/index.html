@@ -4,27 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Estrategia de Alcance: Iris Inclusión</title>
-    <!-- Tailwind local build -->
-    <link rel="stylesheet" href="assets/css/tailwind.css">
-    <!-- Chart.js local bundle (fallback al CDN) -->
-    <script src="assets/libs/chart.umd.min.js"></script>
+    <!-- Tailwind CSS desde CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style type="text/tailwindcss">
+        @layer base {
+            :root {
+                --color-primary: #1e3a8a; /* Azul oscuro corporativo */
+                --color-secondary: #fcd34d; /* Amarillo vibrante */
+                --color-accent: #3b82f6; /* Azul de acento */
+                --color-background: #f1f5f9; /* Azul claro para fondo */
+                --color-text: #1f2937; /* Gris oscuro para texto */
+            }
+        }
+    </style>
+    <!-- Font Inter para consistencia -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
-    <!-- Favicons -->
-    <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-96x96.png">
-    <link rel="shortcut icon" href="favicon/favicon.ico">
-    <link rel="manifest" href="favicon/site.webmanifest">
-    <!-- Chosen Palette: Warm Earth Tones -->
-    <!-- Application Structure Plan: The SPA is designed with a thematic, top-down structure to guide the user from the general vision to specific details. It starts with an introduction ('Inicio'), moves to foundational concepts ('Principios Clave'), explores external benchmarks ('Modelos de Inspiración'), details the core strategic plan ('Plan Estratégico'), and concludes with future strategy and contact options ('Sostenibilidad' y 'Contacto'). This non-linear, thematic flow enhances usability by allowing users to dive into sections of interest. Interactions like a dynamic chart and accordions are used to condense complex information and make comparison and exploration intuitive. -->
-    <!-- Visualization & Content Choices: Report Info: Comparative analysis of external models. -> Goal: Compare methodologies. -> Viz/Presentation Method: Horizontal Bar Chart. -> Interaction: Tooltips on hover provide details. -> Justification: A bar chart offers a quick, scannable comparison of qualitative features across multiple models, making it easier to identify common practices than a dense table. -> Library/Method: Chart.js (Canvas). Report Info: Strategic plan recommendations. -> Goal: Organize and present proposed changes. -> Viz/Presentation Method: Accordion component. -> Interaction: Clicking a module header expands to show detailed recommendations. -> Justification: An accordion neatly organizes a large amount of text, preventing cognitive overload and allowing users to focus on one module at a time. -> Library/Method: HTML/CSS/JS. -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom Styles -->
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #FDFBF8;
-            color: #3a3a3a;
+            background-color: var(--color-background);
+            color: var(--color-text);
             animation: fadein 1.2s cubic-bezier(.4,0,.2,1);
         }
         @keyframes fadein {
@@ -35,40 +39,31 @@
             position: relative;
             width: 100%;
             max-width: 900px;
-            margin-left: auto;
-            margin-right: auto;
+            margin: 0 auto;
             height: 500px;
             max-height: 60vh;
-            box-shadow: 0 8px 32px 0 rgba(60,60,60,0.10);
-            border-radius: 1.25rem;
-            background: rgba(255,255,255,0.95);
-            transition: box-shadow 0.4s cubic-bezier(.4,0,.2,1), background 0.4s cubic-bezier(.4,0,.2,1);
-        }
-        @media (max-width: 768px) {
-            .chart-container {
-                height: 400px;
-                max-height: 70vh;
-            }
+            box-shadow: 0 10px 40px 0 rgba(30,58,138,0.15);
+            border-radius: 1.5rem;
+            background: rgba(255,255,255,0.9);
+            transition: box-shadow 0.4s, background 0.4s;
         }
         .nav-link {
-            transition: color 0.3s, border-bottom-color 0.3s;
+            transition: color 0.3s, border-bottom-color 0.3s, transform 0.2s;
             border-bottom: 2px solid transparent;
         }
         .nav-link:hover, .nav-link.active {
-            color: #4A7C59;
-            border-bottom-color: #4A7C59;
-        }
-        .tab-button.active {
-            background-color: #4A7C59;
-            color: #FFFFFF;
-            transition: background 0.3s, color 0.3s;
+            color: var(--color-accent);
+            border-bottom-color: var(--color-accent);
+            transform: translateY(-2px);
         }
         .accordion-header {
-            transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+            transition: background 0.3s, color 0.3s, box-shadow 0.3s, transform 0.2s;
         }
         .accordion-header.active {
-            background-color: #EBF0E4;
-            box-shadow: 0 2px 8px 0 rgba(60,60,60,0.08);
+            background-color: var(--color-primary);
+            color: white;
+            box-shadow: 0 4px 15px rgba(30,58,138,0.2);
+            transform: translateY(-3px);
         }
         .accordion-content {
             max-height: 0;
@@ -77,26 +72,50 @@
             transition: max-height 0.5s cubic-bezier(.4,0,.2,1), opacity 0.5s cubic-bezier(.4,0,.2,1);
         }
         .accordion-header.active + .accordion-content {
+            max-height: 500px; /* Ajustado para más contenido */
             opacity: 1;
             transition-delay: 0.1s;
         }
-        .btn-modern {
-            @apply px-4 py-2 rounded-lg shadow-md font-semibold transition-colors duration-300;
-            background: linear-gradient(90deg, #0d9488 0%, #4A7C59 100%);
-            color: #fff;
+        .card-effect {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
-        .btn-modern:hover {
-            background: linear-gradient(90deg, #4A7C59 0%, #0d9488 100%);
-            color: #fff;
+        .card-effect:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+        /* Mobile menu specific styles */
+        #mobile-menu {
+            transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease-in-out;
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+        }
+        #mobile-menu.open {
+            max-height: 500px;
+            opacity: 1;
+        }
+
+        /* Accessibility panel styles */
+        #accessibility-panel {
+            transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+            transform: translateX(-100%);
+            opacity: 0;
+            visibility: hidden;
+        }
+        #accessibility-panel.visible {
+            transform: translateX(0);
+            opacity: 1;
+            visibility: visible;
         }
     </style>
 </head>
 <body class="antialiased">
 
-    <header class="bg-[#F0FDFB]/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
+    <!-- Header y Navegación -->
+    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-md">
         <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <div class="text-2xl font-bold text-[#2C4A38]">
-                <span class="text-[#0d9488]">Iris</span> Inclusión
+            <div class="text-3xl font-extrabold text-gray-900">
+                <span class="text-blue-600">Iris</span> Inclusión
             </div>
             <div class="hidden md:flex space-x-8">
                 <a href="#inicio" class="nav-link text-gray-600 font-medium pb-1">Inicio</a>
@@ -105,13 +124,13 @@
                 <a href="#plan" class="nav-link text-gray-600 font-medium pb-1">Plan Estratégico</a>
                 <a href="#sostenibilidad" class="nav-link text-gray-600 font-medium pb-1">Sostenibilidad</a>
             </div>
-            <button id="mobile-menu-button" class="md:hidden p-2 rounded-md text-gray-600 hover:bg-gray-100">
+            <button id="mobile-menu-button" class="md:hidden p-2 rounded-md text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
                 </svg>
             </button>
         </nav>
-        <div id="mobile-menu" class="hidden md:hidden px-6 pb-4">
+        <div id="mobile-menu" class="md:hidden px-6 pb-4">
             <a href="#inicio" class="block py-2 text-gray-600">Inicio</a>
             <a href="#principios" class="block py-2 text-gray-600">Principios</a>
             <a href="#modelos" class="block py-2 text-gray-600">Modelos</a>
@@ -121,140 +140,115 @@
     </header>
 
     <main>
-    <!-- accessibility-panel: botón flotante, panel y script -->
-<button id="accessibility-btn" class="fixed bottom-6 left-6 z-50 bg-[#0d9488] text-white px-4 py-3 rounded-lg shadow-md hover:bg-[#0d7a6b]" aria-haspopup="dialog" aria-controls="accessibility-panel">Accesibilidad</button>
+        <!-- Panel y botón de accesibilidad -->
+        <button id="accessibility-btn" class="fixed bottom-6 left-6 z-50 bg-blue-600 text-white px-4 py-3 rounded-full shadow-lg hover:bg-blue-700 transition-colors duration-300" aria-haspopup="dialog" aria-controls="accessibility-panel">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944c-.694 0-1.378.08-2.05.232-1.294.298-2.522.82-3.66 1.558-.87.56-1.666 1.258-2.394 2.083-1.026 1.168-1.782 2.502-2.224 3.91-.442 1.408-.592 2.87-.45 4.302.14 1.432.552 2.834 1.238 4.144.686 1.31 1.6 2.492 2.71 3.498 1.11.996 2.364 1.776 3.73 2.338 1.366.562 2.808.82 4.254.778 1.446-.042 2.85-.35 4.168-.916 1.318-.566 2.51-1.36 3.528-2.38 1.018-1.02 1.812-2.26 2.378-3.612.566-1.352.822-2.798.77-4.244-.052-1.446-.36-2.85-.92-4.168-.56-1.318-1.354-2.51-2.372-3.528z" />
+            </svg>
+        </button>
 
-<style>
-  /* reglas de demostración para accesibilidad */
-  html.acc-visual { font-size: 1.15rem; }
-  html.acc-visual body { filter: contrast(1.05) saturate(1.05); }
-  html.acc-dislexia { font-family: 'OpenDyslexic', Inter, sans-serif; }
-  html.acc-motriz a, html.acc-motriz button { padding: 0.75rem; }
-  /* high contrast for demonstration */
-  html.acc-cognitiva { line-height: 1.6; }
-  /* ensure accessibility button is always on top and fixed */
-  #accessibility-btn { position: fixed; z-index: 99999 !important; }
-</style>
+        <div id="accessibility-panel" class="fixed bottom-20 left-6 z-50 w-80 bg-white border border-gray-200 rounded-lg p-4 shadow-xl transition-all duration-300 hidden" role="dialog" aria-label="Panel de accesibilidad">
+            <h3 class="text-lg font-semibold mb-2 text-gray-900">Ajustes de accesibilidad</h3>
+            <p class="text-sm text-gray-600 mb-3">Selecciona una preferencia para ajustar la interfaz.</p>
+            <div role="radiogroup" aria-label="Tipo de discapacidad">
+                <label class="flex items-center mb-2 cursor-pointer text-gray-700 hover:text-blue-600 transition-colors">
+                    <input type="radio" name="disabilityType" id="dis_visual" value="visual" class="mr-2">
+                    <span>Tecnologías visuales</span>
+                </label>
+                <label class="flex items-center mb-2 cursor-pointer text-gray-700 hover:text-blue-600 transition-colors">
+                    <input type="radio" name="disabilityType" id="dis_auditiva" value="auditiva" class="mr-2">
+                    <span>Tecnologías auditivas</span>
+                </label>
+                <label class="flex items-center mb-2 cursor-pointer text-gray-700 hover:text-blue-600 transition-colors">
+                    <input type="radio" name="disabilityType" id="dis_motriz" value="motriz" class="mr-2">
+                    <span>Soporte motriz</span>
+                </label>
+                <label class="flex items-center mb-2 cursor-pointer text-gray-700 hover:text-blue-600 transition-colors">
+                    <input type="radio" name="disabilityType" id="dis_cognitiva" value="cognitiva" class="mr-2">
+                    <span>Facilidades cognitivas</span>
+                </label>
+                <label class="flex items-center mb-2 cursor-pointer text-gray-700 hover:text-blue-600 transition-colors">
+                    <input type="radio" name="disabilityType" id="dis_dislexia" value="dislexia" class="mr-2">
+                    <span>Soporte de lectura</span>
+                </label>
+            </div>
+            <p id="accessibility-note" class="mt-4 text-xs text-gray-500">Los cambios son temporales y locales en tu navegador.</p>
+        </div>
 
-<div id="accessibility-panel" class="fixed bottom-20 left-6 z-50 w-80 bg-white border border-gray-200 rounded-lg p-4 shadow-lg hidden" role="dialog" aria-label="Panel de accesibilidad">
-  <h3 class="text-lg font-semibold mb-2">Ajustes de accesibilidad</h3>
-  <p class="text-sm text-gray-600 mb-3">Selecciona una preferencia para ajustar la interfaz.</p>
-  <div role="radiogroup" aria-label="Tipo de discapacidad">
-    <label class="flex items-center mb-2 cursor-pointer">
-      <input type="radio" name="disabilityType" id="dis_visual" value="visual" class="mr-2">
-      <span>Tecnologías visuales</span>
-    </label>
-    <label class="flex items-center mb-2 cursor-pointer">
-      <input type="radio" name="disabilityType" id="dis_auditiva" value="auditiva" class="mr-2">
-      <span>Tecnologías auditivas</span>
-    </label>
-    <label class="flex items-center mb-2 cursor-pointer">
-      <input type="radio" name="disabilityType" id="dis_motriz" value="motriz" class="mr-2">
-      <span>Soporte motriz</span>
-    </label>
-    <label class="flex items-center mb-2 cursor-pointer">
-      <input type="radio" name="disabilityType" id="dis_cognitiva" value="cognitiva" class="mr-2">
-      <span>Facilidades cognitivas</span>
-    </label>
-    <label class="flex items-center mb-2 cursor-pointer">
-      <input type="radio" name="disabilityType" id="dis_dislexia" value="dislexia" class="mr-2">
-      <span>Soporte de lectura</span>
-    </label>
-  </div>
-  <p id="accessibility-note" class="mt-3 text-xs text-gray-500">Los cambios son temporales y locales en tu navegador.</p>
-</div>
+        <script>
+            (function () {
+                function setupAccessibility() {
+                    const accBtn = document.getElementById('accessibility-btn');
+                    const accPanel = document.getElementById('accessibility-panel');
+                    if (accBtn && accPanel) {
+                        accBtn.addEventListener('click', function () {
+                            const isVisible = accPanel.classList.toggle('visible');
+                            accPanel.classList.toggle('hidden');
+                            accBtn.setAttribute('aria-expanded', String(isVisible));
+                            if (isVisible) {
+                                const firstInput = accPanel.querySelector('input, button, [tabindex]');
+                                if (firstInput) firstInput.focus();
+                            }
+                        });
+                    }
 
-<script>
-(function () {
-  function setupAccessibility() {
-    const accBtn = document.getElementById('accessibility-btn');
-    const accPanel = document.getElementById('accessibility-panel');
-    if (accBtn && accPanel) {
-      // normalize display in case Tailwind 'hidden' is removed by compilation
-      if (accPanel.classList.contains('hidden')) accPanel.style.display = 'none';
-      else accPanel.style.display = '';
-      accBtn.setAttribute('aria-expanded', String(accPanel.style.display !== 'none'));
-      accBtn.addEventListener('click', function () {
-        const isHidden = accPanel.classList.toggle('hidden');
-        if (isHidden) {
-          accPanel.style.display = 'none';
-        } else {
-          accPanel.style.display = '';
-          // move focus inside panel for accessibility
-          const firstInput = accPanel.querySelector('input, button, [tabindex]');
-          if (firstInput) firstInput.focus();
-        }
-        accBtn.setAttribute('aria-expanded', String(!isHidden));
-      });
-    }
+                    function applyAccessibility() {
+                        const val = document.querySelector('input[name="disabilityType"]:checked')?.value || '';
+                        document.documentElement.setAttribute('data-accessibility', val);
+                        document.documentElement.classList.remove('acc-visual', 'acc-auditiva', 'acc-motriz', 'acc-cognitiva', 'acc-dislexia');
+                        if (val === 'visual') document.documentElement.classList.add('acc-visual');
+                        if (val === 'auditiva') document.documentElement.classList.add('acc-auditiva');
+                        if (val === 'motriz') document.documentElement.classList.add('acc-motriz');
+                        if (val === 'cognitiva') document.documentElement.classList.add('acc-cognitiva');
+                        if (val === 'dislexia') document.documentElement.classList.add('acc-dislexia');
 
-    // El build busca "disabilityType.onchange" en el script; mantén la referencia
-    const disabilityType = document.querySelector('input[name="disabilityType"]');
-    if (disabilityType) {
-      function applyAccessibility() {
-  const val = document.querySelector('input[name="disabilityType"]:checked')?.value || '';
-        document.documentElement.setAttribute('data-accessibility', val);
-        // keep the button visible and on top
-        const accBtnEl = document.getElementById('accessibility-btn');
-        if (accBtnEl) {
-          accBtnEl.style.position = 'fixed';
-          accBtnEl.style.zIndex = '99999';
-          accBtnEl.style.display = '';
-        }
-        // Apply simple visual adjustments based on selection
-        document.documentElement.classList.remove('acc-visual','acc-auditiva','acc-motriz','acc-cognitiva','acc-dislexia');
-        if (val === 'visual') document.documentElement.classList.add('acc-visual');
-        if (val === 'auditiva') document.documentElement.classList.add('acc-auditiva');
-        if (val === 'motriz') document.documentElement.classList.add('acc-motriz');
-        if (val === 'cognitiva') document.documentElement.classList.add('acc-cognitiva');
-        if (val === 'dislexia') document.documentElement.classList.add('acc-dislexia');
+                        const descriptions = {
+                            'visual': 'Aumenta el tamaño de fuente y contraste ligero',
+                            'auditiva': 'Activa ayudas auditivas/lectura (no aplica visualmente)',
+                            'motriz': 'Elementos interactivos con mayor área clicable',
+                            'cognitiva': 'Mayor interlineado y ritmo de lectura mejorado',
+                            'dislexia': 'Tipografía y espaciado optimizados para lectura'
+                        };
+                        const noteEl = document.getElementById('accessibility-note');
+                        if (noteEl) noteEl.textContent = 'Modo: ' + (val || 'predeterminado') + (val ? ' — ' + (descriptions[val] || '') : '');
+                    }
 
-        // Map human-readable descriptions for the panel
-        const descriptions = {
-          'visual': 'Aumenta tamaño de fuente y contraste ligero',
-          'auditiva': 'Activa ayudas auditivas/lectura (no aplica visualmente)',
-          'motriz': 'Elementos interactivos con mayor área clicable',
-          'cognitiva': 'Mayor interlineado y ritmo de lectura mejorado',
-          'dislexia': 'Tipografía y espaciado optimizados para lectura'
-        };
-        const noteEl = document.getElementById('accessibility-note');
-        if (noteEl) noteEl.textContent = 'Modo: ' + (val || 'predeterminado') + (val ? ' — ' + (descriptions[val] || '') : ' — Sin cambios aplicados');
-      }
-      // attach both change and click to be robust across browsers
-      document.querySelectorAll('input[name="disabilityType"]').forEach(r => {
-        r.addEventListener('change', function() { applyAccessibility(); });
-        r.addEventListener('click', function() { applyAccessibility(); });
-      });
-      // also call once to set initial state if any radio is pre-checked
-      applyAccessibility();
-    }
-  }
+                    document.querySelectorAll('input[name="disabilityType"]').forEach(r => {
+                        r.addEventListener('change', applyAccessibility);
+                        r.addEventListener('click', applyAccessibility);
+                    });
+                    applyAccessibility();
+                }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', setupAccessibility);
-  } else {
-    setupAccessibility();
-  }
-})();
-</script>
-
+                if (document.readyState === 'loading') {
+                    document.addEventListener('DOMContentLoaded', setupAccessibility);
+                } else {
+                    setupAccessibility();
+                }
+            })();
+        </script>
+        
         <div class="w-full flex justify-end p-4">
-            <a href="index.html" class="btn-modern">
+            <a href="#" class="px-6 py-3 rounded-full text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-indigo-600 shadow-md hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 transform hover:scale-105">
                 Prisma: Salud Mental
             </a>
         </div>
-        <section id="inicio" class="py-20 md:py-32 bg-cover bg-center" style="background-color: #EBF0E4;">
+        <section id="inicio" class="py-20 md:py-32 bg-gradient-to-br from-blue-50 to-indigo-50">
             <div class="container mx-auto px-6 text-center">
-                <h1 class="text-4xl md:text-6xl font-bold text-[#2C4A38] mb-4">Visión y Estrategia</h1>
-                <p class="text-lg md:text-xl text-gray-700 max-w-3xl mx-auto">Nuestro compromiso es transformar los entornos sociales en espacios de crecimiento verdaderamente inclusivos y accesibles para todos.</p>
+                <h1 class="text-4xl md:text-6xl font-extrabold text-gray-900 mb-4 leading-tight">
+                    Visión y Estrategia de <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">Iris Inclusión</span>
+                </h1>
+                <p class="text-lg md:text-xl text-gray-600 max-w-4xl mx-auto">
+                    Nuestro compromiso es transformar los entornos sociales en espacios de crecimiento verdaderamente inclusivos y accesibles para todos.
+                </p>
             </div>
         </section>
 
         <section class="py-16 md:py-24">
             <div class="container mx-auto px-6">
-                <div class="max-w-4xl mx-auto bg-white p-8 md:p-12 rounded-2xl shadow-lg -mt-32 md:-mt-48 relative z-10">
-                    <h2 class="text-3xl font-bold text-[#2C4A38] mb-4 text-center">Resumen Ejecutivo</h2>
-                    <p class="text-gray-600 leading-relaxed">
+                <div class="max-w-4xl mx-auto bg-white p-8 md:p-12 rounded-3xl shadow-xl -mt-32 md:-mt-48 relative z-10 border border-gray-100">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-4 text-center">Resumen Ejecutivo</h2>
+                    <p class="text-gray-700 leading-relaxed text-center">
                         Esta iniciativa busca validar y enriquecer una propuesta estratégica para fortalecer nuestra capacidad de alcance comunitario. A través de un análisis comparativo de modelos externos, este plan identifica principios fundamentales como el Diseño Universal, el enfoque funcional y la eco-inclusión. El objetivo es transformar una excelente propuesta en un programa sostenible y replicable, posicionando a Iris Inclusión como un referente de inclusión para nuestros clientes.
                     </p>
                 </div>
@@ -264,21 +258,36 @@
         <section id="principios" class="py-16 md:py-24 bg-gray-50">
             <div class="container mx-auto px-6">
                 <div class="text-center mb-12">
-                    <h2 class="text-3xl md:text-4xl font-bold text-[#2C4A38]">Principios Clave de la Inclusión</h2>
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900">Principios Clave de la Inclusión</h2>
                     <p class="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">Estos tres pilares forman la base teórica para crear experiencias que fomentan un entorno verdaderamente acogedor y empoderador.</p>
                 </div>
                 <div class="grid md:grid-cols-3 gap-8">
-                    <div class="bg-white p-8 rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300">
-                        <h3 class="text-2xl font-bold text-[#4A7C59] mb-4">Diseño Universal</h3>
-                        <p class="text-gray-600">Crear entornos utilizables por todas las personas en la mayor medida posible, sin necesidad de adaptaciones. Es un enfoque proactivo que beneficia a todos los participantes.</p>
+                    <div class="bg-white p-8 rounded-3xl shadow-md border border-gray-100 card-effect">
+                        <div class="text-4xl text-blue-600 mb-4 flex justify-center items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H4a1 1 0 01-1-1v-3a1 1 0 011-1h1a2 2 0 100-4H4a1 1 0 01-1-1V7a1 1 0 011-1h3a1 1 0 011 1v1a2 2 0 104 0V7a1 1 0 011-1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H4a1 1 0 01-1-1v-3a1 1 0 011-1h1a2 2 0 100-4H4a1 1 0 01-1-1V7a1 1 0 011-1h3a1 1 0 011 1v1a2 2 0 104 0z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-900 mb-4 text-center">Diseño Universal</h3>
+                        <p class="text-gray-600 text-center">Crear entornos utilizables por todas las personas en la mayor medida posible, sin necesidad de adaptaciones. Es un enfoque proactivo que beneficia a todos los participantes.</p>
                     </div>
-                    <div class="bg-white p-8 rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300">
-                        <h3 class="text-2xl font-bold text-[#4A7C59] mb-4">Enfoque Funcional</h3>
-                        <p class="text-600">Centrarse en lo que una persona puede hacer, en lugar de en sus limitaciones. Este modelo empodera a los facilitadores para ser creativos, flexibles y adaptar las experiencias a las capacidades de cada individuo.</p>
+                    <div class="bg-white p-8 rounded-3xl shadow-md border border-gray-100 card-effect">
+                        <div class="text-4xl text-blue-600 mb-4 flex justify-center items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-900 mb-4 text-center">Enfoque Funcional</h3>
+                        <p class="text-gray-600 text-center">Centrarse en lo que una persona puede hacer, en lugar de en sus limitaciones. Este modelo empodera a los facilitadores para ser creativos y adaptar las experiencias a las capacidades de cada individuo.</p>
                     </div>
-                    <div class="bg-white p-8 rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300">
-                        <h3 class="text-2xl font-bold text-[#4A7C59] mb-4">Eco-Inclusión</h3>
-                        <p class="text-gray-600">Fusionar la sostenibilidad ambiental con la equidad social. Reconoce que la participación de personas diversas es crucial para la acción comunitaria y ambiental.</p>
+                    <div class="bg-white p-8 rounded-3xl shadow-md border border-gray-100 card-effect">
+                        <div class="text-4xl text-blue-600 mb-4 flex justify-center items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v7a3 3 0 003 3z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-900 mb-4 text-center">Eco-Inclusión</h3>
+                        <p class="text-gray-600 text-center">Fusionar la sostenibilidad ambiental con la equidad social. Reconoce que la participación de personas diversas es crucial para la acción comunitaria y ambiental.</p>
                     </div>
                 </div>
             </div>
@@ -287,10 +296,10 @@
         <section id="modelos" class="py-16 md:py-24">
             <div class="container mx-auto px-6">
                 <div class="text-center mb-12">
-                    <h2 class="text-3xl md:text-4xl font-bold text-[#2C4A38]">Modelos de Inspiración</h2>
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900">Modelos de Inspiración</h2>
                     <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">Analizamos programas de diversas entidades para extraer las mejores prácticas. Esta visualización compara las metodologías clave utilizadas en diferentes iniciativas, ayudándonos a aprender de la experiencia de otros.</p>
                 </div>
-                <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg">
+                <div class="bg-white p-6 md:p-8 rounded-3xl shadow-xl border border-gray-100">
                     <div class="chart-container">
                         <canvas id="modelsChart"></canvas>
                     </div>
@@ -301,7 +310,7 @@
         <section id="plan" class="py-16 md:py-24 bg-gray-50">
             <div class="container mx-auto px-6">
                 <div class="text-center mb-12">
-                    <h2 class="text-3xl md:text-4xl font-bold text-[#2C4A38]">Plan Estratégico Fortalecido</h2>
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900">Plan Estratégico Fortalecido</h2>
                     <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">El plan original es un gran punto de partida, y lo hemos enriquecido con las lecciones aprendidas de otros programas de referencia. Siéntete libre de explorar las recomendaciones específicas para cada módulo haciendo clic en ellos.</p>
                 </div>
                 <div class="max-w-4xl mx-auto">
@@ -311,54 +320,61 @@
             </div>
         </section>
 
-        <!-- New section for timeline -->
         <section id="timeline-section" class="py-16 md:py-24">
             <div class="container mx-auto px-6">
                 <div class="text-center mb-12">
-                    <h2 class="text-3xl md:text-4xl font-bold text-[#2C4A38]">Línea de Tiempo del Plan de Acción</h2>
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900">Línea de Tiempo del Plan de Acción</h2>
                     <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">Un cronograma claro para la implementación del programa, desde la capacitación hasta la socialización con la comunidad.</p>
                 </div>
-                <div class="max-w-4xl mx-auto relative">
+                <div class="max-w-5xl mx-auto relative">
                     <div class="absolute left-1/2 -ml-0.5 w-1 bg-gray-200 h-full hidden md:block"></div>
-                    <div class="space-y-8 md:space-y-16">
+                    <div class="space-y-16">
                         <!-- Step 1 -->
                         <div class="relative flex md:justify-start justify-center md:items-center">
                             <div class="md:w-1/2 md:pr-12 md:text-right text-center">
-                                <h3 class="text-xl font-bold text-[#4A7C59] mb-2">Taller: Módulo 1</h3>
-                                <p class="text-gray-600">Pautas para la Inclusión en la Interacción con Usuarios. El personal recibe los fundamentos teóricos para entender los distintos tipos de discapacidad.</p>
+                                <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 card-effect">
+                                    <h3 class="text-xl font-bold text-blue-600 mb-2">Taller: Módulo 1</h3>
+                                    <p class="text-gray-600">Pautas para la Inclusión en la Interacción con Usuarios. El personal recibe los fundamentos teóricos para entender los distintos tipos de discapacidad.</p>
+                                </div>
                             </div>
-                            <div class="hidden md:flex absolute inset-y-0 left-1/2 items-center justify-center">
-                                <div class="bg-[#4A7C59] h-8 w-8 rounded-full shadow-lg"></div>
+                            <div class="hidden md:flex absolute inset-y-0 left-1/2 items-center justify-center -ml-5">
+                                <div class="bg-blue-600 h-10 w-10 rounded-full shadow-lg flex items-center justify-center text-white text-xl font-bold border-4 border-white">1</div>
                             </div>
                         </div>
                         <!-- Step 2 -->
                         <div class="relative flex md:justify-end justify-center md:items-center">
                             <div class="md:w-1/2 md:pl-12 md:text-left text-center">
-                                <h3 class="text-xl font-bold text-[#4A7C59] mb-2">Taller: Módulo 2</h3>
-                                <p class="text-gray-600">Estrategias para Manejo de Grupos en Entornos Abiertos o Cerrados. Aplicación práctica de las técnicas de manejo de grupos y comunicación inclusiva.</p>
+                                <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 card-effect">
+                                    <h3 class="text-xl font-bold text-blue-600 mb-2">Taller: Módulo 2</h3>
+                                    <p class="text-gray-600">Estrategias para Manejo de Grupos en Entornos Abiertos o Cerrados. Aplicación práctica de las técnicas de manejo de grupos y comunicación inclusiva.</p>
+                                </div>
                             </div>
-                            <div class="hidden md:flex absolute inset-y-0 right-1/2 items-center justify-center">
-                                <div class="bg-[#4A7C59] h-8 w-8 rounded-full shadow-lg"></div>
+                            <div class="hidden md:flex absolute inset-y-0 right-1/2 items-center justify-center -mr-5">
+                                <div class="bg-blue-600 h-10 w-10 rounded-full shadow-lg flex items-center justify-center text-white text-xl font-bold border-4 border-white">2</div>
                             </div>
                         </div>
                         <!-- Step 3 -->
                         <div class="relative flex md:justify-start justify-center md:items-center">
                             <div class="md:w-1/2 md:pr-12 md:text-right text-center">
-                                <h3 class="text-xl font-bold text-[#4A7C59] mb-2">Taller: Módulo 3</h3>
-                                <p class="text-gray-600">Actividad Lúdica y Aprendizaje Práctico. El personal diseña y presenta una actividad, consolidando el aprendizaje de manera interactiva.</p>
+                                <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 card-effect">
+                                    <h3 class="text-xl font-bold text-blue-600 mb-2">Taller: Módulo 3</h3>
+                                    <p class="text-gray-600">Actividad Lúdica y Aprendizaje Práctico. El personal diseña y presenta una actividad, consolidando el aprendizaje de manera interactiva.</p>
+                                </div>
                             </div>
-                            <div class="hidden md:flex absolute inset-y-0 left-1/2 items-center justify-center">
-                                <div class="bg-[#4A7C59] h-8 w-8 rounded-full shadow-lg"></div>
+                            <div class="hidden md:flex absolute inset-y-0 left-1/2 items-center justify-center -ml-5">
+                                <div class="bg-blue-600 h-10 w-10 rounded-full shadow-lg flex items-center justify-center text-white text-xl font-bold border-4 border-white">3</div>
                             </div>
                         </div>
                         <!-- Final Step -->
                         <div class="relative flex md:justify-end justify-center md:items-center">
                             <div class="md:w-1/2 md:pl-12 md:text-left text-center">
-                                <h3 class="text-xl font-bold text-[#2C4A38] mb-2">Presentación y Socialización Institucional</h3>
-                                <p class="text-gray-600">Invitación formal a instituciones especializadas para presentar y socializar los nuevos alcances del programa, así como para el desarrollo del <strong>Comité de Colaboración</strong> desde Iris Inclusión. Se fortalece lazos y se crea un canal de retroalimentación formal.</p>
+                                <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 card-effect">
+                                    <h3 class="text-xl font-bold text-blue-600 mb-2">Presentación y Socialización Institucional</h3>
+                                    <p class="text-gray-600">Invitación formal a instituciones especializadas para presentar y socializar los nuevos alcances del programa, así como para el desarrollo del <strong>Comité de Colaboración</strong> desde Iris Inclusión. Se fortalece lazos y se crea un canal de retroalimentación formal.</p>
+                                </div>
                             </div>
-                            <div class="hidden md:flex absolute inset-y-0 right-1/2 items-center justify-center">
-                                <div class="bg-[#2C4A38] h-10 w-10 rounded-full shadow-lg flex items-center justify-center text-white text-xl font-bold">✓</div>
+                            <div class="hidden md:flex absolute inset-y-0 right-1/2 items-center justify-center -mr-5">
+                                <div class="bg-green-500 h-12 w-12 rounded-full shadow-lg flex items-center justify-center text-white text-2xl font-bold border-4 border-white">✓</div>
                             </div>
                         </div>
                     </div>
@@ -369,23 +385,23 @@
         <section id="sostenibilidad" class="py-16 md:py-24 bg-gray-50">
             <div class="container mx-auto px-6">
                 <div class="text-center mb-12">
-                    <h2 class="text-3xl md:text-4xl font-bold text-[#2C4A38]">Estrategia de Sostenibilidad a Largo Plazo</h2>
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900">Estrategia de Sostenibilidad a Largo Plazo</h2>
                     <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">Para que nuestra visión se convierta en un pilar permanente, proponemos una estrategia que asegura un impacto duradero.</p>
                 </div>
                 <div class="max-w-5xl mx-auto grid md:grid-cols-3 gap-8 text-center">
-                    <div class="bg-white p-8 rounded-xl shadow-md">
-                        <div class="text-4xl text-[#4A7C59] mb-4">①</div>
-                        <h3 class="text-xl font-bold mb-2">Comité de Colaboración</h3>
+                    <div class="bg-white p-8 rounded-3xl shadow-md border border-gray-100 card-effect">
+                        <div class="text-4xl text-blue-600 mb-4 font-bold">①</div>
+                        <h3 class="text-xl font-bold mb-2 text-gray-900">Comité de Colaboración</h3>
                         <p class="text-gray-600">Establecer un comité permanente con personal y representantes de la comunidad para una retroalimentación y mejora continua.</p>
                     </div>
-                    <div class="bg-white p-8 rounded-xl shadow-md">
-                        <div class="text-4xl text-[#4A7C59] mb-4">②</div>
-                        <h3 class="text-xl font-bold mb-2">Alianzas Estratégicas</h3>
+                    <div class="bg-white p-8 rounded-3xl shadow-md border border-gray-100 card-effect">
+                        <div class="text-4xl text-blue-600 mb-4 font-bold">②</div>
+                        <h3 class="text-xl font-bold mb-2 text-gray-900">Alianzas Estratégicas</h3>
                         <p class="text-gray-600">Formalizar la colaboración con organizaciones clave para co-crear experiencias relevantes y asegurar que los programas lleguen a quienes más los necesitan.</p>
                     </div>
-                    <div class="bg-white p-8 rounded-xl shadow-md">
-                        <div class="text-4xl text-[#4A7C59] mb-4">③</div>
-                        <h3 class="text-xl font-bold mb-2">Reconocimiento Institucional</h3>
+                    <div class="bg-white p-8 rounded-3xl shadow-md border border-gray-100 card-effect">
+                        <div class="text-4xl text-blue-600 mb-4 font-bold">③</div>
+                        <h3 class="text-xl font-bold mb-2 text-gray-900">Reconocimiento Institucional</h3>
                         <p class="text-gray-600">Crear una certificación para el personal capacitado, validando su experiencia y sirviendo como incentivo para la excelencia continua.</p>
                     </div>
                 </div>
@@ -395,33 +411,35 @@
         <section id="contacto" class="py-16 md:py-24">
             <div class="container mx-auto px-6">
                 <div class="text-center mb-12">
-                    <h2 class="text-3xl md:text-4xl font-bold text-[#2C4A38]">Contáctanos</h2>
-                    <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">Si quiere mas información/precios sobre los talleres psicoeducativos sobre inclusión en espacios sociales y/o educativos, no dudes en escribirnos.</p>
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900">Contáctanos</h2>
+                    <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">Si quieres más información y/o precios sobre los talleres psicoeducativos sobre inclusión en espacios sociales y/o educativos, no dudes en escribirnos.</p>
                 </div>
-                <div class="max-w-lg mx-auto bg-white p-8 rounded-xl shadow-lg">
+                <div class="max-w-lg mx-auto bg-white p-8 rounded-3xl shadow-xl border border-gray-100">
                     <form class="space-y-6">
                         <div>
                             <label for="nombre" class="block text-sm font-medium text-gray-700">Nombre</label>
-                            <input type="text" id="nombre" name="nombre" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#4A7C59] focus:ring focus:ring-[#4A7C59] focus:ring-opacity-50">
+                            <input type="text" id="nombre" name="nombre" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50">
                         </div>
                         <div>
                             <label for="email" class="block text-sm font-medium text-gray-700">Correo Electrónico</label>
-                            <input type="email" id="email" name="email" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#4A7C59] focus:ring focus:ring-[#4A7C59] focus:ring-opacity-50">
+                            <input type="email" id="email" name="email" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50">
                         </div>
                         <div>
                             <label for="mensaje" class="block text-sm font-medium text-gray-700">Mensaje</label>
-                            <textarea id="mensaje" name="mensaje" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#4A7C59] focus:ring focus:ring-[#4A7C59] focus:ring-opacity-50"></textarea>
+                            <textarea id="mensaje" name="mensaje" rows="4" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"></textarea>
                         </div>
                         <div class="text-center">
-                            <button type="submit" class="w-full inline-flex justify-center py-3 px-6 border border-transparent shadow-sm text-base font-medium rounded-md text-white bg-[#4A7C59] hover:bg-[#3A6B4A] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#4A7C59]">Enviar Mensaje</button>
+                            <button type="submit" class="w-full inline-flex justify-center py-3 px-6 border border-transparent shadow-sm text-base font-medium rounded-full text-white bg-blue-600 hover:bg-blue-700 transition-colors duration-300 transform hover:scale-105">
+                                Enviar Mensaje
+                            </button>
                         </div>
                     </form>
                 </div>
-                </div>
+            </div>
         </section>
     </main>
 
-    <footer class="bg-[#0d9488] text-white py-12">
+    <footer class="bg-gray-800 text-white py-12">
         <div class="container mx-auto px-6 text-center">
             <p>&copy; 2025 Iris Inclusión. Creando un futuro más inclusivo y sostenible.</p>
         </div>
@@ -429,6 +447,15 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            // Mobile menu toggle
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            if (mobileMenuButton && mobileMenu) {
+                mobileMenuButton.addEventListener('click', () => {
+                    mobileMenu.classList.toggle('open');
+                });
+            }
+
             const chartData = {
                 labels: [
                     'Modelo de Inclusión Comunitaria',
@@ -442,20 +469,20 @@
                     label: 'Metodologías Clave',
                     data: [3, 4, 3, 2, 4, 3],
                     backgroundColor: [
-                        'rgba(74, 124, 89, 0.7)',
-                        'rgba(111, 158, 123, 0.7)',
-                        'rgba(147, 191, 158, 0.7)',
-                        'rgba(184, 224, 192, 0.7)',
-                        'rgba(74, 124, 89, 0.7)',
-                        'rgba(111, 158, 123, 0.7)'
+                        'rgba(30, 58, 138, 0.7)',
+                        'rgba(59, 130, 246, 0.7)',
+                        'rgba(96, 165, 250, 0.7)',
+                        'rgba(147, 197, 253, 0.7)',
+                        'rgba(30, 58, 138, 0.7)',
+                        'rgba(59, 130, 246, 0.7)'
                     ],
                     borderColor: [
-                        'rgba(74, 124, 89, 1)',
-                        'rgba(111, 158, 123, 1)',
-                        'rgba(147, 191, 158, 1)',
-                        'rgba(184, 224, 192, 1)',
-                        'rgba(74, 124, 89, 1)',
-                        'rgba(111, 158, 123, 1)'
+                        'rgba(30, 58, 138, 1)',
+                        'rgba(59, 130, 246, 1)',
+                        'rgba(96, 165, 250, 1)',
+                        'rgba(147, 197, 253, 1)',
+                        'rgba(30, 58, 138, 1)',
+                        'rgba(59, 130, 246, 1)'
                     ],
                     borderWidth: 1
                 }]
@@ -520,112 +547,86 @@
                         <p class="font-semibold text-gray-700 mb-2">En este módulo, el personal recibirá pautas específicas para entender a las personas con distintos tipos de discapacidad. El objetivo es proporcionarles herramientas para manejar grupos de usuarios, centrados en la observación del entorno.</p>
                         <ul class="list-disc pl-5 space-y-2 text-gray-600 mt-4">
                             <li><strong>Discapacidad Física:</strong> Se abordarán técnicas para facilitar la movilidad y la participación activa, asegurando que todos puedan explorar sin barreras.</li>
-                            <li><strong>Discapacidad Intelectual:</strong> Se enseñarán estrategias para usar lenguaje sencillo, conceptos concretos y guiones sociales visuales que ayuden a la comprensión y participación, reduciendo la ansiedad y fomentando la seguridad.</li>
-                            <li><strong>Discapacidad Visual:</strong> Se explorarán métodos de guía táctil y auditiva, incentivando el uso de los sentidos del olfato y el tacto para que los participantes experimenten el entorno de una manera más profunda.</li>
+                            <li><strong>Discapacidad Intelectual:</strong> Se enseñarán estrategias para usar lenguaje sencillo, conceptos concretos y guiones sociales visuales que ayuden a la comprensión y participación, reduciendo la ansiedad.</li>
+                            <li><strong>Discapacidad Auditiva:</strong> Se proporcionarán herramientas de comunicación no verbal y el uso de ayudas visuales para asegurar que la información es accesible.</li>
+                            <li><strong>Discapacidad Visual:</strong> Se enfatizará la importancia de la comunicación verbal clara y la descripción de los entornos para crear una experiencia inmersiva para los usuarios.</li>
                         </ul>
                     `
                 },
                 {
                     title: 'Módulo 2: Estrategias para Manejo de Grupos en Entornos Abiertos o Cerrados',
                     content: `
-                        <p class="font-semibold text-gray-700 mb-2">Este módulo se enfocará en el manejo práctico de grupos, aplicando las pautas del módulo anterior para crear una experiencia fluida y respetuosa para todos los participantes. La duración del recorrido es de 1.5 a 2 horas.</p>
+                        <p class="font-semibold text-gray-700 mb-2">Este módulo se enfoca en la aplicación práctica de las técnicas de manejo de grupos y comunicación inclusiva. Los participantes aprenderán a gestionar grupos con diversas necesidades y a crear un ambiente de respeto y colaboración.</p>
                         <ul class="list-disc pl-5 space-y-2 text-gray-600 mt-4">
-                            <li><strong>Técnicas de Manejo de Grupos:</strong> Se enseñará al personal a mantener la atención, gestionar los tiempos y a responder a las necesidades individuales dentro del grupo.</li>
-                            <li><strong>Comunicación Respetuosa:</strong> Se hará énfasis en el respeto de la autonomía de los participantes y en la importancia de ofrecer ayuda solo cuando sea solicitada.</li>
-                            <li><strong>Discapacidad Auditiva y Lengua de Señas:</strong> Se proporcionarán pautas para una comunicación visual clara, que incluye el uso de la Lengua de Señas Ecuatoriana (LSEC) básica, un conocimiento especializado crucial para garantizar una experiencia totalmente inclusiva.</li>
+                            <li><strong>Comunicación Inclusiva:</strong> Estrategias para adaptar el lenguaje y el estilo de comunicación a las necesidades de cada individuo y grupo.</li>
+                            <li><strong>Observación y Adaptación:</strong> Habilidades para observar las necesidades del grupo y adaptar las actividades en tiempo real, garantizando la participación de todos.</li>
+                            <li><strong>Role-playing:</strong> Ejercicios prácticos de simulación de escenarios para fortalecer las habilidades de manejo de grupos.</li>
+                            <li><strong>Co-creación de Soluciones:</strong> Fomentar la colaboración entre los participantes para que propongan sus propias soluciones inclusivas.</li>
                         </ul>
                     `
                 },
                 {
                     title: 'Módulo 3: Actividad Lúdica y Aprendizaje Práctico',
                     content: `
-                        <p class="font-semibold text-gray-700 mb-2">El plan culmina con una actividad lúdica y práctica que consolida el aprendizaje. Esta sección ofrece ideas para juegos y ejercicios que se pueden adaptar fácilmente para diferentes capacidades, haciendo del aprendizaje una experiencia divertida e interactiva.</p>
+                        <p class="font-semibold text-gray-700 mb-2">En el módulo final, el personal diseña y presenta una actividad, consolidando el aprendizaje de manera interactiva. Se enfoca en la creatividad, la diversión y la aplicación de los principios aprendidos.</p>
                         <ul class="list-disc pl-5 space-y-2 text-gray-600 mt-4">
-                            <li><strong>Ejemplos de Actividades:</strong> Se presentarán ideas de juegos sensoriales, como adivinar elementos por su aroma o textura, y actividades de co-creación, como la creación de un cuento colectivo o una "búsqueda del tesoro" que fomente el uso de los sentidos.</li>
-                            <li><strong>Adaptación de Materiales:</strong> Se mostrará cómo adaptar materiales y recursos para que sean accesibles para todos.</li>
-                            <li><strong>Sesión de Preguntas y Respuestas:</strong> Se abrirá un espacio para que el personal pueda compartir sus propias experiencias y plantear preguntas.</li>
+                            <li><strong>Diseño de Actividades Inclusivas:</strong> El personal aplica los conocimientos de los módulos anteriores para crear una actividad lúdica que sea accesible para todos.</li>
+                            <li><strong>Presentación y Retroalimentación:</strong> Los participantes presentan sus actividades al grupo, recibiendo retroalimentación constructiva para mejorar sus habilidades.</li>
+                            <li><strong>Evaluación y Mejora Continua:</strong> Se discuten los resultados de las actividades y se identifican áreas de mejora para futuras implementaciones.</li>
                         </ul>
                     `
                 }
             ];
 
             const accordionContainer = document.getElementById('accordion-container');
-            accordionData.forEach((item, index) => {
-                const accordionItem = document.createElement('div');
-                accordionItem.classList.add('border', 'rounded-lg', 'bg-white', 'shadow-sm');
-                accordionItem.innerHTML = `
-                    <button class="accordion-header w-full flex justify-between items-center p-5 text-left font-medium text-gray-800 hover:bg-gray-100 transition-colors duration-300">
-                        <span>${item.title}</span>
-                        <svg class="w-5 h-5 shrink-0 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                    </button>
-                    <div class="accordion-content">
-                        <div class="p-5 border-t">
-                            ${item.content}
-                        </div>
-                    </div>
-                `;
-                accordionContainer.appendChild(accordionItem);
-            });
+            if (accordionContainer) {
+                accordionData.forEach((item, index) => {
+                    const accordionItem = document.createElement('div');
+                    accordionItem.className = 'rounded-2xl shadow-md overflow-hidden bg-white border border-gray-100';
 
-            const accordionHeaders = document.querySelectorAll('.accordion-header');
-            accordionHeaders.forEach(header => {
-                header.addEventListener('click', () => {
-                    const content = header.nextElementSibling;
-                    const isActive = header.classList.contains('active');
+                    const header = document.createElement('div');
+                    header.className = 'accordion-header p-6 flex justify-between items-center cursor-pointer transition-all duration-300 hover:bg-gray-50';
+                    header.setAttribute('aria-expanded', 'false');
+                    header.setAttribute('aria-controls', `accordion-content-${index}`);
+                    header.innerHTML = `
+                        <h3 class="text-xl font-semibold text-gray-900">${item.title}</h3>
+                        <svg class="h-6 w-6 transform transition-transform duration-300 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    `;
 
-                    accordionHeaders.forEach(h => {
-                        h.classList.remove('active');
-                        h.nextElementSibling.style.maxHeight = null;
-                        h.querySelector('svg').style.transform = 'rotate(0deg)';
-                    });
+                    const content = document.createElement('div');
+                    content.className = 'accordion-content p-6';
+                    content.id = `accordion-content-${index}`;
+                    content.innerHTML = item.content;
 
-                    if (!isActive) {
-                        header.classList.add('active');
-                        content.style.maxHeight = content.scrollHeight + "px";
-                        header.querySelector('svg').style.transform = 'rotate(180deg)';
-                    }
-                });
-            });
+                    accordionItem.appendChild(header);
+                    accordionItem.appendChild(content);
+                    accordionContainer.appendChild(accordionItem);
 
-            const mobileMenuButton = document.getElementById('mobile-menu-button');
-            const mobileMenu = document.getElementById('mobile-menu');
-            mobileMenuButton.addEventListener('click', () => {
-                mobileMenu.classList.toggle('hidden');
-            });
+                    header.addEventListener('click', () => {
+                        const allHeaders = document.querySelectorAll('.accordion-header');
+                        const allContents = document.querySelectorAll('.accordion-content');
+                        const isActive = header.classList.contains('active');
 
-            const navLinks = document.querySelectorAll('.nav-link, #mobile-menu a');
-            const sections = document.querySelectorAll('section');
-
-            const observerOptions = {
-                root: null,
-                rootMargin: '0px',
-                threshold: 0.4
-            };
-
-            const observer = new IntersectionObserver((entries, observer) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        navLinks.forEach(link => {
-                            link.classList.remove('active');
-                            if (link.getAttribute('href').substring(1) === entry.target.id) {
-                                link.classList.add('active');
-                            }
+                        allHeaders.forEach(h => {
+                            h.classList.remove('active');
+                            h.nextElementSibling.style.maxHeight = '0';
+                            h.nextElementSibling.style.opacity = '0';
+                            h.setAttribute('aria-expanded', 'false');
+                            h.querySelector('svg').style.transform = 'rotate(0deg)';
                         });
-                    }
-                });
-            }, observerOptions);
 
-            sections.forEach(section => {
-                observer.observe(section);
-            });
-            
-            navLinks.forEach(link => {
-                link.addEventListener('click', () => {
-                    if (mobileMenu.classList.contains('hidden') === false) {
-                        mobileMenu.classList.add('hidden');
-                    }
+                        if (!isActive) {
+                            header.classList.add('active');
+                            content.style.maxHeight = content.scrollHeight + 'px';
+                            content.style.opacity = '1';
+                            header.setAttribute('aria-expanded', 'true');
+                            header.querySelector('svg').style.transform = 'rotate(90deg)';
+                        }
+                    });
                 });
-            });
+            }
         });
     </script>
 </body>

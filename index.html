@@ -345,70 +345,155 @@
                 }]
             };
 
-            const tooltipsData = [
-                ['Enfoque en comunidad', 'Comunicación visual', 'Inclusión de stakeholders'],
-                ['Diseño proactivo', 'Datos de usuario', 'Estrategias lúdicas', 'Retroalimentación'],
-                ['Comunicación clara', 'Lenguaje no verbal', 'Uso de pictogramas'],
-                ['Recursos adaptados', 'Juegos didácticos'],
-                ['Entrenamiento de personal', 'Educación inclusiva', 'Co-creación', 'Alianzas estratégicas'],
-                ['Educación ambiental', 'Juegos comunitarios', 'Accesibilidad']
-            ];
-
-            const ctx = document.getElementById('modelsChart').getContext('2d');
-            new Chart(ctx, {
-                type: 'bar',
-                data: chartData,
-                options: {
-                    indexAxis: 'y',
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    let label = context.dataset.label || '';
-                                    if (label) {
-                                        label += ': ';
-                                    }
-                                    const dataIndex = context.dataIndex;
-                                    const specificTooltips = tooltipsData[dataIndex];
-                                    return specificTooltips.map(tip => `• ${tip}`);
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        x: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'Número de metodologías incluidas'
-                            }
-                        },
-                        y: {
-                            ticks: {
-                                autoSkip: false
-                            }
+            <!DOCTYPE html>
+            <html lang="es" class="scroll-smooth">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Estrategia de Alcance: Iris Inclusión</title>
+                <!-- Tailwind CSS desde CDN -->
+                <script src="https://cdn.tailwindcss.com"></script>
+                <style type="text/tailwindcss">
+                    @layer base {
+                        :root {
+                            --color-primary: #1e3a8a; /* Azul oscuro corporativo */
+                            --color-secondary: #fcd34d; /* Amarillo vibrante */
+                            --color-accent: #3b82f6; /* Azul de acento */
+                            --color-background: #f1f5f9; /* Azul claro para fondo */
+                            --color-text: #1f2937; /* Gris oscuro para texto */
                         }
                     }
-                }
-            });
+                </style>
+                <!-- Font Inter para consistencia -->
+                <link rel="preconnect" href="https://fonts.googleapis.com">
+                <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+                <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+                <!-- Chart.js CDN -->
+                <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                <!-- Custom Styles -->
+                <style>
+                    body {
+                        font-family: 'Inter', sans-serif;
+                        background-color: var(--color-background);
+                        color: var(--color-text);
+                        animation: fadein 1.2s cubic-bezier(.4,0,.2,1);
+                    }
+                    @keyframes fadein {
+                        from { opacity: 0; }
+                        to { opacity: 1; }
+                    }
+                    .chart-container {
+                        position: relative;
+                        width: 100%;
+                        max-width: 900px;
+                        margin: 0 auto;
+                        height: 500px;
+                        max-height: 60vh;
+                        box-shadow: 0 10px 40px 0 rgba(30,58,138,0.15);
+                        border-radius: 1.5rem;
+                        background: rgba(255,255,255,0.9);
+                        transition: box-shadow 0.4s, background 0.4s;
+                    }
+                    .nav-link {
+                        transition: color 0.3s, border-bottom-color 0.3s, transform 0.2s;
+                        border-bottom: 2px solid transparent;
+                    }
+                    .nav-link:hover, .nav-link.active {
+                        color: var(--color-accent);
+                        border-bottom-color: var(--color-accent);
+                        transform: translateY(-2px);
+                    }
+                    .accordion-header {
+                        transition: background 0.3s, color 0.3s, box-shadow 0.3s, transform 0.2s;
+                    }
+                    .accordion-header.active {
+                        background-color: var(--color-primary);
+                        color: white;
+                        box-shadow: 0 4px 15px rgba(30,58,138,0.2);
+                        transform: translateY(-3px);
+                    }
+                    .accordion-content {
+                        max-height: 0;
+                        overflow: hidden;
+                        opacity: 0;
+                        transition: max-height 0.5s cubic-bezier(.4,0,.2,1), opacity 0.5s cubic-bezier(.4,0,.2,1);
+                    }
+                    .accordion-header.active + .accordion-content {
+                        max-height: 500px; /* Ajustado para más contenido */
+                        opacity: 1;
+                        transition-delay: 0.1s;
+                    }
+                    .card-effect {
+                        transition: transform 0.3s ease, box-shadow 0.3s ease;
+                    }
+                    .card-effect:hover {
+                        transform: translateY(-8px);
+                        box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+                    }
+                    /* Mobile menu specific styles */
+                    #mobile-menu {
+                        transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease-in-out;
+                        max-height: 0;
+                        overflow: hidden;
+                        opacity: 0;
+                    }
+                    #mobile-menu.open {
+                        max-height: 500px;
+                        opacity: 1;
+                    }
 
-            const accordionData = [
-                {
-                    title: 'Módulo 1: Pautas para la Inclusión en la Interacción con Usuarios',
-                    content: `
-                        <p class="font-semibold text-gray-700 mb-2">En este módulo, el personal recibirá pautas específicas para entender a las personas con distintos tipos de discapacidad. El objetivo es proporcionarles herramientas para manejar grupos de usuarios, centrados en la observación del entorno.</p>
-                        <ul class="list-disc pl-5 space-y-2 text-gray-600 mt-4">
-                            <li><strong>Discapacidad Física:</strong> Se abordarán técnicas para facilitar la movilidad y la participación activa, asegurando que todos puedan explorar sin barreras.</li>
-                            <li><strong>Discapacidad Intelectual:</strong> Se enseñarán estrategias para usar lenguaje sencillo, conceptos concretos y guiones sociales visuales que ayuden a la comprensión y participación, reduciendo la ansiedad y fomentando la seguridad.</li>
-                            <li><strong>Discapacidad Visual:</strong> Se explorarán métodos de guía táctil y auditiva, incentivando el uso de los sentidos del olfato y el tacto para que los participantes experimenten el entorno de una manera más profunda.</li>
-                        </ul>
-                    `
-                },
+                    /* Accessibility panel styles */
+                    #accessibility-panel {
+                        transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+                        transform: translateX(-100%);
+                        opacity: 0;
+                        visibility: hidden;
+                    }
+                    #accessibility-panel.visible {
+                        transform: translateX(0);
+                        opacity: 1;
+                        visibility: visible;
+                    }
+                </style>
+                <!-- Favicons -->
+                <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
+                <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-96x96.png">
+                <link rel="shortcut icon" href="favicon/favicon.ico">
+                <link rel="manifest" href="favicon/site.webmanifest">
+            </head>
+            <body class="antialiased">
+
+                <!-- Header y Navegación -->
+                <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-md">
+                    <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+                        <div class="text-3xl font-extrabold text-gray-900">
+                            <span class="text-blue-600">Iris</span> Inclusión
+                        </div>
+                        <div class="hidden md:flex space-x-8">
+                            <a href="#inicio" class="nav-link text-gray-600 font-medium pb-1">Inicio</a>
+                            <a href="#principios" class="nav-link text-gray-600 font-medium pb-1">Principios</a>
+                            <a href="#modelos" class="nav-link text-gray-600 font-medium pb-1">Modelos</a>
+                            <a href="#plan" class="nav-link text-gray-600 font-medium pb-1">Plan Estratégico</a>
+                            <a href="#sostenibilidad" class="nav-link text-gray-600 font-medium pb-1">Sostenibilidad</a>
+                        </div>
+                        <button id="mobile-menu-button" class="md:hidden p-2 rounded-md text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                            </svg>
+                        </button>
+                    </nav>
+                    <div id="mobile-menu" class="md:hidden px-6 pb-4">
+                        <a href="#inicio" class="block py-2 text-gray-600">Inicio</a>
+                        <a href="#principios" class="block py-2 text-gray-600">Principios</a>
+                        <a href="#modelos" class="block py-2 text-gray-600">Modelos</a>
+                        <a href="#plan" class="block py-2 text-gray-600">Plan Estratégico</a>
+                        <a href="#sostenibilidad" class="block py-2 text-gray-600">Sostenibilidad</a>
+                    </div>
+                </header>
+
+                <main>
+                    <!-- Panel y botón de accesibilidad -->
+                    <!-- ...continúa el contenido del diseño proporcionado... -->
                 {
                     title: 'Módulo 2: Estrategias para Manejo de Grupos en Entornos Abiertos o Cerrados',
                     content: `
