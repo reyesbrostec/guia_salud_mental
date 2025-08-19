@@ -123,12 +123,14 @@
       disabilityType.onchange = function() {
         const val = document.querySelector('input[name="disabilityType"]:checked')?.value || '';
         document.documentElement.setAttribute('data-accessibility', val);
-        document.getElementById('accessibility-note')?.textContent = 'Modo: ' + (val || 'predeterminado');
+        const noteEl = document.getElementById('accessibility-note');
+        if (noteEl) noteEl.textContent = 'Modo: ' + (val || 'predeterminado');
       };
       document.querySelectorAll('input[name="disabilityType"]').forEach(r => r.addEventListener('change', function() {
         const val = document.querySelector('input[name="disabilityType"]:checked')?.value || '';
         document.documentElement.setAttribute('data-accessibility', val);
-        document.getElementById('accessibility-note')?.textContent = 'Modo: ' + (val || 'predeterminado');
+        const noteEl = document.getElementById('accessibility-note');
+        if (noteEl) noteEl.textContent = 'Modo: ' + (val || 'predeterminado');
       }));
     }
   }
