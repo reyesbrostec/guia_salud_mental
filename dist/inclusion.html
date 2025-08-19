@@ -366,6 +366,30 @@
                 }
             });
 
+            <!-- Botón de accesibilidad flotante -->
+            <button id="accessibility-btn" aria-label="Opciones de accesibilidad" title="Accesibilidad">
+                <span aria-hidden="true">&#9881;</span>
+            </button>
+            <div id="accessibility-panel" role="dialog" aria-modal="true" aria-label="Opciones de accesibilidad">
+                <p>Personaliza tu experiencia</p>
++
+                <div class="opciones">
+                  <input type="radio" id="visual" name="opcion" value="Visual">
+                  <label for="visual" title="Modificaciones de contraste, tamaño de letra, o uso de lectores de pantalla.">Ajustes Visuales</label><br>
+          
+                  <input type="radio" id="auditiva" name="opcion" value="Auditiva">
+                  <label for="auditiva" title="Opciones para subtítulos, transcripciones o alertas visuales.">Ajustes Auditivos</label><br>
+                  <input type="radio" id="motriz" name="opcion" value="Motriz">
+                  <label for="motriz" title="Adaptaciones para navegación sin mouse, con teclado o comandos de voz.">Ajustes Motores</label><br>
+          
+                  <input type="radio" id="cognitiva" name="opcion" value="Cognitiva">
+                  <label for="cognitiva" title="Soporte para la comprensión y retención de información.">Ajustes Cognitivos</label><br>
+          
+                  <input type="radio" id="dislexia" name="opcion" value="Dislexia">
+                  <label for="dislexia" title="Fuentes especiales y diseño de texto que facilitan la lectura.">Ajustes para Dislexia</label>
+                </div>
+            </div>
+
             const accordionData = [
                 {
                     title: 'Módulo 1: Pautas para la Inclusión en la Interacción con Usuarios',

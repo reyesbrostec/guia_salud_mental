@@ -251,25 +251,23 @@
         <span aria-hidden="true">&#9881;</span>
     </button>
     <div id="accessibility-panel" role="dialog" aria-modal="true" aria-label="Opciones de accesibilidad">
-        <label><input type="checkbox" id="toggle-contrast"> Alto contraste</label>
-        <label><input type="checkbox" id="toggle-font"> Fuente grande</label>
-        <label><input type="checkbox" id="toggle-justify" checked disabled> Texto justificado</label>
-        <label><input type="checkbox" id="toggle-links"> Resaltar enlaces</label>
-        <label><input type="checkbox" id="toggle-dark"> Modo oscuro</label>
-        <label><input type="checkbox" id="toggle-lineheight"> Espaciado de líneas</label>
-        <label><input type="checkbox" id="toggle-cursor"> Cursor grande</label>
-        <label><input type="checkbox" id="toggle-underline"> Subrayar enlaces</label>
-        <label><input type="checkbox" id="toggle-dyslexia"> Fuente dislexia</label>
-        <hr class="my-2">
-        <label for="disability-type" class="font-semibold">Tipo de discapacidad:</label>
-        <select id="disability-type" class="w-full mt-1 p-1 rounded border border-slate-300">
-            <option value="">Selecciona una opción</option>
-            <option value="visual">Visual</option>
-            <option value="auditiva">Auditiva</option>
-            <option value="motriz">Motriz</option>
-            <option value="cognitiva">Cognitiva</option>
-            <option value="dislexia">Dislexia</option>
-        </select>
+        <p>Personaliza tu experiencia</p>
++
+        <div class="opciones">
+          <input type="radio" id="visual" name="opcion" value="Visual">
+          <label for="visual" title="Modificaciones de contraste, tamaño de letra, o uso de lectores de pantalla.">Ajustes Visuales</label><br>
+          
+          <input type="radio" id="auditiva" name="opcion" value="Auditiva">
+          <label for="auditiva" title="Opciones para subtítulos, transcripciones o alertas visuales.">Ajustes Auditivos</label><br>
+          <input type="radio" id="motriz" name="opcion" value="Motriz">
+          <label for="motriz" title="Adaptaciones para navegación sin mouse, con teclado o comandos de voz.">Ajustes Motores</label><br>
+          
+          <input type="radio" id="cognitiva" name="opcion" value="Cognitiva">
+          <label for="cognitiva" title="Soporte para la comprensión y retención de información.">Ajustes Cognitivos</label><br>
+          
+          <input type="radio" id="dislexia" name="opcion" value="Dislexia">
+          <label for="dislexia" title="Fuentes especiales y diseño de texto que facilitan la lectura.">Ajustes para Dislexia</label>
+        </div>
     </div>
 
     <!-- Scripts -->
