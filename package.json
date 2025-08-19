@@ -5,9 +5,16 @@
   "main": "build.js",
   "scripts": {
     "prebuild": "git submodule update --init --remote",
-    "build": "node build.js"
+    "build:css": "node scripts/build-css.js",
+    "build": "npm run build:css && node build.js"
   },
   "dependencies": {
     "markdown-it": "^13.0.2"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.12",
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.12"
   }
 }
