@@ -30,29 +30,49 @@
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-  const accBtn = document.getElementById('accessibility-btn');
-  const accPanel = document.getElementById('accessibility-panel');
-  if (accBtn && accPanel) {
-    accBtn.addEventListener('click', function () {
-      accPanel.classList.toggle('hidden');
-      accBtn.setAttribute('aria-expanded', String(!accPanel.classList.contains('hidden')));
-    });
+(function () {
+  function setupAccessibility() {
+    const accBtn = document.getElementById('accessibility-btn');
+    const accPanel = document.getElementById('accessibility-panel');
+    if (accBtn && accPanel) {
+      // normalize display in case Tailwind 'hidden' is removed by compilation
+      if (accPanel.classList.contains('hidden')) accPanel.style.display = 'none';
+      else accPanel.style.display = '';
+      accBtn.setAttribute('aria-expanded', String(accPanel.style.display !== 'none'));
+      accBtn.addEventListener('click', function () {
+        const isHidden = accPanel.classList.toggle('hidden');
+        if (isHidden) {
+          accPanel.style.display = 'none';
+        } else {
+          accPanel.style.display = '';
+          // move focus inside panel for accessibility
+          const firstInput = accPanel.querySelector('input, button, [tabindex]');
+          if (firstInput) firstInput.focus();
+        }
+        accBtn.setAttribute('aria-expanded', String(!isHidden));
+      });
+    }
+
+    // El build busca "disabilityType.onchange" en el script; mantén la referencia
+    const disabilityType = document.querySelector('input[name="disabilityType"]');
+    if (disabilityType) {
+      disabilityType.onchange = function() {
+        const val = document.querySelector('input[name="disabilityType"]:checked')?.value || '';
+        document.documentElement.setAttribute('data-accessibility', val);
+        document.getElementById('accessibility-note')?.textContent = 'Modo: ' + (val || 'predeterminado');
+      };
+      document.querySelectorAll('input[name="disabilityType"]').forEach(r => r.addEventListener('change', function() {
+        const val = document.querySelector('input[name="disabilityType"]:checked')?.value || '';
+        document.documentElement.setAttribute('data-accessibility', val);
+        document.getElementById('accessibility-note')?.textContent = 'Modo: ' + (val || 'predeterminado');
+      }));
+    }
   }
 
-  // El build busca "disabilityType.onchange" en el script; mantén la referencia
-  const disabilityType = document.querySelector('input[name="disabilityType"]');
-  if (disabilityType) {
-    disabilityType.onchange = function() {
-      const val = document.querySelector('input[name="disabilityType"]:checked')?.value || '';
-      document.documentElement.setAttribute('data-accessibility', val);
-      document.getElementById('accessibility-note')?.textContent = 'Modo: ' + (val || 'predeterminado');
-    };
-    document.querySelectorAll('input[name="disabilityType"]').forEach(r => r.addEventListener('change', function() {
-      const val = document.querySelector('input[name="disabilityType"]:checked')?.value || '';
-      document.documentElement.setAttribute('data-accessibility', val);
-      document.getElementById('accessibility-note')?.textContent = 'Modo: ' + (val || 'predeterminado');
-    }));
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupAccessibility);
+  } else {
+    setupAccessibility();
   }
-});
+})();
 </script>
