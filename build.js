@@ -17,6 +17,22 @@ const md = new MarkdownIt({ html: true });
 const articlesPath = path.join(__dirname, 'src', 'publicaciones');
 const templatePath = path.join(__dirname, 'index.html');
 let templateHtml = fs.readFileSync(templatePath, 'utf8');
+// If an accessibility panel file exists, inject its HTML into the template where a marker comment is present
+const accessPanelSrcEarly = path.join(__dirname, 'src', 'accessibility-panel.html');
+if (fs.existsSync(accessPanelSrcEarly)) {
+  try {
+    const accessPanelHtmlEarly = fs.readFileSync(accessPanelSrcEarly, 'utf8');
+    // replace marker comment if present
+    if (/<!--\s*Accessibility panel moved[\s\S]*?build\.js\s*-->/.test(templateHtml)) {
+      templateHtml = templateHtml.replace(/<!--\s*Accessibility panel moved[\s\S]*?build\.js\s*-->/, accessPanelHtmlEarly);
+    } else {
+      // fallback: insert after <body>
+      templateHtml = templateHtml.replace(/(<body[^>]*>)/i, `$1\n${accessPanelHtmlEarly}`);
+    }
+  } catch (e) {
+    console.error('No se pudo leer src/accessibility-panel.html para inyectar en index:', e.message);
+  }
+}
 
 const blogPosts = [];
 
@@ -195,43 +211,31 @@ console.log(`Posts procesados: ${blogPosts.length}`);
 blogPosts.forEach(p => console.log(`- ${p.title} (slug: ${p.slug}) category: ${p.category || 'Sin categoría'}`));
 
 
-// Copiar inclusion.html a dist/ e inyectar protocolo de accesibilidad
+// Copiar inclusion.html a dist/ e inyectar protocolo de accesibilidad desde src/accessibility-panel.html
 const inclusionSrc = path.join(__dirname, 'src', 'inclusion.html');
 const inclusionDest = path.join(distDir, 'inclusion.html');
+const accessPanelSrc = path.join(__dirname, 'src', 'accessibility-panel.html');
+let accessPanelHtml = '';
+if (fs.existsSync(accessPanelSrc)) {
+  accessPanelHtml = fs.readFileSync(accessPanelSrc, 'utf8');
+}
 if (fs.existsSync(inclusionSrc)) {
   let inclusionHtml = fs.readFileSync(inclusionSrc, 'utf8');
-  // Extraer bloque de accesibilidad de index.html generado
-  const distIndexPath = path.join(distDir, 'index.html');
-  let distIndexHtml = fs.existsSync(distIndexPath) ? fs.readFileSync(distIndexPath, 'utf8') : '';
-  // Extraer el botón, panel y script de accesibilidad
-  const btnRegex = /<button id="accessibility-btn"[\s\S]*?<\/button>/;
-  const panelRegex = /<div id="accessibility-panel"[\s\S]*?<\/div>/;
-  const scriptRegex = /<script>[\s\S]*?const accBtn = document.getElementById\('accessibility-btn'\);[\s\S]*?disabilityType\.onchange[\s\S]*?};[\s\S]*?<\/script>/;
-  const btnMatch = distIndexHtml.match(btnRegex);
-  const panelMatch = distIndexHtml.match(panelRegex);
-  const scriptMatch = distIndexHtml.match(scriptRegex);
-  // Insertar después de <body ...>
-  if (btnMatch && panelMatch) {
-    inclusionHtml = inclusionHtml.replace(/(<body[^>]*>)/i, `$1
-${btnMatch[0]}
-${panelMatch[0]}`);
+  // Insertar el bloque de accesibilidad después de <body ...> si existe
+  if (accessPanelHtml) {
+    inclusionHtml = inclusionHtml.replace(/(<body[^>]*>)/i, `$1\n${accessPanelHtml}`);
   }
   // Insertar botón flotante después de <main> o al inicio de <main>
-  const floatingBtn = `\n<a href=\"index.html\" class=\"fixed bottom-6 right-6 z-50 bg-[#0d9488] hover:bg-[#0d7a6b] text-white font-semibold px-6 py-3 rounded-lg shadow-md transition-colors\" style=\"box-shadow: 0 2px 8px rgba(0,0,0,0.15);\">\n    Prisma: Salud Mental\n</a>\n`;
+  const floatingBtn = `\n<a href="index.html" class="fixed bottom-6 right-6 z-50 bg-[#0d9488] hover:bg-[#0d7a6b] text-white font-semibold px-6 py-3 rounded-lg shadow-md transition-colors" style="box-shadow: 0 2px 8px rgba(0,0,0,0.15);">\n    Prisma: Salud Mental\n</a>\n`;
   if (/<main[^>]*>/.test(inclusionHtml)) {
     inclusionHtml = inclusionHtml.replace(/(<main[^>]*>)/i, `$1${floatingBtn}`);
   } else {
-    // fallback: insert before first <section>
     inclusionHtml = inclusionHtml.replace(/(<section[^>]*>)/i, `${floatingBtn}$1`);
-  }
-  // Insertar script antes de </body>
-  if (scriptMatch) {
-    inclusionHtml = inclusionHtml.replace(/<\/body>/i, `${scriptMatch[0]}\n</body>`);
   }
 
   // Ensure contact form has id contact-form so our script runs
   inclusionHtml = inclusionHtml.replace(/<form class=\"space-y-6\">/i, '<form id="contact-form" class="space-y-6">');
 
   fs.writeFileSync(inclusionDest, inclusionHtml, 'utf8');
-  console.log('inclusion.html copiado a dist/ e integrado protocolo de accesibilidad');
+  console.log('inclusion.html copiado a dist/ e integrado protocolo de accesibilidad (desde src/accessibility-panel.html)');
 }
