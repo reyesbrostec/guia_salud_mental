@@ -213,6 +213,24 @@
     outline-style: none;
   }
 }
+@layer base {
+  h1 {
+    font-size: 2.25rem;
+    margin: 0 0 0.75rem;
+  }
+  h2 {
+    font-size: 1.5rem;
+    margin: 0 0 0.6rem;
+  }
+  .chart-container {
+    height: 500px;
+    min-height: 300px;
+  }
+  .chart-container canvas {
+    width: 100% !important;
+    height: 100% !important;
+  }
+}
 @property --tw-rotate-x {
   syntax: "*";
   inherits: false;
