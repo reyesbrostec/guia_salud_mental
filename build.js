@@ -256,9 +256,3 @@ if (fs.existsSync(inclusionSrc)) {
   console.log('inclusion.html copiado a dist/ e integrado protocolo de accesibilidad (desde src/accessibility-panel.html)');
 }
 
-// Copia el CSS de Tailwind generado a dist/assets/css/tailwind.css para asegurar estilos en producción
-const srcCss = path.join(__dirname, 'assets', 'css', 'tailwind.css');
-const distCssDir = path.join(__dirname, 'dist', 'assets', 'css');
-if (!fs.existsSync(distCssDir)) fs.mkdirSync(distCssDir, { recursive: true });
-fs.copyFileSync(srcCss, path.join(distCssDir, 'tailwind.css'));
-console.log('Tailwind CSS copiado a dist/assets/css/tailwind.css');
