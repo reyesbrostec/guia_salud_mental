@@ -73,6 +73,8 @@
   html.acc-motriz a, html.acc-motriz button { padding: 0.75rem; }
   /* high contrast for demonstration */
   html.acc-cognitiva { line-height: 1.6; }
+  /* ensure accessibility button is always on top and fixed */
+  #accessibility-btn { position: fixed; z-index: 99999 !important; }
 </style>
 
 <div id="accessibility-panel" class="fixed bottom-20 left-6 z-50 w-80 bg-white border border-gray-200 rounded-lg p-4 shadow-lg hidden" role="dialog" aria-label="Panel de accesibilidad">
@@ -131,18 +133,34 @@
     const disabilityType = document.querySelector('input[name="disabilityType"]');
     if (disabilityType) {
       function applyAccessibility() {
-      const val = document.querySelector('input[name="disabilityType"]:checked')?.value || '';
-      console.log('[accessibility] selected:', val);
-      document.documentElement.setAttribute('data-accessibility', val);
-      const noteEl = document.getElementById('accessibility-note');
-      if (noteEl) noteEl.textContent = 'Modo: ' + (val || 'predeterminado');
-      // Apply simple visual adjustments based on selection
-      document.documentElement.classList.remove('acc-visual','acc-auditiva','acc-motriz','acc-cognitiva','acc-dislexia');
-      if (val === 'visual') document.documentElement.classList.add('acc-visual');
-      if (val === 'auditiva') document.documentElement.classList.add('acc-auditiva');
-      if (val === 'motriz') document.documentElement.classList.add('acc-motriz');
-      if (val === 'cognitiva') document.documentElement.classList.add('acc-cognitiva');
-      if (val === 'dislexia') document.documentElement.classList.add('acc-dislexia');
+        const val = document.querySelector('input[name="disabilityType"]:checked')?.value || '';
+        console.log('[accessibility] selected:', val);
+        document.documentElement.setAttribute('data-accessibility', val);
+        // keep the button visible and on top
+        const accBtnEl = document.getElementById('accessibility-btn');
+        if (accBtnEl) {
+          accBtnEl.style.position = 'fixed';
+          accBtnEl.style.zIndex = '99999';
+          accBtnEl.style.display = '';
+        }
+        // Apply simple visual adjustments based on selection
+        document.documentElement.classList.remove('acc-visual','acc-auditiva','acc-motriz','acc-cognitiva','acc-dislexia');
+        if (val === 'visual') document.documentElement.classList.add('acc-visual');
+        if (val === 'auditiva') document.documentElement.classList.add('acc-auditiva');
+        if (val === 'motriz') document.documentElement.classList.add('acc-motriz');
+        if (val === 'cognitiva') document.documentElement.classList.add('acc-cognitiva');
+        if (val === 'dislexia') document.documentElement.classList.add('acc-dislexia');
+
+        // Map human-readable descriptions for the panel
+        const descriptions = {
+          'visual': 'Aumenta tamaño de fuente y contraste ligero',
+          'auditiva': 'Activa ayudas auditivas/lectura (no aplica visualmente)',
+          'motriz': 'Elementos interactivos con mayor área clicable',
+          'cognitiva': 'Mayor interlineado y ritmo de lectura mejorado',
+          'dislexia': 'Tipografía y espaciado optimizados para lectura'
+        };
+        const noteEl = document.getElementById('accessibility-note');
+        if (noteEl) noteEl.textContent = 'Modo: ' + (val || 'predeterminado') + (val ? ' — ' + (descriptions[val] || '') : ' — Sin cambios aplicados');
       }
       // attach both change and click to be robust across browsers
       document.querySelectorAll('input[name="disabilityType"]').forEach(r => {
