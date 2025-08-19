@@ -56,18 +56,20 @@
     // El build busca "disabilityType.onchange" en el script; mantén la referencia
     const disabilityType = document.querySelector('input[name="disabilityType"]');
     if (disabilityType) {
-      disabilityType.onchange = function() {
+      function applyAccessibility() {
         const val = document.querySelector('input[name="disabilityType"]:checked')?.value || '';
+        console.log('[accessibility] selected:', val);
         document.documentElement.setAttribute('data-accessibility', val);
         const noteEl = document.getElementById('accessibility-note');
         if (noteEl) noteEl.textContent = 'Modo: ' + (val || 'predeterminado');
-      };
-      document.querySelectorAll('input[name="disabilityType"]').forEach(r => r.addEventListener('change', function() {
-        const val = document.querySelector('input[name="disabilityType"]:checked')?.value || '';
-        document.documentElement.setAttribute('data-accessibility', val);
-        const noteEl = document.getElementById('accessibility-note');
-        if (noteEl) noteEl.textContent = 'Modo: ' + (val || 'predeterminado');
-      }));
+      }
+      // attach both change and click to be robust across browsers
+      document.querySelectorAll('input[name="disabilityType"]').forEach(r => {
+        r.addEventListener('change', function() { applyAccessibility(); });
+        r.addEventListener('click', function() { applyAccessibility(); });
+      });
+      // also call once to set initial state if any radio is pre-checked
+      applyAccessibility();
     }
   }
 
