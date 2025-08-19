@@ -1,2 +1,23 @@
+# Normalize line endings to LF for text files to avoid CRLF/LF diffs on Windows
+* text=auto
+
+# Force LF for common text files
+*.html text eol=lf
+*.htm text eol=lf
+*.css text eol=lf
+*.js text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.txt text eol=lf
+
+# Binary files - keep as-is
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
 # Auto detect text files and perform LF normalization
 * text=auto
