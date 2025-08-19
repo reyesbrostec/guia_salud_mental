@@ -162,8 +162,7 @@
     const disabilityType = document.querySelector('input[name="disabilityType"]');
     if (disabilityType) {
       function applyAccessibility() {
-        const val = document.querySelector('input[name="disabilityType"]:checked')?.value || '';
-        console.log('[accessibility] selected:', val);
+  const val = document.querySelector('input[name="disabilityType"]:checked')?.value || '';
         document.documentElement.setAttribute('data-accessibility', val);
         // keep the button visible and on top
         const accBtnEl = document.getElementById('accessibility-btn');
