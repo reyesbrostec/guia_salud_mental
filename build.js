@@ -34,6 +34,21 @@ if (fs.existsSync(accessPanelSrcEarly)) {
   }
 }
 
+// Asegura que las clases y estilos modernos se mantengan en el template generado
+// (fade-in, btn-modern, transiciones)
+// Si el template no tiene la animación fadein, la agrega
+if (!/animation: fadein/.test(templateHtml)) {
+  templateHtml = templateHtml.replace(/<style>([\s\S]*?)<\/style>/, (match, css) => {
+    if (css.includes('animation: fadein')) return match;
+    return match.replace('</style>', `\n        @keyframes fadein { from { opacity: 0; } to { opacity: 1; } }\n        body { animation: fadein 1.2s cubic-bezier(.4,0,.2,1); }\n</style>`);
+  });
+}
+// Asegura que el botón principal tenga la clase btn-modern
+templateHtml = templateHtml.replace(/<a href="index.html"[^>]*class="([^"]*)"/, (m, classes) => {
+  if (classes.includes('btn-modern')) return m;
+  return m.replace(classes, 'btn-modern');
+});
+
 const blogPosts = [];
 
 function collectMarkdownFiles(dir) {

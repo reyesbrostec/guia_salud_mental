@@ -25,6 +25,11 @@
             font-family: 'Inter', sans-serif;
             background-color: #FDFBF8;
             color: #3a3a3a;
+            animation: fadein 1.2s cubic-bezier(.4,0,.2,1);
+        }
+        @keyframes fadein {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
         .chart-container {
             position: relative;
@@ -34,6 +39,10 @@
             margin-right: auto;
             height: 500px;
             max-height: 60vh;
+            box-shadow: 0 8px 32px 0 rgba(60,60,60,0.10);
+            border-radius: 1.25rem;
+            background: rgba(255,255,255,0.95);
+            transition: box-shadow 0.4s cubic-bezier(.4,0,.2,1), background 0.4s cubic-bezier(.4,0,.2,1);
         }
         @media (max-width: 768px) {
             .chart-container {
@@ -52,14 +61,33 @@
         .tab-button.active {
             background-color: #4A7C59;
             color: #FFFFFF;
+            transition: background 0.3s, color 0.3s;
+        }
+        .accordion-header {
+            transition: background 0.3s, color 0.3s, box-shadow 0.3s;
         }
         .accordion-header.active {
             background-color: #EBF0E4;
+            box-shadow: 0 2px 8px 0 rgba(60,60,60,0.08);
         }
         .accordion-content {
             max-height: 0;
             overflow: hidden;
-            transition: max-height 0.5s ease-out;
+            opacity: 0;
+            transition: max-height 0.5s cubic-bezier(.4,0,.2,1), opacity 0.5s cubic-bezier(.4,0,.2,1);
+        }
+        .accordion-header.active + .accordion-content {
+            opacity: 1;
+            transition-delay: 0.1s;
+        }
+        .btn-modern {
+            @apply px-4 py-2 rounded-lg shadow-md font-semibold transition-colors duration-300;
+            background: linear-gradient(90deg, #0d9488 0%, #4A7C59 100%);
+            color: #fff;
+        }
+        .btn-modern:hover {
+            background: linear-gradient(90deg, #4A7C59 0%, #0d9488 100%);
+            color: #fff;
         }
     </style>
 </head>
@@ -211,7 +239,7 @@
 </script>
 
         <div class="w-full flex justify-end p-4">
-            <a href="index.html" class="inline-flex items-center px-4 py-2 bg-[#0d9488] text-white rounded-md shadow hover:bg-[#0d7a6b] transition-colors">
+            <a href="index.html" class="btn-modern">
                 Prisma: Salud Mental
             </a>
         </div>
