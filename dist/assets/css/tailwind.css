@@ -84,6 +84,9 @@
 .justify-end {
   justify-content: flex-end;
 }
+.overflow-hidden {
+  overflow: hidden;
+}
 .scroll-smooth {
   scroll-behavior: smooth;
 }
@@ -93,6 +96,10 @@
 .border {
   border-style: var(--tw-border-style);
   border-width: 1px;
+}
+.border-4 {
+  border-style: var(--tw-border-style);
+  border-width: 4px;
 }
 .border-t {
   border-top-style: var(--tw-border-style);
@@ -113,8 +120,20 @@
 .bg-\[\#F0FDFB\]\/80 {
   background-color: color-mix(in oklab, #F0FDFB 80%, transparent);
 }
+.bg-gradient-to-br {
+  --tw-gradient-position: to bottom right in oklab;
+  background-image: linear-gradient(var(--tw-gradient-stops));
+}
+.bg-gradient-to-r {
+  --tw-gradient-position: to right in oklab;
+  background-image: linear-gradient(var(--tw-gradient-stops));
+}
 .bg-cover {
   background-size: cover;
+}
+.bg-clip-text {
+  -webkit-background-clip: text;
+          background-clip: text;
 }
 .bg-center {
   background-position: center;
@@ -134,6 +153,9 @@
 .text-\[\#4A7C59\] {
   color: #4A7C59;
 }
+.text-transparent {
+  color: transparent;
+}
 .antialiased {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -143,6 +165,11 @@
 }
 .transition {
   transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to, opacity, box-shadow, transform, translate, scale, rotate, filter, backdrop-filter, display, visibility, content-visibility, overlay, pointer-events;
+  transition-timing-function: var(--tw-ease, ease);
+  transition-duration: var(--tw-duration, 0s);
+}
+.transition-all {
+  transition-property: all;
   transition-timing-function: var(--tw-ease, ease);
   transition-duration: var(--tw-duration, 0s);
 }
@@ -164,6 +191,16 @@
 .duration-300 {
   --tw-duration: 300ms;
   transition-duration: 300ms;
+}
+.hover\:scale-105 {
+  &:hover {
+    @media (hover: hover) {
+      --tw-scale-x: 105%;
+      --tw-scale-y: 105%;
+      --tw-scale-z: 105%;
+      scale: var(--tw-scale-x) var(--tw-scale-y);
+    }
+  }
 }
 .hover\:bg-\[\#0d7a6b\] {
   &:hover {
@@ -313,6 +350,21 @@
   syntax: "*";
   inherits: false;
 }
+@property --tw-scale-x {
+  syntax: "*";
+  inherits: false;
+  initial-value: 1;
+}
+@property --tw-scale-y {
+  syntax: "*";
+  inherits: false;
+  initial-value: 1;
+}
+@property --tw-scale-z {
+  syntax: "*";
+  inherits: false;
+  initial-value: 1;
+}
 @property --tw-shadow {
   syntax: "*";
   inherits: false;
@@ -401,6 +453,9 @@
       --tw-drop-shadow-alpha: 100%;
       --tw-drop-shadow-size: initial;
       --tw-duration: initial;
+      --tw-scale-x: 1;
+      --tw-scale-y: 1;
+      --tw-scale-z: 1;
       --tw-shadow: 0 0 #0000;
       --tw-shadow-color: initial;
       --tw-shadow-alpha: 100%;
