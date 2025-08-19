@@ -1,4 +1,14 @@
-# Normalize line endings to LF for text files to avoid CRLF/LF diffs on Windows
+* text=auto
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.svg text
+*.mp4 binary
+*.webm binary
+*.woff2 binary
+*.ttf binary# Normalize line endings to LF for text files to avoid CRLF/LF diffs on Windows
 * text=auto
 
 # Force LF for common text files
