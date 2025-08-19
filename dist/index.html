@@ -9,179 +9,6 @@
     <style type="text/tailwindcss">
         @layer base {
             :root {
-                --color-primary: #1e3a8a;
-                --color-secondary: #fcd34d;
-                --color-accent: #3b82f6;
-                --color-background: #f1f5f9;
-                --color-text: #1f2937;
-            }
-        }
-    </style>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-96x96.png">
-    <link rel="shortcut icon" href="favicon/favicon.ico">
-    <link rel="manifest" href="favicon/site.webmanifest">
-    <style>
-        body { font-family: 'Inter', sans-serif; background-color: var(--color-background); color: var(--color-text); animation: fadein 1.2s cubic-bezier(.4,0,.2,1); }
-        @keyframes fadein { from { opacity: 0; } to { opacity: 1; } }
-        .chart-container { position: relative; width: 100%; max-width: 900px; margin: 0 auto; height: 500px; max-height: 60vh; box-shadow: 0 10px 40px 0 rgba(30,58,138,0.15); border-radius: 1.5rem; background: rgba(255,255,255,0.9); transition: box-shadow 0.4s, background 0.4s; }
-        .nav-link { transition: color 0.3s, border-bottom-color 0.3s, transform 0.2s; border-bottom: 2px solid transparent; }
-        .nav-link:hover, .nav-link.active { color: var(--color-accent); border-bottom-color: var(--color-accent); transform: translateY(-2px); }
-        .accordion-header { transition: background 0.3s, color 0.3s, box-shadow 0.3s, transform 0.2s; }
-        .accordion-header.active { background-color: var(--color-primary); color: white; box-shadow: 0 4px 15px rgba(30,58,138,0.2); transform: translateY(-3px); }
-        .accordion-content { max-height: 0; overflow: hidden; opacity: 0; transition: max-height 0.5s cubic-bezier(.4,0,.2,1), opacity 0.5s cubic-bezier(.4,0,.2,1); }
-        .accordion-header.active + .accordion-content { max-height: 500px; opacity: 1; transition-delay: 0.1s; }
-        .card-effect { transition: transform 0.3s ease, box-shadow 0.3s ease; }
-        .card-effect:hover { transform: translateY(-8px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
-        #mobile-menu { transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease-in-out; max-height: 0; overflow: hidden; opacity: 0; }
-        #mobile-menu.open { max-height: 500px; opacity: 1; }
-        #accessibility-panel { transition: transform 0.3s ease-out, opacity 0.3s ease-out; transform: translateX(-100%); opacity: 0; visibility: hidden; }
-        #accessibility-panel.visible { transform: translateX(0); opacity: 1; visibility: visible; }
-    </style>
-</head>
-<body class="antialiased">
-    <!-- Header y Navegación -->
-    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-md">
-        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <div class="text-3xl font-extrabold text-gray-900">
-                <span class="text-blue-600">Iris</span> Inclusión
-            </div>
-            <div class="hidden md:flex space-x-8">
-                <a href="#inicio" class="nav-link text-gray-600 font-medium pb-1">Inicio</a>
-                <a href="#principios" class="nav-link text-gray-600 font-medium pb-1">Principios</a>
-                <a href="#modelos" class="nav-link text-gray-600 font-medium pb-1">Modelos</a>
-                <a href="#plan" class="nav-link text-gray-600 font-medium pb-1">Plan Estratégico</a>
-                <a href="#sostenibilidad" class="nav-link text-gray-600 font-medium pb-1">Sostenibilidad</a>
-            </div>
-            <button id="mobile-menu-button" class="md:hidden p-2 rounded-md text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
-                </svg>
-            </button>
-        </nav>
-        <div id="mobile-menu" class="md:hidden px-6 pb-4">
-            <a href="#inicio" class="block py-2 text-gray-600">Inicio</a>
-            <a href="#principios" class="block py-2 text-gray-600">Principios</a>
-            <a href="#modelos" class="block py-2 text-gray-600">Modelos</a>
-            <a href="#plan" class="block py-2 text-gray-600">Plan Estratégico</a>
-            <a href="#sostenibilidad" class="block py-2 text-gray-600">Sostenibilidad</a>
-        </div>
-    </header>
-    <main>
-        <!-- Panel y botón de accesibilidad -->
-        <button id="accessibility-btn" class="fixed bottom-6 left-6 z-50 bg-blue-600 text-white px-4 py-3 rounded-full shadow-lg hover:bg-blue-700 transition-colors duration-300" aria-haspopup="dialog" aria-controls="accessibility-panel">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944c-.694 0-1.378.08-2.05.232-1.294.298-2.522.82-3.66 1.558-.87.56-1.666 1.258-2.394 2.083-1.026 1.168-1.782 2.502-2.224 3.91-.442 1.408-.592 2.87-.45 4.302.14 1.432.552 2.834 1.238 4.144.686 1.31 1.6 2.492 2.71 3.498 1.11.996 2.364 1.776 3.73 2.338 1.366.562 2.808.82 4.254.778 1.446-.042 2.85-.35 4.168-.916 1.318-.566 2.51-1.36 3.528-2.38 1.018-1.02 1.812-2.26 2.378-3.612.566-1.352.822-2.798.77-4.244-.052-1.446-.36-2.85-.92-4.168-.56-1.318-1.354-2.51-2.372-3.528z" />
-            </svg>
-        </button>
-        <div id="accessibility-panel" class="fixed bottom-20 left-6 z-50 w-80 bg-white border border-gray-200 rounded-lg p-4 shadow-xl transition-all duration-300 hidden" role="dialog" aria-label="Panel de accesibilidad">
-            <h3 class="text-lg font-semibold mb-2 text-gray-900">Ajustes de accesibilidad</h3>
-            <p class="text-sm text-gray-600 mb-3">Selecciona una preferencia para ajustar la interfaz.</p>
-            <div role="radiogroup" aria-label="Tipo de discapacidad">
-                <label class="flex items-center mb-2 cursor-pointer text-gray-700 hover:text-blue-600 transition-colors">
-                    <input type="radio" name="disabilityType" id="dis_visual" value="visual" class="mr-2">
-                    <span>Tecnologías visuales</span>
-                </label>
-                <label class="flex items-center mb-2 cursor-pointer text-gray-700 hover:text-blue-600 transition-colors">
-                    <input type="radio" name="disabilityType" id="dis_auditiva" value="auditiva" class="mr-2">
-                    <span>Tecnologías auditivas</span>
-                </label>
-                <label class="flex items-center mb-2 cursor-pointer text-gray-700 hover:text-blue-600 transition-colors">
-                    <input type="radio" name="disabilityType" id="dis_motriz" value="motriz" class="mr-2">
-                    <span>Soporte motriz</span>
-                </label>
-                <label class="flex items-center mb-2 cursor-pointer text-gray-700 hover:text-blue-600 transition-colors">
-                    <input type="radio" name="disabilityType" id="dis_cognitiva" value="cognitiva" class="mr-2">
-                    <span>Facilidades cognitivas</span>
-                </label>
-                <label class="flex items-center mb-2 cursor-pointer text-gray-700 hover:text-blue-600 transition-colors">
-                    <input type="radio" name="disabilityType" id="dis_dislexia" value="dislexia" class="mr-2">
-                    <span>Soporte de lectura</span>
-                </label>
-            </div>
-            <p id="accessibility-note" class="mt-4 text-xs text-gray-500">Los cambios son temporales y locales en tu navegador.</p>
-        </div>
-        <script>
-            (function () {
-                function setupAccessibility() {
-                    const accBtn = document.getElementById('accessibility-btn');
-                    const accPanel = document.getElementById('accessibility-panel');
-                    if (accBtn && accPanel) {
-                        accBtn.addEventListener('click', function () {
-                            const isVisible = accPanel.classList.toggle('visible');
-                            accPanel.classList.toggle('hidden');
-                            accBtn.setAttribute('aria-expanded', String(isVisible));
-                            if (isVisible) {
-                                const firstInput = accPanel.querySelector('input, button, [tabindex]');
-                                if (firstInput) firstInput.focus();
-                            }
-                        });
-                    }
-                    function applyAccessibility() {
-                        const val = document.querySelector('input[name="disabilityType"]:checked')?.value || '';
-                        document.documentElement.setAttribute('data-accessibility', val);
-                        document.documentElement.classList.remove('acc-visual', 'acc-auditiva', 'acc-motriz', 'acc-cognitiva', 'acc-dislexia');
-                        if (val === 'visual') document.documentElement.classList.add('acc-visual');
-                        if (val === 'auditiva') document.documentElement.classList.add('acc-auditiva');
-                        if (val === 'motriz') document.documentElement.classList.add('acc-motriz');
-                        if (val === 'cognitiva') document.documentElement.classList.add('acc-cognitiva');
-                        if (val === 'dislexia') document.documentElement.classList.add('acc-dislexia');
-                        const descriptions = {
-                            'visual': 'Aumenta el tamaño de fuente y contraste ligero',
-                            'auditiva': 'Activa ayudas auditivas/lectura (no aplica visualmente)',
-                            'motriz': 'Elementos interactivos con mayor área clicable',
-                            'cognitiva': 'Mayor interlineado y ritmo de lectura mejorado',
-                            'dislexia': 'Tipografía y espaciado optimizados para lectura'
-                        };
-                        const noteEl = document.getElementById('accessibility-note');
-                        if (noteEl) noteEl.textContent = 'Modo: ' + (val || 'predeterminado') + (val ? ' — ' + (descriptions[val] || '') : '');
-                    }
-                    document.querySelectorAll('input[name="disabilityType"]').forEach(r => {
-                        r.addEventListener('change', applyAccessibility);
-                        r.addEventListener('click', applyAccessibility);
-                    });
-                    applyAccessibility();
-                }
-                if (document.readyState === 'loading') {
-                    document.addEventListener('DOMContentLoaded', setupAccessibility);
-                } else {
-                    setupAccessibility();
-                }
-            })();
-        </script>
-        <div class="w-full flex justify-end p-4">
-            <a href="#" class="px-6 py-3 rounded-full text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-indigo-600 shadow-md hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 transform hover:scale-105">
-                Prisma: Salud Mental
-            </a>
-        </div>
-        <!-- Aquí van las secciones: inicio, resumen, principios, modelos, plan, timeline, sostenibilidad, contacto -->
-        <!-- Puedes pegar aquí el contenido de tu diseño, asegurando que no haya duplicados ni basura -->
-    </main>
-    <footer class="bg-gray-800 text-white py-12">
-        <div class="container mx-auto px-6 text-center">
-            <p>&copy; 2025 Iris Inclusión. Creando un futuro más inclusivo y sostenible.</p>
-        </div>
-    </footer>
-    <script>
-        // Aquí va el script de Chart.js, acordeón y navegación, igual al diseño solicitado
-    </script>
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="es" class="scroll-smooth">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Estrategia de Alcance: Iris Inclusión</title>
-    <!-- Tailwind CSS desde CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style type="text/tailwindcss">
-        @layer base {
-            :root {
                 --color-primary: #1e3a8a; /* Azul oscuro corporativo */
                 --color-secondary: #fcd34d; /* Amarillo vibrante */
                 --color-accent: #3b82f6; /* Azul de acento */
@@ -196,6 +23,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
     <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom Styles -->
     <!-- Custom Styles -->
     <style>
         body {
@@ -280,9 +108,7 @@
             opacity: 1;
             visibility: visible;
         }
-    </style>
-...rest of the new HTML as provided by the user...
-        .tab-button.active {
+    .tab-button.active {
             background-color: #4A7C59;
             color: #FFFFFF;
             transition: background 0.3s, color 0.3s;
@@ -685,256 +511,141 @@
                 }]
             };
 
-            <!DOCTYPE html>
-            <html lang="es" class="scroll-smooth">
-            <head>
-                <meta charset="UTF-8">
-                <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <title>Estrategia de Alcance: Iris Inclusión</title>
-                <!-- Tailwind CSS desde CDN -->
-                <script src="https://cdn.tailwindcss.com"></script>
-                <style type="text/tailwindcss">
-                    @layer base {
-                        :root {
-                            --color-primary: #1e3a8a; /* Azul oscuro corporativo */
-                            --color-secondary: #fcd34d; /* Amarillo vibrante */
-                            --color-accent: #3b82f6; /* Azul de acento */
-                            --color-background: #f1f5f9; /* Azul claro para fondo */
-                            --color-text: #1f2937; /* Gris oscuro para texto */
-                        }
+            // Inicializa Chart.js si está disponible
+            const ctx = document.getElementById('modelsChart');
+            if (ctx && window.Chart) {
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: chartData,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: { beginAtZero: true, max: 5 }
+                        },
+                        plugins: { legend: { display: false } }
                     }
-                </style>
-                <!-- Font Inter para consistencia -->
-                <link rel="preconnect" href="https://fonts.googleapis.com">
-                <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-                <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
-                <!-- Chart.js CDN -->
-                <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-                <!-- Custom Styles -->
-                <style>
-                    body {
-                        font-family: 'Inter', sans-serif;
-                        background-color: var(--color-background);
-                        color: var(--color-text);
-                        animation: fadein 1.2s cubic-bezier(.4,0,.2,1);
-                    }
-                    @keyframes fadein {
-                        from { opacity: 0; }
-                        to { opacity: 1; }
-                    }
-                    .chart-container {
-                        position: relative;
-                        width: 100%;
-                        max-width: 900px;
-                        margin: 0 auto;
-                        height: 500px;
-                        max-height: 60vh;
-                        box-shadow: 0 10px 40px 0 rgba(30,58,138,0.15);
-                        border-radius: 1.5rem;
-                        background: rgba(255,255,255,0.9);
-                        transition: box-shadow 0.4s, background 0.4s;
-                    }
-                    .nav-link {
-                        transition: color 0.3s, border-bottom-color 0.3s, transform 0.2s;
-                        border-bottom: 2px solid transparent;
-                    }
-                    .nav-link:hover, .nav-link.active {
-                        color: var(--color-accent);
-                        border-bottom-color: var(--color-accent);
-                        transform: translateY(-2px);
-                    }
-                    .accordion-header {
-                        transition: background 0.3s, color 0.3s, box-shadow 0.3s, transform 0.2s;
-                    }
-                    .accordion-header.active {
-                        background-color: var(--color-primary);
-                        color: white;
-                        box-shadow: 0 4px 15px rgba(30,58,138,0.2);
-                        transform: translateY(-3px);
-                    }
-                    .accordion-content {
-                        max-height: 0;
-                        overflow: hidden;
-                        opacity: 0;
-                        transition: max-height 0.5s cubic-bezier(.4,0,.2,1), opacity 0.5s cubic-bezier(.4,0,.2,1);
-                    }
-                    .accordion-header.active + .accordion-content {
-                        max-height: 500px; /* Ajustado para más contenido */
-                        opacity: 1;
-                        transition-delay: 0.1s;
-                    }
-                    .card-effect {
-                        transition: transform 0.3s ease, box-shadow 0.3s ease;
-                    }
-                    .card-effect:hover {
-                        transform: translateY(-8px);
-                        box-shadow: 0 15px 30px rgba(0,0,0,0.1);
-                    }
-                    /* Mobile menu specific styles */
-                    #mobile-menu {
-                        transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease-in-out;
-                        max-height: 0;
-                        overflow: hidden;
-                        opacity: 0;
-                    }
-                    #mobile-menu.open {
-                        max-height: 500px;
-                        opacity: 1;
-                    }
+                });
+            }
 
-                    /* Accessibility panel styles */
-                    #accessibility-panel {
-                        transition: transform 0.3s ease-out, opacity 0.3s ease-out;
-                        transform: translateX(-100%);
-                        opacity: 0;
-                        visibility: hidden;
-                    }
-                    #accessibility-panel.visible {
-                        transform: translateX(0);
-                        opacity: 1;
-                        visibility: visible;
-                    }
-                </style>
-                <!-- Favicons -->
-                <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
-                <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-96x96.png">
-                <link rel="shortcut icon" href="favicon/favicon.ico">
-                <link rel="manifest" href="favicon/site.webmanifest">
-            </head>
-            <body class="antialiased">
-
-                <!-- Header y Navegación -->
-                <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-md">
-                    <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
-                        <div class="text-3xl font-extrabold text-gray-900">
-                            <span class="text-blue-600">Iris</span> Inclusión
-                        </div>
-                        <div class="hidden md:flex space-x-8">
-                            <a href="#inicio" class="nav-link text-gray-600 font-medium pb-1">Inicio</a>
-                            <a href="#principios" class="nav-link text-gray-600 font-medium pb-1">Principios</a>
-                            <a href="#modelos" class="nav-link text-gray-600 font-medium pb-1">Modelos</a>
-                            <a href="#plan" class="nav-link text-gray-600 font-medium pb-1">Plan Estratégico</a>
-                            <a href="#sostenibilidad" class="nav-link text-gray-600 font-medium pb-1">Sostenibilidad</a>
-                        </div>
-                        <button id="mobile-menu-button" class="md:hidden p-2 rounded-md text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
-                            </svg>
-                        </button>
-                    </nav>
-                    <div id="mobile-menu" class="md:hidden px-6 pb-4">
-                        <a href="#inicio" class="block py-2 text-gray-600">Inicio</a>
-                        <a href="#principios" class="block py-2 text-gray-600">Principios</a>
-                        <a href="#modelos" class="block py-2 text-gray-600">Modelos</a>
-                        <a href="#plan" class="block py-2 text-gray-600">Plan Estratégico</a>
-                        <a href="#sostenibilidad" class="block py-2 text-gray-600">Sostenibilidad</a>
-                    </div>
-                </header>
-
-                <main>
-                    <!-- Panel y botón de accesibilidad -->
-                    <!-- ...continúa el contenido del diseño proporcionado... -->
+            // Datos del acordeón (pequeño set basado en el contenido proporcionado)
+            const accordionData = [
                 {
-                    title: 'Módulo 2: Estrategias para Manejo de Grupos en Entornos Abiertos o Cerrados',
+                    title: 'Módulo 1: Diseño Universal',
+                    content: `
+                        <p class="font-semibold text-gray-700 mb-2">Crear entornos utilizables por todas las personas en la mayor medida posible, sin necesidad de adaptaciones. Es un enfoque proactivo que beneficia a todos los participantes.</p>
+                        <ul class="list-disc pl-5 space-y-2 text-gray-600 mt-4">
+                            <li><strong>Principios básicos:</strong> Accesibilidad, simplicidad y flexibilidad en el diseño.</li>
+                            <li><strong>Aplicaciones prácticas:</strong> Señalética clara, rutas accesibles y materiales inclusivos.</li>
+                        </ul>
+                    `
+                },
+                {
+                    title: 'Módulo 2: Estrategias para Manejo de Grupos',
                     content: `
                         <p class="font-semibold text-gray-700 mb-2">Este módulo se enfocará en el manejo práctico de grupos, aplicando las pautas del módulo anterior para crear una experiencia fluida y respetuosa para todos los participantes. La duración del recorrido es de 1.5 a 2 horas.</p>
                         <ul class="list-disc pl-5 space-y-2 text-gray-600 mt-4">
-                            <li><strong>Técnicas de Manejo de Grupos:</strong> Se enseñará al personal a mantener la atención, gestionar los tiempos y a responder a las necesidades individuales dentro del grupo.</li>
-                            <li><strong>Comunicación Respetuosa:</strong> Se hará énfasis en el respeto de la autonomía de los participantes y en la importancia de ofrecer ayuda solo cuando sea solicitada.</li>
-                            <li><strong>Discapacidad Auditiva y Lengua de Señas:</strong> Se proporcionarán pautas para una comunicación visual clara, que incluye el uso de la Lengua de Señas Ecuatoriana (LSEC) básica, un conocimiento especializado crucial para garantizar una experiencia totalmente inclusiva.</li>
+                            <li><strong>Técnicas de Manejo de Grupos:</strong> Mantener la atención, gestionar tiempos y responder a necesidades individuales.</li>
+                            <li><strong>Comunicación Respetuosa:</strong> Ofrecer ayuda solo cuando sea solicitada y respetar la autonomía.</li>
+                            <li><strong>Discapacidad Auditiva:</strong> Pautas para comunicación visual y uso básico de LSEC.</li>
                         </ul>
                     `
                 },
                 {
                     title: 'Módulo 3: Actividad Lúdica y Aprendizaje Práctico',
                     content: `
-                        <p class="font-semibold text-gray-700 mb-2">El plan culmina con una actividad lúdica y práctica que consolida el aprendizaje. Esta sección ofrece ideas para juegos y ejercicios que se pueden adaptar fácilmente para diferentes capacidades, haciendo del aprendizaje una experiencia divertida e interactiva.</p>
+                        <p class="font-semibold text-gray-700 mb-2">El plan culmina con una actividad lúdica y práctica que consolida el aprendizaje. Esta sección ofrece ideas para juegos y ejercicios que se pueden adaptar fácilmente para diferentes capacidades.</p>
                         <ul class="list-disc pl-5 space-y-2 text-gray-600 mt-4">
-                            <li><strong>Ejemplos de Actividades:</strong> Se presentarán ideas de juegos sensoriales, como adivinar elementos por su aroma o textura, y actividades de co-creación, como la creación de un cuento colectivo o una "búsqueda del tesoro" que fomente el uso de los sentidos.</li>
-                            <li><strong>Adaptación de Materiales:</strong> Se mostrará cómo adaptar materiales y recursos para que sean accesibles para todos.</li>
-                            <li><strong>Sesión de Preguntas y Respuestas:</strong> Se abrirá un espacio para que el personal pueda compartir sus propias experiencias y plantear preguntas.</li>
+                            <li><strong>Ejemplos:</strong> Juegos sensoriales, co-creación de historias y dinámicas adaptadas.</li>
+                            <li><strong>Adaptación de Materiales:</strong> Sencillas modificaciones para hacer actividades accesibles.</li>
                         </ul>
                     `
                 }
             ];
 
             const accordionContainer = document.getElementById('accordion-container');
-            accordionData.forEach((item, index) => {
-                const accordionItem = document.createElement('div');
-                accordionItem.classList.add('border', 'rounded-lg', 'bg-white', 'shadow-sm');
-                accordionItem.innerHTML = `
-                    <button class="accordion-header w-full flex justify-between items-center p-5 text-left font-medium text-gray-800 hover:bg-gray-100 transition-colors duration-300">
-                        <span>${item.title}</span>
-                        <svg class="w-5 h-5 shrink-0 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                    </button>
-                    <div class="accordion-content">
-                        <div class="p-5 border-t">
-                            ${item.content}
+            if (accordionContainer) {
+                accordionData.forEach((item) => {
+                    const accordionItem = document.createElement('div');
+                    accordionItem.classList.add('border', 'rounded-lg', 'bg-white', 'shadow-sm');
+                    accordionItem.innerHTML = `
+                        <button class="accordion-header w-full flex justify-between items-center p-5 text-left font-medium text-gray-800 hover:bg-gray-100 transition-colors duration-300">
+                            <span>${item.title}</span>
+                            <svg class="w-5 h-5 shrink-0 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </button>
+                        <div class="accordion-content">
+                            <div class="p-5 border-t">
+                                ${item.content}
+                            </div>
                         </div>
-                    </div>
-                `;
-                accordionContainer.appendChild(accordionItem);
-            });
-
-            const accordionHeaders = document.querySelectorAll('.accordion-header');
-            accordionHeaders.forEach(header => {
-                header.addEventListener('click', () => {
-                    const content = header.nextElementSibling;
-                    const isActive = header.classList.contains('active');
-
-                    accordionHeaders.forEach(h => {
-                        h.classList.remove('active');
-                        h.nextElementSibling.style.maxHeight = null;
-                        h.querySelector('svg').style.transform = 'rotate(0deg)';
-                    });
-
-                    if (!isActive) {
-                        header.classList.add('active');
-                        content.style.maxHeight = content.scrollHeight + "px";
-                        header.querySelector('svg').style.transform = 'rotate(180deg)';
-                    }
+                    `;
+                    accordionContainer.appendChild(accordionItem);
                 });
-            });
 
-            const mobileMenuButton = document.getElementById('mobile-menu-button');
-            const mobileMenu = document.getElementById('mobile-menu');
-            mobileMenuButton.addEventListener('click', () => {
-                mobileMenu.classList.toggle('hidden');
-            });
+                // Delegated accordion click logic
+                const accordionHeaders = accordionContainer.querySelectorAll('.accordion-header');
+                accordionHeaders.forEach(header => {
+                    header.addEventListener('click', () => {
+                        const content = header.nextElementSibling;
+                        const isActive = header.classList.contains('active');
 
-            const navLinks = document.querySelectorAll('.nav-link, #mobile-menu a');
-            const sections = document.querySelectorAll('section');
-
-            const observerOptions = {
-                root: null,
-                rootMargin: '0px',
-                threshold: 0.4
-            };
-
-            const observer = new IntersectionObserver((entries, observer) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        navLinks.forEach(link => {
-                            link.classList.remove('active');
-                            if (link.getAttribute('href').substring(1) === entry.target.id) {
-                                link.classList.add('active');
+                        accordionHeaders.forEach(h => {
+                            h.classList.remove('active');
+                            if (h.nextElementSibling) {
+                                h.nextElementSibling.style.maxHeight = null;
+                                h.querySelector('svg').style.transform = 'rotate(0deg)';
                             }
                         });
-                    }
-                });
-            }, observerOptions);
 
-            sections.forEach(section => {
-                observer.observe(section);
-            });
-            
-            navLinks.forEach(link => {
-                link.addEventListener('click', () => {
-                    if (mobileMenu.classList.contains('hidden') === false) {
-                        mobileMenu.classList.add('hidden');
-                    }
+                        if (!isActive) {
+                            header.classList.add('active');
+                            if (content) content.style.maxHeight = content.scrollHeight + "px";
+                            header.querySelector('svg').style.transform = 'rotate(180deg)';
+                        }
+                    });
                 });
-            });
+            }
+
+            // Mobile menu toggle
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            if (mobileMenuButton && mobileMenu) {
+                mobileMenuButton.addEventListener('click', () => {
+                    mobileMenu.classList.toggle('hidden');
+                    mobileMenu.classList.toggle('open');
+                });
+            }
+
+            // Scrollspy - highlight nav links on section visible
+            const navLinks = document.querySelectorAll('.nav-link, #mobile-menu a');
+            const sections = document.querySelectorAll('section');
+            if (sections.length && navLinks.length && 'IntersectionObserver' in window) {
+                const observerOptions = { root: null, rootMargin: '0px', threshold: 0.4 };
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            navLinks.forEach(link => {
+                                link.classList.remove('active');
+                                if (link.getAttribute('href') && link.getAttribute('href').substring(1) === entry.target.id) {
+                                    link.classList.add('active');
+                                }
+                            });
+                        }
+                    });
+                }, observerOptions);
+                sections.forEach(section => observer.observe(section));
+            }
+
+            // Close mobile menu on link click
+            if (navLinks.length && mobileMenu) {
+                navLinks.forEach(link => {
+                    link.addEventListener('click', () => {
+                        if (!mobileMenu.classList.contains('hidden')) {
+                            mobileMenu.classList.add('hidden');
+                        }
+                    });
+                });
+            }
         });
     </script>
 </body>
