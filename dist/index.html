@@ -172,7 +172,7 @@
 
     <main>
     <!-- accessibility-panel: botón flotante, panel y script -->
-<button id="accessibility-btn" class="fixed bottom-6 left-6 z-50 bg-[#0d9488] text-white px-4 py-3 rounded-lg shadow-md hover:bg-[#0d7a6b]" aria-haspopup="dialog" aria-controls="accessibility-panel">Accesibilidad</button>
+<button id="accessibility-btn" onclick="toggleAccessibilityPanel()" class="fixed bottom-6 left-6 z-50 bg-[#0d9488] text-white px-4 py-3 rounded-lg shadow-md hover:bg-[#0d7a6b]" aria-haspopup="dialog" aria-controls="accessibility-panel">Accesibilidad</button>
 
 <style>
   /* reglas de demostración para accesibilidad */
@@ -182,8 +182,10 @@
   html.acc-motriz a, html.acc-motriz button { padding: 0.75rem; }
   /* high contrast for demonstration */
   html.acc-cognitiva { line-height: 1.6; }
-  /* ensure accessibility button is always on top and fixed */
-  #accessibility-btn { position: fixed; z-index: 99999 !important; }
+  /* ensure accessibility button is always on top and fixed and clickable */
+  #accessibility-btn { position: fixed; z-index: 99999 !important; pointer-events: auto !important; }
+  /* ensure panel is interactive */
+  #accessibility-panel { pointer-events: auto; }
 </style>
 
 <div id="accessibility-panel" class="fixed bottom-20 left-6 z-50 w-80 bg-white border border-gray-200 rounded-lg p-4 shadow-lg hidden" role="dialog" aria-label="Panel de accesibilidad">
@@ -215,6 +217,24 @@
 </div>
 
 <script>
+// Global toggle function (robust fallback) — kept minimal and safe
+window.toggleAccessibilityPanel = function(){
+  try {
+    const accBtn = document.getElementById('accessibility-btn');
+    const accPanel = document.getElementById('accessibility-panel');
+    if (!accBtn || !accPanel) return;
+    const hidden = accPanel.classList.toggle('hidden');
+    accPanel.style.display = hidden ? 'none' : '';
+    accBtn.setAttribute('aria-expanded', String(!hidden));
+    if (!hidden){
+      const first = accPanel.querySelector('input, button, [tabindex]');
+      if (first) first.focus();
+    }
+  } catch (e) {
+    // silent
+  }
+};
+
 (function () {
   function setupAccessibility() {
     const accBtn = document.getElementById('accessibility-btn');
@@ -289,7 +309,7 @@
 </script>
 
         <div class="w-full flex justify-end p-4">
-            <a href="index.html" class="btn-modern">
+            <a id="prisma-btn" href="inclusion.html" class="btn-modern">
                 Prisma: Salud Mental
             </a>
         </div>
@@ -648,5 +668,30 @@
             }
         });
     </script>
+        <script>
+        // Fallback initializer para el panel de accesibilidad en caso de que el HTML sea inyectado
+        (function(){
+            function initFallbackAccessibility(){
+                const accBtn = document.getElementById('accessibility-btn');
+                const accPanel = document.getElementById('accessibility-panel');
+                if (!accBtn && !accPanel) return; // nada que inicializar
+                // Si el script de src/accessibility-panel.html no se ejecutó, añadimos manejador mínimo
+                if (accBtn && accPanel && !accBtn.dataset.fallbackInit) {
+                    accBtn.addEventListener('click', function(){
+                        const hidden = accPanel.classList.toggle('hidden');
+                        accPanel.style.display = hidden ? 'none' : '';
+                        accBtn.setAttribute('aria-expanded', String(!hidden));
+                        if (!hidden){
+                            const first = accPanel.querySelector('input, button, [tabindex]');
+                            if (first) first.focus();
+                        }
+                    });
+                    accBtn.dataset.fallbackInit = '1';
+                }
+            }
+            if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initFallbackAccessibility);
+            else initFallbackAccessibility();
+        })();
+        </script>
 </body>
 </html>
