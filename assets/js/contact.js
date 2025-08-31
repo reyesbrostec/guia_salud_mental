@@ -1,6 +1,12 @@
 // contact.js — Manejo del formulario de contacto (cliente)
 (function(){
-  const FORMSPREE_ENDPOINT = 'https://formspree.io/f/REPLACE_FORM_ID'; // Opcional: reemplaza con tu ID real
+  // Leer endpoint de Formspree desde meta si está definido
+  function getFormspreeEndpoint(){
+    const m = document.querySelector('meta[name="contact:formspree"]');
+    const v = m && m.getAttribute('content') || '';
+    return v && /^https:\/\/formspree\.io\//.test(v) ? v : '';
+  }
+  const FORMSPREE_ENDPOINT = getFormspreeEndpoint() || 'https://formspree.io/f/REPLACE_FORM_ID';
   function getContactEmail(){
     const m = document.querySelector('meta[name="contact:email"]');
     const v = m && m.getAttribute('content') || '';

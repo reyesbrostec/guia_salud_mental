@@ -15,6 +15,7 @@ try {
 
 const md = new MarkdownIt({ html: true });
 const CONTACT_EMAIL = process.env.CONTACT_EMAIL || '';
+const FORMSPREE_ENDPOINT = process.env.FORMSPREE_ENDPOINT || '';
 const branchName = (() => {
   try { return execSync('git rev-parse --abbrev-ref HEAD').toString().trim(); } catch { return ''; }
 })();
@@ -39,6 +40,10 @@ let templateHtml = fs.readFileSync(templatePath, 'utf8');
 // Inject meta contact:email if provided via env var
 if (CONTACT_EMAIL && !/meta\s+name=["']contact:email["']/i.test(templateHtml)) {
   templateHtml = templateHtml.replace(/<head[^>]*>/i, (m) => `${m}\n    <meta name="contact:email" content="${CONTACT_EMAIL}">`);
+}
+// Inject meta contact:formspree if provided via env var
+if (FORMSPREE_ENDPOINT && !/meta\s+name=["']contact:formspree["']/i.test(templateHtml)) {
+  templateHtml = templateHtml.replace(/<head[^>]*>/i, (m) => `${m}\n    <meta name="contact:formspree" content="${FORMSPREE_ENDPOINT}">`);
 }
 // Estandariza inclusión del script de accesibilidad en index.html; el panel se crea dinámicamente desde JS
 const ACCESS_PANEL_HTML = `<!-- accessibility-panel: dynamic via assets/js/accessibility.js -->`;
@@ -297,6 +302,10 @@ if (fs.existsSync(inclusionSrc)) {
   // Inject meta contact:email if provided via env var
   if (CONTACT_EMAIL && !/meta\s+name=["']contact:email["']/i.test(inclusionHtml)) {
     inclusionHtml = inclusionHtml.replace(/<head[^>]*>/i, (m) => `${m}\n    <meta name="contact:email" content="${CONTACT_EMAIL}">`);
+  }
+  // Inject meta contact:formspree if provided via env var
+  if (FORMSPREE_ENDPOINT && !/meta\s+name=["']contact:formspree["']/i.test(inclusionHtml)) {
+    inclusionHtml = inclusionHtml.replace(/<head[^>]*>/i, (m) => `${m}\n    <meta name="contact:formspree" content="${FORMSPREE_ENDPOINT}">`);
   }
   // Eliminar cualquier botón/panel/scrips de accesibilidad existentes en src para evitar duplicados
   inclusionHtml = inclusionHtml
