@@ -151,7 +151,7 @@
 </head>
 <body class="antialiased">
 <!-- accessibility-panel: botón flotante, panel y script -->
-<button id="accessibility-btn" onclick="toggleAccessibilityPanel()" class="fixed bottom-6 left-6 z-50 bg-[#0d9488] text-white px-4 py-3 rounded-lg shadow-md hover:bg-[#0d7a6b]" aria-haspopup="dialog" aria-controls="accessibility-panel">Accesibilidad</button>
+<button id="accessibility-btn" class="fixed bottom-6 left-6 z-50 bg-[#0d9488] text-white px-4 py-3 rounded-lg shadow-md hover:bg-[#0d7a6b]" aria-haspopup="dialog" aria-controls="accessibility-panel">Accesibilidad</button>
 
 <style>
   /* reglas de demostración para accesibilidad */
@@ -198,20 +198,24 @@
 <script>
 // Global toggle function (robust fallback) — kept minimal and safe
 window.toggleAccessibilityPanel = function(){
-  try {
-    const accBtn = document.getElementById('accessibility-btn');
-    const accPanel = document.getElementById('accessibility-panel');
-    if (!accBtn || !accPanel) return;
-    const hidden = accPanel.classList.toggle('hidden');
-    accPanel.style.display = hidden ? 'none' : '';
-    accBtn.setAttribute('aria-expanded', String(!hidden));
-    if (!hidden){
-      const first = accPanel.querySelector('input, button, [tabindex]');
-      if (first) first.focus();
+    try {
+        const accBtn = document.getElementById('accessibility-btn');
+        const accPanel = document.getElementById('accessibility-panel');
+        if (!accBtn || !accPanel) return;
+        // Toggle display only, ignore class 'hidden'
+        const isHidden = accPanel.style.display === 'none' || getComputedStyle(accPanel).display === 'none';
+        if (isHidden) {
+            accPanel.style.display = '';
+            accBtn.setAttribute('aria-expanded', 'true');
+            const first = accPanel.querySelector('input, button, [tabindex]');
+            if (first) first.focus();
+        } else {
+            accPanel.style.display = 'none';
+            accBtn.setAttribute('aria-expanded', 'false');
+        }
+    } catch (e) {
+        // silent
     }
-  } catch (e) {
-    // silent
-  }
 };
 
 (function () {
@@ -219,22 +223,26 @@ window.toggleAccessibilityPanel = function(){
     const accBtn = document.getElementById('accessibility-btn');
     const accPanel = document.getElementById('accessibility-panel');
     if (accBtn && accPanel) {
-      // normalize display in case Tailwind 'hidden' is removed by compilation
-      if (accPanel.classList.contains('hidden')) accPanel.style.display = 'none';
-      else accPanel.style.display = '';
-      accBtn.setAttribute('aria-expanded', String(accPanel.style.display !== 'none'));
-      accBtn.addEventListener('click', function () {
-        const isHidden = accPanel.classList.toggle('hidden');
-        if (isHidden) {
-          accPanel.style.display = 'none';
-        } else {
-          accPanel.style.display = '';
-          // move focus inside panel for accessibility
-          const firstInput = accPanel.querySelector('input, button, [tabindex]');
-          if (firstInput) firstInput.focus();
-        }
-        accBtn.setAttribute('aria-expanded', String(!isHidden));
-      });
+            // Normalizar display solo usando style.display
+            if (getComputedStyle(accPanel).display === 'none') {
+                accPanel.style.display = 'none';
+                accBtn.setAttribute('aria-expanded', 'false');
+            } else {
+                accPanel.style.display = '';
+                accBtn.setAttribute('aria-expanded', 'true');
+            }
+            accBtn.addEventListener('click', function () {
+                const isHidden = accPanel.style.display === 'none' || getComputedStyle(accPanel).display === 'none';
+                if (isHidden) {
+                    accPanel.style.display = '';
+                    accBtn.setAttribute('aria-expanded', 'true');
+                    const firstInput = accPanel.querySelector('input, button, [tabindex]');
+                    if (firstInput) firstInput.focus();
+                } else {
+                    accPanel.style.display = 'none';
+                    accBtn.setAttribute('aria-expanded', 'false');
+                }
+            });
     }
 
     // El build busca "disabilityType.onchange" en el script; mantén la referencia
