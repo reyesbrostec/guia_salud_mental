@@ -15,6 +15,24 @@ try {
 
 const md = new MarkdownIt({ html: true });
 const CONTACT_EMAIL = process.env.CONTACT_EMAIL || '';
+const branchName = (() => {
+  try { return execSync('git rev-parse --abbrev-ref HEAD').toString().trim(); } catch { return ''; }
+})();
+const isPreview = (
+  process.env.VERCEL_ENV === 'preview' ||
+  process.env.VERCEL_GIT_COMMIT_REF === 'preview' ||
+  process.env.BRANCH_NAME === 'preview' ||
+  branchName === 'preview'
+);
+function injectPreviewBadge(html) {
+  if (!isPreview) return html;
+  if (/id=["']preview-badge["']/i.test(html)) return html; // avoid duplicate
+  const badge = '\n<div id="preview-badge" class="fixed top-2 right-2 z-50 px-2 py-1 rounded bg-amber-100 text-amber-800 text-xs font-semibold shadow">modo preview</div>\n';
+  if (/(<header[^>]*>)/i.test(html)) {
+    return html.replace(/(<header[^>]*>)/i, `$1${badge}`);
+  }
+  return html.replace(/(<body[^>]*>)/i, `$1${badge}`);
+}
 const articlesPath = path.join(__dirname, 'src', 'publicaciones');
 const templatePath = path.join(__dirname, 'index.html');
 let templateHtml = fs.readFileSync(templatePath, 'utf8');
@@ -198,7 +216,7 @@ if (!fs.existsSync(distDir)) {
 }
 
 const outputPath = path.join(distDir, 'index.html');
-fs.writeFileSync(outputPath, templateHtml, 'utf8');
+fs.writeFileSync(outputPath, injectPreviewBadge(templateHtml), 'utf8');
 
 // Copiar carpeta assets (si existe) a dist/assets para que scripts/estilos personalizados estén disponibles en producción
 const assetsSrc = path.join(__dirname, 'assets');
@@ -311,7 +329,7 @@ if (fs.existsSync(inclusionSrc)) {
   inclusionHtml = inclusionHtml.replace(/<form class=\"space-y-6\">/i, '<form id="contact-form" class="space-y-6">');
 
 
-  fs.writeFileSync(inclusionDest, inclusionHtml, 'utf8');
+  fs.writeFileSync(inclusionDest, injectPreviewBadge(inclusionHtml), 'utf8');
   console.log('inclusion.html copiado a dist/ con panel de accesibilidad sin botón y script centralizado');
 }
 
