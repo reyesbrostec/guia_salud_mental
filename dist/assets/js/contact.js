@@ -123,7 +123,15 @@
           return;
         }
         if (res.ok){
-          showStatus(status, 'success', '¡Gracias! Tu mensaje fue enviado.');
+          if (useFormspree){
+            showStatus(status, 'success', '¡Gracias! Tu mensaje fue enviado.');
+          } else {
+            // FormSubmit: el primer envío requiere confirmar el correo receptor.
+            const note = targetEmail
+              ? `¡Gracias! Enviamos un correo de confirmación a ${targetEmail} para activar el receptor. Revisa tu bandeja de entrada o spam y confirma; los próximos mensajes llegarán directo.`
+              : '¡Gracias! Tu mensaje fue enviado.';
+            showStatus(status, 'success', note);
+          }
           form.reset();
         } else {
           const data = await res.json().catch(() => ({}));
