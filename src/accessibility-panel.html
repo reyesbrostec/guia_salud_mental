@@ -44,18 +44,21 @@
 </div>
 
 <script>
-// Global toggle function (robust fallback) — kept minimal and safe
+// Global toggle function (robust fallback) — display-only
 window.toggleAccessibilityPanel = function(){
   try {
     const accBtn = document.getElementById('accessibility-btn');
     const accPanel = document.getElementById('accessibility-panel');
     if (!accBtn || !accPanel) return;
-    const hidden = accPanel.classList.toggle('hidden');
-    accPanel.style.display = hidden ? 'none' : '';
-    accBtn.setAttribute('aria-expanded', String(!hidden));
-    if (!hidden){
+    const isHidden = accPanel.style.display === 'none' || getComputedStyle(accPanel).display === 'none';
+    if (isHidden) {
+      accPanel.style.display = '';
+      accBtn.setAttribute('aria-expanded', 'true');
       const first = accPanel.querySelector('input, button, [tabindex]');
       if (first) first.focus();
+    } else {
+      accPanel.style.display = 'none';
+      accBtn.setAttribute('aria-expanded', 'false');
     }
   } catch (e) {
     // silent
@@ -67,21 +70,21 @@ window.toggleAccessibilityPanel = function(){
     const accBtn = document.getElementById('accessibility-btn');
     const accPanel = document.getElementById('accessibility-panel');
     if (accBtn && accPanel) {
-      // normalize display in case Tailwind 'hidden' is removed by compilation
-      if (accPanel.classList.contains('hidden')) accPanel.style.display = 'none';
-      else accPanel.style.display = '';
-      accBtn.setAttribute('aria-expanded', String(accPanel.style.display !== 'none'));
+      // normalize display only using style.display
+      const initiallyHidden = accPanel.getAttribute('data-init-hidden') || accPanel.classList.contains('hidden');
+      accPanel.style.display = initiallyHidden ? 'none' : '';
+      accBtn.setAttribute('aria-expanded', accPanel.style.display === 'none' ? 'false' : 'true');
       accBtn.addEventListener('click', function () {
-        const isHidden = accPanel.classList.toggle('hidden');
+        const isHidden = accPanel.style.display === 'none' || getComputedStyle(accPanel).display === 'none';
         if (isHidden) {
-          accPanel.style.display = 'none';
-        } else {
           accPanel.style.display = '';
-          // move focus inside panel for accessibility
+          accBtn.setAttribute('aria-expanded', 'true');
           const firstInput = accPanel.querySelector('input, button, [tabindex]');
           if (firstInput) firstInput.focus();
+        } else {
+          accPanel.style.display = 'none';
+          accBtn.setAttribute('aria-expanded', 'false');
         }
-        accBtn.setAttribute('aria-expanded', String(!isHidden));
       });
     }
 
