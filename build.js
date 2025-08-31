@@ -14,7 +14,7 @@ try {
 }
 
 const md = new MarkdownIt({ html: true });
-const CONTACT_EMAIL = process.env.CONTACT_EMAIL || '';
+let CONTACT_EMAIL = process.env.CONTACT_EMAIL || '';
 const FORMSPREE_ENDPOINT = process.env.FORMSPREE_ENDPOINT || '';
 const branchName = (() => {
   try { return execSync('git rev-parse --abbrev-ref HEAD').toString().trim(); } catch { return ''; }
@@ -25,6 +25,17 @@ const isPreview = (
   process.env.BRANCH_NAME === 'preview' ||
   branchName === 'preview'
 );
+const isProduction = (
+  process.env.VERCEL_ENV === 'production' ||
+  process.env.VERCEL_GIT_COMMIT_REF === 'main' ||
+  branchName === 'main'
+);
+const deployEnv = process.env.VERCEL_ENV || (isProduction ? 'production' : (isPreview ? 'preview' : 'development'));
+
+// Fallback: on preview branch, if CONTACT_EMAIL is not set via env, use a safe default provided by the project maintainer
+if (!CONTACT_EMAIL && isPreview) {
+  CONTACT_EMAIL = 'reyesbross@outlook.it';
+}
 function injectPreviewBadge(html) {
   if (!isPreview) return html;
   if (/id=["']preview-badge["']/i.test(html)) return html; // avoid duplicate
@@ -44,6 +55,10 @@ if (CONTACT_EMAIL && !/meta\s+name=["']contact:email["']/i.test(templateHtml)) {
 // Inject meta contact:formspree if provided via env var
 if (FORMSPREE_ENDPOINT && !/meta\s+name=["']contact:formspree["']/i.test(templateHtml)) {
   templateHtml = templateHtml.replace(/<head[^>]*>/i, (m) => `${m}\n    <meta name="contact:formspree" content="${FORMSPREE_ENDPOINT}">`);
+}
+// Inject deploy env meta
+if (!/meta\s+name=["']deploy:env["']/i.test(templateHtml)) {
+  templateHtml = templateHtml.replace(/<head[^>]*>/i, (m) => `${m}\n    <meta name="deploy:env" content="${deployEnv}">`);
 }
 // Estandariza inclusión del script de accesibilidad en index.html; el panel se crea dinámicamente desde JS
 const ACCESS_PANEL_HTML = `<!-- accessibility-panel: dynamic via assets/js/accessibility.js -->`;
@@ -306,6 +321,10 @@ if (fs.existsSync(inclusionSrc)) {
   // Inject meta contact:formspree if provided via env var
   if (FORMSPREE_ENDPOINT && !/meta\s+name=["']contact:formspree["']/i.test(inclusionHtml)) {
     inclusionHtml = inclusionHtml.replace(/<head[^>]*>/i, (m) => `${m}\n    <meta name="contact:formspree" content="${FORMSPREE_ENDPOINT}">`);
+  }
+  // Inject deploy env meta
+  if (!/meta\s+name=["']deploy:env["']/i.test(inclusionHtml)) {
+    inclusionHtml = inclusionHtml.replace(/<head[^>]*>/i, (m) => `${m}\n    <meta name="deploy:env" content="${deployEnv}">`);
   }
   // Eliminar cualquier botón/panel/scrips de accesibilidad existentes en src para evitar duplicados
   inclusionHtml = inclusionHtml

@@ -1,6 +1,12 @@
 // contact.js — Manejo del formulario de contacto (cliente)
 (function(){
-  const FORMSPREE_ENDPOINT = 'https://formspree.io/f/REPLACE_FORM_ID'; // Opcional: reemplaza con tu ID real
+  // Leer endpoint de Formspree desde meta si está definido
+  function getFormspreeEndpoint(){
+    const m = document.querySelector('meta[name="contact:formspree"]');
+    const v = m && m.getAttribute('content') || '';
+    return v && /^https:\/\/formspree\.io\//.test(v) ? v : '';
+  }
+  const FORMSPREE_ENDPOINT = getFormspreeEndpoint() || 'https://formspree.io/f/REPLACE_FORM_ID';
   function getContactEmail(){
     const m = document.querySelector('meta[name="contact:email"]');
     const v = m && m.getAttribute('content') || '';
@@ -28,6 +34,10 @@
   function init(){
     const form = document.getElementById('contact-form');
     if (!form) return;
+
+  const deployMeta = document.querySelector('meta[name="deploy:env"]');
+  const deployEnv = (deployMeta && deployMeta.getAttribute('content')) || 'development';
+  const enableCaptcha = deployEnv === 'production';
 
     let status = document.getElementById('contact-status');
     if (!status){
@@ -79,7 +89,7 @@
   const targetEmail = getContactEmail();
   const useFormspree = FORMSPREE_ENDPOINT && !/REPLACE_FORM_ID/.test(FORMSPREE_ENDPOINT);
 
-      try {
+  try {
         let res;
         if (useFormspree){
           res = await fetch(FORMSPREE_ENDPOINT, {
@@ -96,9 +106,9 @@
             message: payload.mensaje,
             page: payload.page,
             _subject: 'Nuevo contacto desde Iris Inclusión',
-            _template: 'table',
-            _captcha: 'false'
+    _template: 'table'
           };
+      if (enableCaptcha) body._captcha = 'true'; else body._captcha = 'false';
           res = await fetch(formsubmitUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
