@@ -14,9 +14,14 @@ try {
 }
 
 const md = new MarkdownIt({ html: true });
+const CONTACT_EMAIL = process.env.CONTACT_EMAIL || '';
 const articlesPath = path.join(__dirname, 'src', 'publicaciones');
 const templatePath = path.join(__dirname, 'index.html');
 let templateHtml = fs.readFileSync(templatePath, 'utf8');
+// Inject meta contact:email if provided via env var
+if (CONTACT_EMAIL && !/meta\s+name=["']contact:email["']/i.test(templateHtml)) {
+  templateHtml = templateHtml.replace(/<head[^>]*>/i, (m) => `${m}\n    <meta name="contact:email" content="${CONTACT_EMAIL}">`);
+}
 // Estandariza inclusión del script de accesibilidad en index.html; el panel se crea dinámicamente desde JS
 const ACCESS_PANEL_HTML = `<!-- accessibility-panel: dynamic via assets/js/accessibility.js -->`;
 {
@@ -41,6 +46,16 @@ templateHtml = templateHtml.replace(/<a href="index.html"[^>]*class="([^"]*)"/, 
   if (classes.includes('btn-modern')) return m;
   return m.replace(classes, 'btn-modern');
 });
+// Asegurar que el formulario de contacto en index tenga id="contact-form" y el script contact.js
+{
+  if (!/id\s*=\s*"contact-form"/i.test(templateHtml)) {
+    templateHtml = templateHtml.replace(/<form class=\"space-y-6\">/i, '<form id="contact-form" class="space-y-6">');
+  }
+  const hasContactScript = /<script[^>]+src=["']assets\/js\/contact\.js["'][^>]*>/i.test(templateHtml);
+  if (!hasContactScript) {
+    templateHtml = templateHtml.replace(/<\/body>\s*<\/html>\s*$/i, '\n<script src="assets/js/contact.js"></script>\n</body>\n</html>');
+  }
+}
 
 const blogPosts = [];
 
@@ -261,6 +276,10 @@ let accessPanelHtml = `
 </div>`;
 if (fs.existsSync(inclusionSrc)) {
   let inclusionHtml = fs.readFileSync(inclusionSrc, 'utf8');
+  // Inject meta contact:email if provided via env var
+  if (CONTACT_EMAIL && !/meta\s+name=["']contact:email["']/i.test(inclusionHtml)) {
+    inclusionHtml = inclusionHtml.replace(/<head[^>]*>/i, (m) => `${m}\n    <meta name="contact:email" content="${CONTACT_EMAIL}">`);
+  }
   // Eliminar cualquier botón/panel/scrips de accesibilidad existentes en src para evitar duplicados
   inclusionHtml = inclusionHtml
     .replace(/<button[^>]*id=["']accessibility-btn["'][\s\S]*?<\/button>/gi, '')
@@ -269,11 +288,15 @@ if (fs.existsSync(inclusionSrc)) {
     .replace(/toggleAccessibilityPanel\(\)/g, '')
     .replace(/window\.toggleAccessibilityPanel[\s\S]*?;\s*\}\)\(\);/gi, '');
 
-  // Insertar solo el panel y asegurar el script principal
+  // Insertar solo el panel y asegurar los scripts principales (accessibility + contact)
   let panelBlock = accessPanelHtml;
   const hasAccScriptInclusion = /<script[^>]+src=["']assets\/js\/accessibility\.js["'][^>]*>/i.test(inclusionHtml);
   if (!hasAccScriptInclusion) {
     panelBlock += '\n<script src="assets/js/accessibility.js"></script>';
+  }
+  const hasContactScriptInclusion = /<script[^>]+src=["']assets\/js\/contact\.js["'][^>]*>/i.test(inclusionHtml);
+  if (!hasContactScriptInclusion) {
+    panelBlock += '\n<script src="assets/js/contact.js"></script>';
   }
   inclusionHtml = inclusionHtml.replace(/(<body[^>]*>)/i, `$1\n${panelBlock}`);
   // Insertar botón flotante después de <main> o al inicio de <main>
