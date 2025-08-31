@@ -131,7 +131,15 @@
             transition-delay: 0.1s;
         }
         .btn-modern {
-            @apply px-4 py-2 rounded-lg shadow-md font-semibold transition-colors duration-300;
+            padding-left: 1rem;
+            padding-right: 1rem;
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px 0 rgba(0,0,0,0.1), 0 1px 2px 0 rgba(0,0,0,0.06);
+            font-weight: 600;
+            transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+            transition-duration: 300ms;
             background: linear-gradient(90deg, #0d9488 0%, #4A7C59 100%);
             color: #fff;
         }
@@ -309,7 +317,7 @@ window.toggleAccessibilityPanel = function(){
     <main>
     <!-- Accessibility panel moved to src/accessibility-panel.html and injected by build.js -->
         <div class="w-full flex justify-end p-4">
-            <a id="prisma-btn" href="inclusion.html" class="btn-modern">
+            <a id="prisma-btn" href="https://inclusivoiris.com/inclusion.html" class="btn-modern">
                 Prisma: Salud Mental
             </a>
         </div>
