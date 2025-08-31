@@ -15,7 +15,7 @@
   #accessibility-panel { pointer-events: auto; }
 </style>
 
-<div id="accessibility-panel" class="fixed bottom-20 left-6 z-50 w-80 bg-white border border-gray-200 rounded-lg p-4 shadow-lg hidden" role="dialog" aria-label="Panel de accesibilidad">
+<div id="accessibility-panel" class="fixed bottom-20 left-6 z-50 w-80 bg-white border border-gray-200 rounded-lg p-4 shadow-lg hidden" role="dialog" aria-label="Panel de accesibilidad" data-init-hidden="true">
   <h3 class="text-lg font-semibold mb-2">Ajustes de accesibilidad</h3>
   <p class="text-sm text-gray-600 mb-3">Selecciona una preferencia para ajustar la interfaz.</p>
   <div role="radiogroup" aria-label="Tipo de discapacidad">
@@ -43,97 +43,4 @@
   <p id="accessibility-note" class="mt-3 text-xs text-gray-500">Los cambios son temporales y locales en tu navegador.</p>
 </div>
 
-<script>
-// Global toggle function (robust fallback) — display-only
-window.toggleAccessibilityPanel = function(){
-  try {
-    const accBtn = document.getElementById('accessibility-btn');
-    const accPanel = document.getElementById('accessibility-panel');
-    if (!accBtn || !accPanel) return;
-    const isHidden = accPanel.style.display === 'none' || getComputedStyle(accPanel).display === 'none';
-    if (isHidden) {
-      accPanel.style.display = '';
-      accBtn.setAttribute('aria-expanded', 'true');
-      const first = accPanel.querySelector('input, button, [tabindex]');
-      if (first) first.focus();
-    } else {
-      accPanel.style.display = 'none';
-      accBtn.setAttribute('aria-expanded', 'false');
-    }
-  } catch (e) {
-    // silent
-  }
-};
-
-(function () {
-  function setupAccessibility() {
-    const accBtn = document.getElementById('accessibility-btn');
-    const accPanel = document.getElementById('accessibility-panel');
-    if (accBtn && accPanel) {
-      // normalize display only using style.display
-      const initiallyHidden = accPanel.getAttribute('data-init-hidden') || accPanel.classList.contains('hidden');
-      accPanel.style.display = initiallyHidden ? 'none' : '';
-      accBtn.setAttribute('aria-expanded', accPanel.style.display === 'none' ? 'false' : 'true');
-      accBtn.addEventListener('click', function () {
-        const isHidden = accPanel.style.display === 'none' || getComputedStyle(accPanel).display === 'none';
-        if (isHidden) {
-          accPanel.style.display = '';
-          accBtn.setAttribute('aria-expanded', 'true');
-          const firstInput = accPanel.querySelector('input, button, [tabindex]');
-          if (firstInput) firstInput.focus();
-        } else {
-          accPanel.style.display = 'none';
-          accBtn.setAttribute('aria-expanded', 'false');
-        }
-      });
-    }
-
-    // El build busca "disabilityType.onchange" en el script; mantén la referencia
-    const disabilityType = document.querySelector('input[name="disabilityType"]');
-    if (disabilityType) {
-      function applyAccessibility() {
-  const val = document.querySelector('input[name="disabilityType"]:checked')?.value || '';
-        document.documentElement.setAttribute('data-accessibility', val);
-        // keep the button visible and on top
-        const accBtnEl = document.getElementById('accessibility-btn');
-        if (accBtnEl) {
-          accBtnEl.style.position = 'fixed';
-          accBtnEl.style.zIndex = '99999';
-          accBtnEl.style.display = '';
-        }
-        // Apply simple visual adjustments based on selection
-        document.documentElement.classList.remove('acc-visual','acc-auditiva','acc-motriz','acc-cognitiva','acc-dislexia');
-        if (val === 'visual') document.documentElement.classList.add('acc-visual');
-        if (val === 'auditiva') document.documentElement.classList.add('acc-auditiva');
-        if (val === 'motriz') document.documentElement.classList.add('acc-motriz');
-        if (val === 'cognitiva') document.documentElement.classList.add('acc-cognitiva');
-        if (val === 'dislexia') document.documentElement.classList.add('acc-dislexia');
-
-        // Map human-readable descriptions for the panel
-        const descriptions = {
-          'visual': 'Aumenta tamaño de fuente y contraste ligero',
-          'auditiva': 'Activa ayudas auditivas/lectura (no aplica visualmente)',
-          'motriz': 'Elementos interactivos con mayor área clicable',
-          'cognitiva': 'Mayor interlineado y ritmo de lectura mejorado',
-          'dislexia': 'Tipografía y espaciado optimizados para lectura'
-        };
-        const noteEl = document.getElementById('accessibility-note');
-        if (noteEl) noteEl.textContent = 'Modo: ' + (val || 'predeterminado') + (val ? ' — ' + (descriptions[val] || '') : ' — Sin cambios aplicados');
-      }
-      // attach both change and click to be robust across browsers
-      document.querySelectorAll('input[name="disabilityType"]').forEach(r => {
-        r.addEventListener('change', function() { applyAccessibility(); });
-        r.addEventListener('click', function() { applyAccessibility(); });
-      });
-      // also call once to set initial state if any radio is pre-checked
-      applyAccessibility();
-    }
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', setupAccessibility);
-  } else {
-    setupAccessibility();
-  }
-})();
-</script>
+<!-- Script movido a assets/js/accessibility.js -->

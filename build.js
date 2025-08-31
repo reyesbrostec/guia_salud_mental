@@ -21,13 +21,17 @@ let templateHtml = fs.readFileSync(templatePath, 'utf8');
 const accessPanelSrcEarly = path.join(__dirname, 'src', 'accessibility-panel.html');
 if (fs.existsSync(accessPanelSrcEarly)) {
   try {
-    const accessPanelHtmlEarly = fs.readFileSync(accessPanelSrcEarly, 'utf8');
+    let accessPanelHtmlEarly = fs.readFileSync(accessPanelSrcEarly, 'utf8');
+    const accScriptTag = '\n<script src="assets/js/accessibility.js"></script>';
+    if (!/assets\/js\/accessibility\.js/.test(templateHtml)) {
+      accessPanelHtmlEarly += accScriptTag;
+    }
     // replace marker comment if present
     if (/<!--\s*Accessibility panel moved[\s\S]*?build\.js\s*-->/.test(templateHtml)) {
       templateHtml = templateHtml.replace(/<!--\s*Accessibility panel moved[\s\S]*?build\.js\s*-->/, accessPanelHtmlEarly);
     } else {
       // fallback: insert after <body>
-      templateHtml = templateHtml.replace(/(<body[^>]*>)/i, `$1\n${accessPanelHtmlEarly}`);
+  templateHtml = templateHtml.replace(/(<body[^>]*>)/i, `$1\n${accessPanelHtmlEarly}`);
     }
   } catch (e) {
     console.error('No se pudo leer src/accessibility-panel.html para inyectar en index:', e.message);
@@ -238,7 +242,11 @@ if (fs.existsSync(inclusionSrc)) {
   let inclusionHtml = fs.readFileSync(inclusionSrc, 'utf8');
   // Insertar el bloque de accesibilidad después de <body ...> si existe
   if (accessPanelHtml) {
-    inclusionHtml = inclusionHtml.replace(/(<body[^>]*>)/i, `$1\n${accessPanelHtml}`);
+    let panelBlock = accessPanelHtml;
+    if (!/assets\/js\/accessibility\.js/.test(inclusionHtml)) {
+      panelBlock += '\n<script src="assets/js/accessibility.js"></script>';
+    }
+    inclusionHtml = inclusionHtml.replace(/(<body[^>]*>)/i, `$1\n${panelBlock}`);
   }
   // Insertar botón flotante después de <main> o al inicio de <main>
   const floatingBtn = `\n<a href="index.html" class="fixed bottom-6 right-6 z-50 bg-[#0d9488] hover:bg-[#0d7a6b] text-white font-semibold px-6 py-3 rounded-lg shadow-md transition-colors" style="box-shadow: 0 2px 8px rgba(0,0,0,0.15);">\n    Prisma: Salud Mental\n</a>\n`;
