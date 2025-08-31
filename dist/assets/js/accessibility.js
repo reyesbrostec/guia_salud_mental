@@ -1,18 +1,8 @@
 // accessibility.js: control del panel de accesibilidad (display-only, robusto)
 (function(){
   function ensurePanel(){
-    // Si no existe el panel en el DOM (caso index), créalo dinámicamente
-    let accBtn = document.getElementById('accessibility-btn');
+    // Si no existe el panel en el DOM (caso index), créalo dinámicamente (sin botón)
     let accPanel = document.getElementById('accessibility-panel');
-    if (!accBtn){
-      accBtn = document.createElement('button');
-      accBtn.id = 'accessibility-btn';
-      accBtn.className = 'fixed bottom-6 left-6 z-50 bg-[#0d9488] text-white px-4 py-3 rounded-lg shadow-md hover:bg-[#0d7a6b]';
-      accBtn.setAttribute('aria-haspopup', 'dialog');
-      accBtn.setAttribute('aria-controls', 'accessibility-panel');
-      accBtn.textContent = 'Accesibilidad';
-      document.body.appendChild(accBtn);
-    }
     if (!accPanel){
       const style = document.createElement('style');
       style.textContent = 'html.acc-visual{font-size:1.15rem}html.acc-visual body{filter:contrast(1.05)saturate(1.05)}html.acc-dislexia{font-family:\'OpenDyslexic\',Inter,sans-serif}html.acc-motriz a,html.acc-motriz button{padding:.75rem}html.acc-cognitiva{line-height:1.6}#accessibility-btn{position:fixed;z-index:99999!important;pointer-events:auto!important}#accessibility-panel{pointer-events:auto}';
@@ -55,18 +45,18 @@
     try {
       const accBtn = document.getElementById('accessibility-btn');
       const accPanel = document.getElementById('accessibility-panel');
-      if (!accBtn || !accPanel) return;
+      if (!accPanel) return; // permite alternar sin botón
       const isHidden = accPanel.style.display === 'none' || getComputedStyle(accPanel).display === 'none';
       if (isHidden) {
         accPanel.classList.remove('hidden');
         accPanel.style.display = 'block';
-        accBtn.setAttribute('aria-expanded', 'true');
+        if (accBtn) accBtn.setAttribute('aria-expanded', 'true');
         const first = accPanel.querySelector('input, button, [tabindex]');
         if (first) first.focus();
       } else {
         accPanel.classList.add('hidden');
         accPanel.style.display = 'none';
-        accBtn.setAttribute('aria-expanded', 'false');
+        if (accBtn) accBtn.setAttribute('aria-expanded', 'false');
       }
     } catch (_) { /* silent */ }
   }
@@ -96,22 +86,29 @@
     if (noteEl) noteEl.textContent = 'Modo: ' + (val || 'predeterminado') + (val ? ' — ' + (descriptions[val] || '') : ' — Sin cambios aplicados');
   }
   function init(){
-  ensurePanel();
+    ensurePanel();
     const accBtn = document.getElementById('accessibility-btn');
     const accPanel = document.getElementById('accessibility-panel');
-    if (accBtn && accPanel){
+    if (accPanel){
       const initAttr = accPanel.getAttribute('data-init-hidden');
       const initiallyHidden = initAttr !== null ? (initAttr === 'true') : accPanel.classList.contains('hidden');
       if (initiallyHidden){
         accPanel.classList.add('hidden');
         accPanel.style.display = 'none';
-        accBtn.setAttribute('aria-expanded', 'false');
+  if (accBtn) accBtn.setAttribute('aria-expanded', 'false');
       } else {
         accPanel.classList.remove('hidden');
         accPanel.style.display = 'block';
-        accBtn.setAttribute('aria-expanded', 'true');
+  if (accBtn) accBtn.setAttribute('aria-expanded', 'true');
       }
-      accBtn.addEventListener('click', toggle);
+      accBtn && accBtn.addEventListener('click', toggle);
+      // Atajo opcional: Alt+A para alternar panel
+      window.addEventListener('keydown', (e) => {
+        if (e.altKey && (e.key === 'a' || e.key === 'A')) {
+          e.preventDefault();
+          toggle();
+        }
+      });
     }
     document.querySelectorAll('input[name="disabilityType"]').forEach(r => {
       r.addEventListener('change', applyAccessibility);

@@ -21,7 +21,8 @@ let templateHtml = fs.readFileSync(templatePath, 'utf8');
 const ACCESS_PANEL_HTML = `<!-- accessibility-panel: dynamic via assets/js/accessibility.js -->`;
 {
   const accScriptTag = '\n<script src="assets/js/accessibility.js"></script>';
-  if (!/assets\/js\/accessibility\.js/.test(templateHtml)) {
+  const hasAccScript = /<script[^>]+src=["']assets\/js\/accessibility\.js["'][^>]*>/i.test(templateHtml);
+  if (!hasAccScript) {
     templateHtml = templateHtml.replace(/(<body[^>]*>)/i, `$1\n${accScriptTag}`);
   }
 }
@@ -218,19 +219,17 @@ console.log(`Posts procesados: ${blogPosts.length}`);
 blogPosts.forEach(p => console.log(`- ${p.title} (slug: ${p.slug}) category: ${p.category || 'Sin categoría'}`));
 
 
-// Copiar inclusion.html a dist/ e inyectar protocolo de accesibilidad (HTML estático) para esa página
+// Copiar inclusion.html a dist/ e inyectar protocolo de accesibilidad (solo panel; sin botón)
 const inclusionSrc = path.join(__dirname, 'src', 'inclusion.html');
 const inclusionDest = path.join(distDir, 'inclusion.html');
-// Bloque HTML del panel para inclusion.html (esa página lo recibe estático)
+// Bloque HTML del panel para inclusion.html (sin botón; solo panel y estilos)
 let accessPanelHtml = `
-<button id="accessibility-btn" class="fixed bottom-6 left-6 z-50 bg-[#0d9488] text-white px-4 py-3 rounded-lg shadow-md hover:bg-[#0d7a6b]" aria-haspopup="dialog" aria-controls="accessibility-panel">Accesibilidad</button>
 <style>
   html.acc-visual { font-size: 1.15rem; }
   html.acc-visual body { filter: contrast(1.05) saturate(1.05); }
   html.acc-dislexia { font-family: 'OpenDyslexic', Inter, sans-serif; }
   html.acc-motriz a, html.acc-motriz button { padding: 0.75rem; }
   html.acc-cognitiva { line-height: 1.6; }
-  #accessibility-btn { position: fixed; z-index: 99999 !important; pointer-events: auto !important; }
   #accessibility-panel { pointer-events: auto; }
 </style>
 <div id="accessibility-panel" class="fixed bottom-20 left-6 z-50 w-80 bg-white border border-gray-200 rounded-lg p-4 shadow-lg hidden" role="dialog" aria-label="Panel de accesibilidad" data-init-hidden="true">
@@ -262,14 +261,21 @@ let accessPanelHtml = `
 </div>`;
 if (fs.existsSync(inclusionSrc)) {
   let inclusionHtml = fs.readFileSync(inclusionSrc, 'utf8');
-  // Insertar el bloque de accesibilidad después de <body ...> si existe
-  if (accessPanelHtml) {
-    let panelBlock = accessPanelHtml;
-    if (!/assets\/js\/accessibility\.js/.test(inclusionHtml)) {
-      panelBlock += '\n<script src="assets/js/accessibility.js"></script>';
-    }
-    inclusionHtml = inclusionHtml.replace(/(<body[^>]*>)/i, `$1\n${panelBlock}`);
+  // Eliminar cualquier botón/panel/scrips de accesibilidad existentes en src para evitar duplicados
+  inclusionHtml = inclusionHtml
+    .replace(/<button[^>]*id=["']accessibility-btn["'][\s\S]*?<\/button>/gi, '')
+    .replace(/<div[^>]*id=["']accessibility-panel["'][\s\S]*?<\/div>/gi, '')
+    .replace(/<style>[\s\S]*?#accessibility-panel[\s\S]*?<\/style>/gi, '')
+    .replace(/toggleAccessibilityPanel\(\)/g, '')
+    .replace(/window\.toggleAccessibilityPanel[\s\S]*?;\s*\}\)\(\);/gi, '');
+
+  // Insertar solo el panel y asegurar el script principal
+  let panelBlock = accessPanelHtml;
+  const hasAccScriptInclusion = /<script[^>]+src=["']assets\/js\/accessibility\.js["'][^>]*>/i.test(inclusionHtml);
+  if (!hasAccScriptInclusion) {
+    panelBlock += '\n<script src="assets/js/accessibility.js"></script>';
   }
+  inclusionHtml = inclusionHtml.replace(/(<body[^>]*>)/i, `$1\n${panelBlock}`);
   // Insertar botón flotante después de <main> o al inicio de <main>
   const floatingBtn = `\n<a href="index.html" class="fixed bottom-6 right-6 z-50 bg-[#0d9488] hover:bg-[#0d7a6b] text-white font-semibold px-6 py-3 rounded-lg shadow-md transition-colors" style="box-shadow: 0 2px 8px rgba(0,0,0,0.15);">\n    Prisma: Salud Mental\n</a>\n`;
   if (/<main[^>]*>/.test(inclusionHtml)) {
@@ -283,6 +289,6 @@ if (fs.existsSync(inclusionSrc)) {
 
 
   fs.writeFileSync(inclusionDest, inclusionHtml, 'utf8');
-  console.log('inclusion.html copiado a dist/ e integrado protocolo de accesibilidad (desde src/accessibility-panel.html)');
+  console.log('inclusion.html copiado a dist/ con panel de accesibilidad sin botón y script centralizado');
 }
 

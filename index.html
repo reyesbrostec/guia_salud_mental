@@ -536,30 +536,5 @@
             }
         });
     </script>
-        <script>
-        // Fallback initializer para el panel de accesibilidad en caso de que el HTML sea inyectado
-        (function(){
-            function initFallbackAccessibility(){
-                const accBtn = document.getElementById('accessibility-btn');
-                const accPanel = document.getElementById('accessibility-panel');
-                if (!accBtn && !accPanel) return; // nada que inicializar
-                // Si el script de src/accessibility-panel.html no se ejecutó, añadimos manejador mínimo
-                if (accBtn && accPanel && !accBtn.dataset.fallbackInit) {
-                    accBtn.addEventListener('click', function(){
-                        const hidden = accPanel.classList.toggle('hidden');
-                        accPanel.style.display = hidden ? 'none' : '';
-                        accBtn.setAttribute('aria-expanded', String(!hidden));
-                        if (!hidden){
-                            const first = accPanel.querySelector('input, button, [tabindex]');
-                            if (first) first.focus();
-                        }
-                    });
-                    accBtn.dataset.fallbackInit = '1';
-                }
-            }
-            if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initFallbackAccessibility);
-            else initFallbackAccessibility();
-        })();
-        </script>
 </body>
 </html>
