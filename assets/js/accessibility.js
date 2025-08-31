@@ -1,5 +1,56 @@
 // accessibility.js: control del panel de accesibilidad (display-only, robusto)
 (function(){
+  function ensurePanel(){
+    // Si no existe el panel en el DOM (caso index), créalo dinámicamente
+    let accBtn = document.getElementById('accessibility-btn');
+    let accPanel = document.getElementById('accessibility-panel');
+    if (!accBtn){
+      accBtn = document.createElement('button');
+      accBtn.id = 'accessibility-btn';
+      accBtn.className = 'fixed bottom-6 left-6 z-50 bg-[#0d9488] text-white px-4 py-3 rounded-lg shadow-md hover:bg-[#0d7a6b]';
+      accBtn.setAttribute('aria-haspopup', 'dialog');
+      accBtn.setAttribute('aria-controls', 'accessibility-panel');
+      accBtn.textContent = 'Accesibilidad';
+      document.body.appendChild(accBtn);
+    }
+    if (!accPanel){
+      const style = document.createElement('style');
+      style.textContent = 'html.acc-visual{font-size:1.15rem}html.acc-visual body{filter:contrast(1.05)saturate(1.05)}html.acc-dislexia{font-family:\'OpenDyslexic\',Inter,sans-serif}html.acc-motriz a,html.acc-motriz button{padding:.75rem}html.acc-cognitiva{line-height:1.6}#accessibility-btn{position:fixed;z-index:99999!important;pointer-events:auto!important}#accessibility-panel{pointer-events:auto}';
+      document.head.appendChild(style);
+      accPanel = document.createElement('div');
+      accPanel.id = 'accessibility-panel';
+      accPanel.className = 'fixed bottom-20 left-6 z-50 w-80 bg-white border border-gray-200 rounded-lg p-4 shadow-lg hidden';
+      accPanel.setAttribute('role','dialog');
+      accPanel.setAttribute('aria-label','Panel de accesibilidad');
+      accPanel.setAttribute('data-init-hidden','true');
+      accPanel.innerHTML = '<h3 class="text-lg font-semibold mb-2">Ajustes de accesibilidad</h3>\
+      <p class="text-sm text-gray-600 mb-3">Selecciona una preferencia para ajustar la interfaz.</p>\
+      <div role="radiogroup" aria-label="Tipo de discapacidad">\
+        <label class="flex items-center mb-2 cursor-pointer">\
+          <input type="radio" name="disabilityType" value="visual" class="mr-2">\
+          <span>Tecnologías visuales</span>\
+        </label>\
+        <label class="flex items-center mb-2 cursor-pointer">\
+          <input type="radio" name="disabilityType" value="auditiva" class="mr-2">\
+          <span>Tecnologías auditivas</span>\
+        </label>\
+        <label class="flex items-center mb-2 cursor-pointer">\
+          <input type="radio" name="disabilityType" value="motriz" class="mr-2">\
+          <span>Soporte motriz</span>\
+        </label>\
+        <label class="flex items-center mb-2 cursor-pointer">\
+          <input type="radio" name="disabilityType" value="cognitiva" class="mr-2">\
+          <span>Facilidades cognitivas</span>\
+        </label>\
+        <label class="flex items-center mb-2 cursor-pointer">\
+          <input type="radio" name="disabilityType" value="dislexia" class="mr-2">\
+          <span>Soporte de lectura</span>\
+        </label>\
+      </div>\
+      <p id="accessibility-note" class="mt-3 text-xs text-gray-500">Los cambios son temporales y locales en tu navegador.</p>';
+      document.body.appendChild(accPanel);
+    }
+  }
   function toggle(){
     try {
       const accBtn = document.getElementById('accessibility-btn');
@@ -45,6 +96,7 @@
     if (noteEl) noteEl.textContent = 'Modo: ' + (val || 'predeterminado') + (val ? ' — ' + (descriptions[val] || '') : ' — Sin cambios aplicados');
   }
   function init(){
+  ensurePanel();
     const accBtn = document.getElementById('accessibility-btn');
     const accPanel = document.getElementById('accessibility-panel');
     if (accBtn && accPanel){

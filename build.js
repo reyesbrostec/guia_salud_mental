@@ -17,57 +17,12 @@ const md = new MarkdownIt({ html: true });
 const articlesPath = path.join(__dirname, 'src', 'publicaciones');
 const templatePath = path.join(__dirname, 'index.html');
 let templateHtml = fs.readFileSync(templatePath, 'utf8');
-// Mantener el panel de accesibilidad dentro de build.js para inyección consistente
-const ACCESS_PANEL_HTML = `
-<!-- accessibility-panel: botón flotante, panel y estilos -->
-<button id="accessibility-btn" class="fixed bottom-6 left-6 z-50 bg-[#0d9488] text-white px-4 py-3 rounded-lg shadow-md hover:bg-[#0d7a6b]" aria-haspopup="dialog" aria-controls="accessibility-panel">Accesibilidad</button>
-
-<style>
-  html.acc-visual { font-size: 1.15rem; }
-  html.acc-visual body { filter: contrast(1.05) saturate(1.05); }
-  html.acc-dislexia { font-family: 'OpenDyslexic', Inter, sans-serif; }
-  html.acc-motriz a, html.acc-motriz button { padding: 0.75rem; }
-  html.acc-cognitiva { line-height: 1.6; }
-  #accessibility-btn { position: fixed; z-index: 99999 !important; pointer-events: auto !important; }
-  #accessibility-panel { pointer-events: auto; }
-</style>
-
-<div id="accessibility-panel" class="fixed bottom-20 left-6 z-50 w-80 bg-white border border-gray-200 rounded-lg p-4 shadow-lg hidden" role="dialog" aria-label="Panel de accesibilidad" data-init-hidden="true">
-  <h3 class="text-lg font-semibold mb-2">Ajustes de accesibilidad</h3>
-  <p class="text-sm text-gray-600 mb-3">Selecciona una preferencia para ajustar la interfaz.</p>
-  <div role="radiogroup" aria-label="Tipo de discapacidad">
-    <label class="flex items-center mb-2 cursor-pointer">
-      <input type="radio" name="disabilityType" id="dis_visual" value="visual" class="mr-2">
-      <span>Tecnologías visuales</span>
-    </label>
-    <label class="flex items-center mb-2 cursor-pointer">
-      <input type="radio" name="disabilityType" id="dis_auditiva" value="auditiva" class="mr-2">
-      <span>Tecnologías auditivas</span>
-    </label>
-    <label class="flex items-center mb-2 cursor-pointer">
-      <input type="radio" name="disabilityType" id="dis_motriz" value="motriz" class="mr-2">
-      <span>Soporte motriz</span>
-    </label>
-    <label class="flex items-center mb-2 cursor-pointer">
-      <input type="radio" name="disabilityType" id="dis_cognitiva" value="cognitiva" class="mr-2">
-      <span>Facilidades cognitivas</span>
-    </label>
-    <label class="flex items-center mb-2 cursor-pointer">
-      <input type="radio" name="disabilityType" id="dis_dislexia" value="dislexia" class="mr-2">
-      <span>Soporte de lectura</span>
-    </label>
-  </div>
-  <p id="accessibility-note" class="mt-3 text-xs text-gray-500">Los cambios son temporales y locales en tu navegador.</p>
-</div>`;
-
+// Estandariza inclusión del script de accesibilidad en index.html; el panel se crea dinámicamente desde JS
+const ACCESS_PANEL_HTML = `<!-- accessibility-panel: dynamic via assets/js/accessibility.js -->`;
 {
   const accScriptTag = '\n<script src="assets/js/accessibility.js"></script>';
-  let block = ACCESS_PANEL_HTML;
-  if (!/assets\/js\/accessibility\.js/.test(templateHtml)) block += accScriptTag;
-  if (/<!--\s*Accessibility panel moved[\s\S]*?build\.js\s*-->/.test(templateHtml)) {
-    templateHtml = templateHtml.replace(/<!--\s*Accessibility panel moved[\s\S]*?build\.js\s*-->/, block);
-  } else {
-    templateHtml = templateHtml.replace(/(<body[^>]*>)/i, `$1\n${block}`);
+  if (!/assets\/js\/accessibility\.js/.test(templateHtml)) {
+    templateHtml = templateHtml.replace(/(<body[^>]*>)/i, `$1\n${accScriptTag}`);
   }
 }
 
@@ -263,10 +218,48 @@ console.log(`Posts procesados: ${blogPosts.length}`);
 blogPosts.forEach(p => console.log(`- ${p.title} (slug: ${p.slug}) category: ${p.category || 'Sin categoría'}`));
 
 
-// Copiar inclusion.html a dist/ e inyectar protocolo de accesibilidad (desde build.js)
+// Copiar inclusion.html a dist/ e inyectar protocolo de accesibilidad (HTML estático) para esa página
 const inclusionSrc = path.join(__dirname, 'src', 'inclusion.html');
 const inclusionDest = path.join(distDir, 'inclusion.html');
-let accessPanelHtml = ACCESS_PANEL_HTML;
+// Bloque HTML del panel para inclusion.html (esa página lo recibe estático)
+let accessPanelHtml = `
+<button id="accessibility-btn" class="fixed bottom-6 left-6 z-50 bg-[#0d9488] text-white px-4 py-3 rounded-lg shadow-md hover:bg-[#0d7a6b]" aria-haspopup="dialog" aria-controls="accessibility-panel">Accesibilidad</button>
+<style>
+  html.acc-visual { font-size: 1.15rem; }
+  html.acc-visual body { filter: contrast(1.05) saturate(1.05); }
+  html.acc-dislexia { font-family: 'OpenDyslexic', Inter, sans-serif; }
+  html.acc-motriz a, html.acc-motriz button { padding: 0.75rem; }
+  html.acc-cognitiva { line-height: 1.6; }
+  #accessibility-btn { position: fixed; z-index: 99999 !important; pointer-events: auto !important; }
+  #accessibility-panel { pointer-events: auto; }
+</style>
+<div id="accessibility-panel" class="fixed bottom-20 left-6 z-50 w-80 bg-white border border-gray-200 rounded-lg p-4 shadow-lg hidden" role="dialog" aria-label="Panel de accesibilidad" data-init-hidden="true">
+  <h3 class="text-lg font-semibold mb-2">Ajustes de accesibilidad</h3>
+  <p class="text-sm text-gray-600 mb-3">Selecciona una preferencia para ajustar la interfaz.</p>
+  <div role="radiogroup" aria-label="Tipo de discapacidad">
+    <label class="flex items-center mb-2 cursor-pointer">
+      <input type="radio" name="disabilityType" id="dis_visual" value="visual" class="mr-2">
+      <span>Tecnologías visuales</span>
+    </label>
+    <label class="flex items-center mb-2 cursor-pointer">
+      <input type="radio" name="disabilityType" id="dis_auditiva" value="auditiva" class="mr-2">
+      <span>Tecnologías auditivas</span>
+    </label>
+    <label class="flex items-center mb-2 cursor-pointer">
+      <input type="radio" name="disabilityType" id="dis_motriz" value="motriz" class="mr-2">
+      <span>Soporte motriz</span>
+    </label>
+    <label class="flex items-center mb-2 cursor-pointer">
+      <input type="radio" name="disabilityType" id="dis_cognitiva" value="cognitiva" class="mr-2">
+      <span>Facilidades cognitivas</span>
+    </label>
+    <label class="flex items-center mb-2 cursor-pointer">
+      <input type="radio" name="disabilityType" id="dis_dislexia" value="dislexia" class="mr-2">
+      <span>Soporte de lectura</span>
+    </label>
+  </div>
+  <p id="accessibility-note" class="mt-3 text-xs text-gray-500">Los cambios son temporales y locales en tu navegador.</p>
+</div>`;
 if (fs.existsSync(inclusionSrc)) {
   let inclusionHtml = fs.readFileSync(inclusionSrc, 'utf8');
   // Insertar el bloque de accesibilidad después de <body ...> si existe
