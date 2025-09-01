@@ -58,6 +58,12 @@
 			"type": "shell",
 			"command": "npm run build",
 			"group": "build"
+		},
+		{
+			"label": "Build site",
+			"type": "shell",
+			"command": "npm run build",
+			"group": "build"
 		}
 	]
 }

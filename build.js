@@ -68,6 +68,18 @@ const ACCESS_PANEL_HTML = `<!-- accessibility-panel: dynamic via assets/js/acces
   if (!hasAccScript) {
     templateHtml = templateHtml.replace(/(<body[^>]*>)/i, `$1\n${accScriptTag}`);
   }
+  // Inject a visible accessibility toggle button if missing
+  const hasAccBtn = /id=["']accessibility-btn["']/i.test(templateHtml);
+  if (!hasAccBtn) {
+  // Inline fallback styles guarantee visibility even if Tailwind classes aren't present (e.g., purged CSS)
+  const accBtn = `\n<button id="accessibility-btn" type="button" aria-controls="accessibility-panel" aria-expanded="false" class="fixed bottom-6 left-6 z-50 p-3 rounded-full bg-[#0d9488] text-white shadow hover:bg-[#0d7a6b]" style="position:fixed;bottom:1.5rem;left:1.5rem;z-index:99999;background-color:#0d9488;color:#fff;border-radius:9999px;padding:.75rem;box-shadow:0 10px 15px -3px rgba(0,0,0,.1),0 4px 6px -2px rgba(0,0,0,.05)" title="Accesibilidad (Alt+A)">A11y</button>`;
+    if (/(<header[^>]*>)/i.test(templateHtml)) {
+      // Place after header for better DOM ordering
+      templateHtml = templateHtml.replace(/<\/header>/i, `</header>${accBtn}`);
+    } else {
+      templateHtml = templateHtml.replace(/(<body[^>]*>)/i, `$1\n${accBtn}`);
+    }
+  }
 }
 
 // Asegura que las clases y estilos modernos se mantengan en el template generado
@@ -344,7 +356,12 @@ if (fs.existsSync(inclusionSrc)) {
   if (!hasContactScriptInclusion) {
     panelBlock += '\n<script src="assets/js/contact.js"></script>';
   }
-  inclusionHtml = inclusionHtml.replace(/(<body[^>]*>)/i, `$1\n${panelBlock}`);
+  // Insertar también el botón visible de accesibilidad si no existe
+  const hasAccBtnInclusion = /id=["']accessibility-btn["']/i.test(inclusionHtml);
+  // Inline fallback styles ensure visibility even if Tailwind classes are missing in the compiled CSS
+  const accBtnHtml = `\n<button id=\"accessibility-btn\" type=\"button\" aria-controls=\"accessibility-panel\" aria-expanded=\"false\" class=\"fixed bottom-6 left-6 z-50 p-3 rounded-full bg-[#0d9488] text-white shadow hover:bg-[#0d7a6b]\" style=\"position:fixed;bottom:1.5rem;left:1.5rem;z-index:99999;background-color:#0d9488;color:#fff;border-radius:9999px;padding:.75rem;box-shadow:0 10px 15px -3px rgba(0,0,0,.1),0 4px 6px -2px rgba(0,0,0,.05)\" title=\"Accesibilidad (Alt+A)\">A11y</button>`;
+  const injectBlock = hasAccBtnInclusion ? panelBlock : panelBlock + accBtnHtml;
+  inclusionHtml = inclusionHtml.replace(/(<body[^>]*>)/i, `$1\n${injectBlock}`);
   // Insertar botón flotante después de <main> o al inicio de <main>
   const floatingBtn = `\n<a href="index.html" class="fixed bottom-6 right-6 z-50 bg-[#0d9488] hover:bg-[#0d7a6b] text-white font-semibold px-6 py-3 rounded-lg shadow-md transition-colors" style="box-shadow: 0 2px 8px rgba(0,0,0,0.15);">\n    Prisma: Salud Mental\n</a>\n`;
   if (/<main[^>]*>/.test(inclusionHtml)) {
