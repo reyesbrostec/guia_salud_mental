@@ -93,12 +93,7 @@
   function applyAccessibility(){
     const val = document.querySelector('input[name="disabilityType"]:checked')?.value || '';
     document.documentElement.setAttribute('data-accessibility', val);
-    const accBtnEl = document.getElementById('accessibility-btn');
-    if (accBtnEl){
-      accBtnEl.style.position = 'fixed';
-      accBtnEl.style.zIndex = '99999';
-      accBtnEl.style.display = '';
-    }
+    ensureButton(); // Ensure button styles are enforced
     document.documentElement.classList.remove('acc-visual','acc-auditiva','acc-motriz','acc-cognitiva','acc-dislexia');
   if (val === 'visual') document.documentElement.classList.add('acc-visual');
     if (val === 'auditiva') document.documentElement.classList.add('acc-auditiva');
