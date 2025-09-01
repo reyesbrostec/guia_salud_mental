@@ -73,7 +73,9 @@
   html.acc-dislexia { font-family: 'OpenDyslexic', Inter, sans-serif; }
   html.acc-motriz a, html.acc-motriz button { padding: 0.75rem; }
   html.acc-cognitiva { line-height: 1.6; }
-  #accessibility-panel { pointer-events: auto; }
+  /* Smooth transitions for the panel */
+  #accessibility-panel { pointer-events: auto; transition: transform 0.3s ease-out, opacity 0.3s ease-out, visibility 0.3s ease-out; transform: translateX(-100%); opacity: 0; visibility: hidden; }
+  #accessibility-panel.visible { transform: translateX(0); opacity: 1; visibility: visible; }
 </style>
 <div id="accessibility-panel" class="fixed bottom-20 left-6 z-50 w-80 bg-white border border-gray-200 rounded-lg p-4 shadow-lg hidden" role="dialog" aria-label="Panel de accesibilidad" data-init-hidden="true">
   <h3 class="text-lg font-semibold mb-2">Ajustes de accesibilidad</h3>
@@ -81,11 +83,11 @@
   <div role="radiogroup" aria-label="Tipo de discapacidad">
     <label class="flex items-center mb-2 cursor-pointer">
       <input type="radio" name="disabilityType" id="dis_visual" value="visual" class="mr-2">
-      <span>Tecnologías visuales</span>
+      <span>Ajustes visuales</span>
     </label>
     <label class="flex items-center mb-2 cursor-pointer">
       <input type="radio" name="disabilityType" id="dis_auditiva" value="auditiva" class="mr-2">
-      <span>Tecnologías auditivas</span>
+      <span>Ajustes auditivos</span>
     </label>
     <label class="flex items-center mb-2 cursor-pointer">
       <input type="radio" name="disabilityType" id="dis_motriz" value="motriz" class="mr-2">
@@ -104,7 +106,7 @@
 </div>
 <script src="assets/js/accessibility.js"></script>
 <script src="assets/js/contact.js"></script>
-<button id="accessibility-btn" type="button" aria-controls="accessibility-panel" aria-expanded="false" class="fixed bottom-6 left-6 z-50 p-3 rounded-full bg-[#0d9488] text-white shadow hover:bg-[#0d7a6b]" style="position:fixed;bottom:1.5rem;left:1.5rem;z-index:99999;background-color:#0d9488;color:#fff;border-radius:9999px;padding:.75rem;box-shadow:0 10px 15px -3px rgba(0,0,0,.1),0 4px 6px -2px rgba(0,0,0,.05)" title="Accesibilidad (Alt+A)">A11y</button>
+<button id="accessibility-btn" type="button" aria-controls="accessibility-panel" aria-expanded="false" class="fixed bottom-6 right-6 z-50 p-3 rounded-full bg-[#0d9488] text-white shadow hover:bg-[#0d7a6b]" style="position:fixed;bottom:1.5rem;right:1.5rem;left:auto;z-index:99999;background-color:#0d9488;color:#fff;border-radius:9999px;padding:.75rem;box-shadow:0 10px 15px -3px rgba(0,0,0,.1),0 4px 6px -2px rgba(0,0,0,.05)" title="Accesibilidad (Alt+A)">A11y</button>
 <!-- El panel de accesibilidad y su comportamiento se inyectan/gestionan vía build.js + assets/js/accessibility.js -->
 
     <header class="bg-[#F0FDFB]/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">

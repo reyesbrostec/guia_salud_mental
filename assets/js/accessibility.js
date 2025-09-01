@@ -4,8 +4,9 @@
     const accBtnEl = document.getElementById('accessibility-btn');
     if (!accBtnEl) return;
     accBtnEl.style.position = 'fixed';
-    accBtnEl.style.bottom = '1.5rem';
-    accBtnEl.style.left = '1.5rem';
+  accBtnEl.style.bottom = '1.5rem';
+  accBtnEl.style.right = '1.5rem';
+  accBtnEl.style.left = 'auto';
     accBtnEl.style.zIndex = '100001';
     accBtnEl.style.display = 'inline-flex';
     accBtnEl.style.visibility = 'visible';
@@ -25,16 +26,16 @@
       accPanel.setAttribute('role','dialog');
       accPanel.setAttribute('aria-label','Panel de accesibilidad');
       accPanel.setAttribute('data-init-hidden','true');
-      accPanel.innerHTML = '<h3 class="text-lg font-semibold mb-2">Ajustes de accesibilidad</h3>\
+    accPanel.innerHTML = '<h3 class="text-lg font-semibold mb-2">Ajustes de accesibilidad</h3>\
       <p class="text-sm text-gray-600 mb-3">Selecciona una preferencia para ajustar la interfaz.</p>\
       <div role="radiogroup" aria-label="Tipo de discapacidad">\
         <label class="flex items-center mb-2 cursor-pointer">\
           <input type="radio" name="disabilityType" value="visual" class="mr-2">\
-          <span>Tecnologías visuales</span>\
+      <span>Ajustes visuales</span>\
         </label>\
         <label class="flex items-center mb-2 cursor-pointer">\
           <input type="radio" name="disabilityType" value="auditiva" class="mr-2">\
-          <span>Tecnologías auditivas</span>\
+      <span>Ajustes auditivos</span>\
         </label>\
         <label class="flex items-center mb-2 cursor-pointer">\
           <input type="radio" name="disabilityType" value="motriz" class="mr-2">\
@@ -94,7 +95,7 @@
       accBtnEl.style.display = '';
     }
     document.documentElement.classList.remove('acc-visual','acc-auditiva','acc-motriz','acc-cognitiva','acc-dislexia');
-    if (val === 'visual') document.documentElement.classList.add('acc-visual');
+  if (val === 'visual') document.documentElement.classList.add('acc-visual');
     if (val === 'auditiva') document.documentElement.classList.add('acc-auditiva');
     if (val === 'motriz') document.documentElement.classList.add('acc-motriz');
     if (val === 'cognitiva') document.documentElement.classList.add('acc-cognitiva');
