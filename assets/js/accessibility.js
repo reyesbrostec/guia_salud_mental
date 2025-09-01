@@ -23,7 +23,7 @@
     let accPanel = document.getElementById('accessibility-panel');
     if (!accPanel){
   const style = document.createElement('style');
-  style.textContent = 'html,body{transition:font-size .25s ease,line-height .25s ease,filter .25s ease}html.acc-visual{font-size:1.15rem}html.acc-visual body{filter:contrast(1.05)saturate(1.05)}html.acc-dislexia{font-family:\'OpenDyslexic\',Inter,sans-serif}html.acc-motriz a,html.acc-motriz button{padding:.75rem}html.acc-cognitiva{line-height:1.6}#accessibility-btn{position:fixed;z-index:2147483647!important;pointer-events:auto!important}#accessibility-panel{pointer-events:auto}';
+  style.textContent = 'html,body{transition:font-size .25s ease,line-height .25s ease,filter .25s ease}html.acc-visual{font-size:1.15rem}html.acc-visual body > *:not(#accessibility-btn):not(#accessibility-panel):not(script):not(style){filter:contrast(1.05)saturate(1.05)}html.acc-dislexia{font-family:\'OpenDyslexic\',Inter,sans-serif}html.acc-motriz a,html.acc-motriz button{padding:.75rem}html.acc-cognitiva{line-height:1.6}#accessibility-btn{position:fixed;z-index:2147483647!important;pointer-events:auto!important}#accessibility-panel{pointer-events:auto}';
       document.head.appendChild(style);
       accPanel = document.createElement('div');
       accPanel.id = 'accessibility-panel';
