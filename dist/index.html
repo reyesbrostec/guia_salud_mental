@@ -154,11 +154,12 @@
 <body class="antialiased">
 
 <script src="assets/js/accessibility.js"></script>
+<a class="skip-link" href="#main">Saltar al contenido principal</a>
 
     <header class="bg-[#F0FDFB]/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
 <div id="preview-badge" class="fixed top-2 right-2 z-50 px-2 py-1 rounded bg-amber-100 text-amber-800 text-xs font-semibold shadow">modo preview</div>
 
-        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+        <nav aria-label="Navegación principal" class="container mx-auto px-6 py-4 flex justify-between items-center">
             <div class="text-2xl font-bold text-[#2C4A38]">
                 <span class="text-[#0d9488]">Iris</span> Inclusión
             </div>
@@ -185,7 +186,7 @@
     </header>
 <button id="accessibility-btn" type="button" aria-controls="accessibility-panel" aria-expanded="false" class="fixed bottom-6 left-6 z-50 p-3 rounded-full bg-[#0d9488] text-white shadow hover:bg-[#0d7a6b]" style="position:fixed;bottom:1.5rem;left:1.5rem;right:auto;z-index:99999;background-color:#0d9488;color:#fff;border-radius:9999px;padding:.75rem;box-shadow:0 10px 15px -3px rgba(0,0,0,.1),0 4px 6px -2px rgba(0,0,0,.05)" title="Accesibilidad (Alt+A)">A11y</button>
 
-    <main>
+    <main id="main">
     <!-- Accessibility panel moved to src/accessibility-panel.html and injected by build.js -->
 
         <section id="inicio" class="py-20 md:py-32 bg-cover bg-center" style="background-color: #EBF0E4;">

@@ -73,6 +73,9 @@
   html.acc-dislexia { font-family: 'OpenDyslexic', Inter, sans-serif; }
   html.acc-motriz a, html.acc-motriz button { padding: 0.75rem; }
   html.acc-cognitiva { line-height: 1.6; }
+  *:focus-visible { outline: 3px solid #2563eb; outline-offset: 2px; }
+  .skip-link{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden}
+  .skip-link:focus{left:1rem;top:1rem;width:auto;height:auto;padding:.5rem .75rem;background:#111;color:#fff;z-index:2147483647;border-radius:.25rem}
   /* Smooth transitions for the panel */
   #accessibility-panel { pointer-events: auto; transition: transform 0.3s ease-out, opacity 0.3s ease-out, visibility 0.3s ease-out; transform: translateX(-100%); opacity: 0; visibility: hidden; }
   #accessibility-panel.visible { transform: translateX(0); opacity: 1; visibility: visible; }
@@ -107,12 +110,13 @@
 <script src="assets/js/accessibility.js"></script>
 <script src="assets/js/contact.js"></script>
 <button id="accessibility-btn" type="button" aria-controls="accessibility-panel" aria-expanded="false" class="fixed bottom-6 left-6 z-50 p-3 rounded-full bg-[#0d9488] text-white shadow hover:bg-[#0d7a6b]" style="position:fixed;bottom:1.5rem;left:1.5rem;right:auto;z-index:99999;background-color:#0d9488;color:#fff;border-radius:9999px;padding:.75rem;box-shadow:0 10px 15px -3px rgba(0,0,0,.1),0 4px 6px -2px rgba(0,0,0,.05)" title="Accesibilidad (Alt+A)">A11y</button>
+<a class="skip-link" href="#main">Saltar al contenido principal</a>
 <!-- El panel de accesibilidad y su comportamiento se inyectan/gestionan vía build.js + assets/js/accessibility.js -->
 
     <header class="bg-[#F0FDFB]/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
 <div id="preview-badge" class="fixed top-2 right-2 z-50 px-2 py-1 rounded bg-amber-100 text-amber-800 text-xs font-semibold shadow">modo preview</div>
 
-        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+        <nav aria-label="Navegación principal" class="container mx-auto px-6 py-4 flex justify-between items-center">
             <div class="text-2xl font-bold text-[#2C4A38]">
                 <span class="text-[#0d9488]">Iris</span> Inclusión
             </div>
@@ -138,7 +142,7 @@
         </div>
     </header>
 
-    <main>
+    <main id="main">
 <a href="index.html" class="fixed bottom-6 right-6 z-50 bg-[#0d9488] hover:bg-[#0d7a6b] text-white font-semibold px-6 py-3 rounded-lg shadow-md transition-colors" style="box-shadow: 0 2px 8px rgba(0,0,0,0.15);">
     Prisma: Salud Mental
 </a>

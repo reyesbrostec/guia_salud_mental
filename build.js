@@ -48,6 +48,16 @@ function injectPreviewBadge(html) {
 const articlesPath = path.join(__dirname, 'src', 'publicaciones');
 const templatePath = path.join(__dirname, 'index.html');
 let templateHtml = fs.readFileSync(templatePath, 'utf8');
+// Ensure main landmark and skip link target in template
+if (!/id=["']main["']/.test(templateHtml)) {
+  templateHtml = templateHtml.replace(/<main(\s|>)/i, '<main id="main"$1');
+}
+// Inject skip link at start of body if missing
+if (!/class=["']skip-link["']/.test(templateHtml)) {
+  templateHtml = templateHtml.replace(/(<body[^>]*>)/i, '$1\n<a class="skip-link" href="#main">Saltar al contenido principal</a>');
+}
+// Add aria-label to primary nav if not present
+templateHtml = templateHtml.replace(/<nav(\s+[^>]*?)?>/i, (m) => m.includes('aria-label') ? m : m.replace('<nav', '<nav aria-label="Navegación principal"'));
 // Inject meta contact:email if provided via env var
 if (CONTACT_EMAIL && !/meta\s+name=["']contact:email["']/i.test(templateHtml)) {
   templateHtml = templateHtml.replace(/<head[^>]*>/i, (m) => `${m}\n    <meta name="contact:email" content="${CONTACT_EMAIL}">`);
@@ -295,6 +305,9 @@ let accessPanelHtml = `
   html.acc-dislexia { font-family: 'OpenDyslexic', Inter, sans-serif; }
   html.acc-motriz a, html.acc-motriz button { padding: 0.75rem; }
   html.acc-cognitiva { line-height: 1.6; }
+  *:focus-visible { outline: 3px solid #2563eb; outline-offset: 2px; }
+  .skip-link{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden}
+  .skip-link:focus{left:1rem;top:1rem;width:auto;height:auto;padding:.5rem .75rem;background:#111;color:#fff;z-index:2147483647;border-radius:.25rem}
   /* Smooth transitions for the panel */
   #accessibility-panel { pointer-events: auto; transition: transform 0.3s ease-out, opacity 0.3s ease-out, visibility 0.3s ease-out; transform: translateX(-100%); opacity: 0; visibility: hidden; }
   #accessibility-panel.visible { transform: translateX(0); opacity: 1; visibility: visible; }
@@ -328,6 +341,15 @@ let accessPanelHtml = `
 </div>`;
 if (fs.existsSync(inclusionSrc)) {
   let inclusionHtml = fs.readFileSync(inclusionSrc, 'utf8');
+  // Ensure main and skip link in inclusion
+  if (!/id=["']main["']/.test(inclusionHtml)) {
+    inclusionHtml = inclusionHtml.replace(/<main(\s|>)/i, '<main id="main"$1');
+  }
+  if (!/class=["']skip-link["']/.test(inclusionHtml)) {
+    inclusionHtml = inclusionHtml.replace(/(<body[^>]*>)/i, '$1\n<a class="skip-link" href="#main">Saltar al contenido principal</a>');
+  }
+  // Add aria-label to nav
+  inclusionHtml = inclusionHtml.replace(/<nav(\s+[^>]*?)?>/i, (m) => m.includes('aria-label') ? m : m.replace('<nav', '<nav aria-label="Navegación principal"'));
   // Inject meta contact:email if provided via env var
   if (CONTACT_EMAIL && !/meta\s+name=["']contact:email["']/i.test(inclusionHtml)) {
     inclusionHtml = inclusionHtml.replace(/<head[^>]*>/i, (m) => `${m}\n    <meta name="contact:email" content="${CONTACT_EMAIL}">`);

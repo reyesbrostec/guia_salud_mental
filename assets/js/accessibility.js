@@ -1,5 +1,13 @@
 // accessibility.js: control del panel de accesibilidad (display-only, robusto)
 (function(){
+  function ensureOpenDyslexicLoaded(){
+    if (document.getElementById('odyslexic-font')) return;
+    const link = document.createElement('link');
+    link.id = 'odyslexic-font';
+    link.rel = 'stylesheet';
+    link.href = 'https://cdnjs.cloudflare.com/ajax/libs/OpenDyslexic/0.911/OpenDyslexic.min.css';
+    document.head.appendChild(link);
+  }
   function ensureButton(){
     const accBtnEl = document.getElementById('accessibility-btn');
     if (!accBtnEl) return;
@@ -23,7 +31,7 @@
     let accPanel = document.getElementById('accessibility-panel');
     if (!accPanel){
   const style = document.createElement('style');
-  style.textContent = 'html,body{transition:font-size .25s ease,line-height .25s ease,filter .25s ease}html.acc-visual{font-size:1.15rem}html.acc-visual body > *:not(#accessibility-btn):not(#accessibility-panel):not(script):not(style){filter:contrast(1.05)saturate(1.05)}html.acc-dislexia{font-family:\'OpenDyslexic\',Inter,sans-serif}html.acc-motriz a,html.acc-motriz button{padding:.75rem}html.acc-cognitiva{line-height:1.6}#accessibility-btn{position:fixed;z-index:2147483647!important;pointer-events:auto!important}#accessibility-panel{pointer-events:auto}';
+  style.textContent = 'html,body{transition:font-size .25s ease,line-height .25s ease,filter .25s ease}html.acc-visual{font-size:1.15rem}html.acc-visual body > *:not(#accessibility-btn):not(#accessibility-panel):not(script):not(style){filter:contrast(1.05)saturate(1.05)}html.acc-dislexia{font-family:\'OpenDyslexic\',Inter,sans-serif}html.acc-motriz a,html.acc-motriz button{padding:.75rem}html.acc-cognitiva{line-height:1.6}#accessibility-btn{position:fixed;z-index:2147483647!important;pointer-events:auto!important}#accessibility-panel{pointer-events:auto}*:focus-visible{outline:3px solid #2563eb; outline-offset:2px}.skip-link{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden} .skip-link:focus{left:1rem;top:1rem;width:auto;height:auto;padding:.5rem .75rem;background:#111;color:#fff;z-index:2147483647;border-radius:.25rem}';
       document.head.appendChild(style);
       accPanel = document.createElement('div');
       accPanel.id = 'accessibility-panel';
@@ -94,6 +102,7 @@
     const val = document.querySelector('input[name="disabilityType"]:checked')?.value || '';
     document.documentElement.setAttribute('data-accessibility', val);
     ensureButton(); // Ensure button styles are enforced
+  if (val === 'dislexia') ensureOpenDyslexicLoaded();
     document.documentElement.classList.remove('acc-visual','acc-auditiva','acc-motriz','acc-cognitiva','acc-dislexia');
   if (val === 'visual') document.documentElement.classList.add('acc-visual');
     if (val === 'auditiva') document.documentElement.classList.add('acc-auditiva');
@@ -136,11 +145,43 @@
       }
       ensureButton();
       accBtn && accBtn.addEventListener('click', toggle);
+      // Cerrar con click fuera
+      document.addEventListener('click', (e) => {
+        const isOpen = accPanel.classList.contains('visible') && getComputedStyle(accPanel).visibility !== 'hidden';
+        if (!isOpen) return;
+        const target = e.target;
+        if (accPanel && !accPanel.contains(target) && target !== accBtn) {
+          toggle();
+        }
+      });
       // Atajo opcional: Alt+A para alternar panel
       window.addEventListener('keydown', (e) => {
-        if (e.altKey && (e.key === 'a' || e.key === 'A')) {
+        if (e.key === 'Escape') {
+          const isOpen = accPanel.classList.contains('visible') && getComputedStyle(accPanel).visibility !== 'hidden';
+          if (isOpen) {
+            e.preventDefault();
+            toggle();
+          }
+        } else if (e.altKey && (e.key === 'a' || e.key === 'A')) {
           e.preventDefault();
           toggle();
+        }
+      });
+      // Focus trap simple dentro del panel cuando esté abierto
+      accPanel.addEventListener('keydown', (e) => {
+        if (e.key !== 'Tab') return;
+        const isOpen = accPanel.classList.contains('visible') && getComputedStyle(accPanel).visibility !== 'hidden';
+        if (!isOpen) return;
+        const focusables = accPanel.querySelectorAll('a,button,input,textarea,select,[tabindex]:not([tabindex="-1"])');
+        if (!focusables.length) return;
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
         }
       });
     }
