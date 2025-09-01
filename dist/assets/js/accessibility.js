@@ -1,5 +1,52 @@
 // accessibility.js: control del panel de accesibilidad (display-only, robusto)
 (function(){
+  function ensureLiveRegion(){
+    let live = document.getElementById('a11y-live');
+    if (!live){
+      live = document.createElement('div');
+      live.id = 'a11y-live';
+      live.setAttribute('role','status');
+      live.setAttribute('aria-live','polite');
+      live.style.position = 'absolute';
+      live.style.width = '1px';
+      live.style.height = '1px';
+      live.style.overflow = 'hidden';
+      live.style.clip = 'rect(1px, 1px, 1px, 1px)';
+      live.style.clipPath = 'inset(50%)';
+      live.style.whiteSpace = 'nowrap';
+      live.style.border = '0';
+      live.style.padding = '0';
+      live.style.margin = '-1px';
+      document.body.appendChild(live);
+    }
+    return live;
+  }
+  function announce(message){
+    const live = ensureLiveRegion();
+    // Clear then set to ensure announcement fires
+    live.textContent = '';
+    setTimeout(() => { live.textContent = message; }, 10);
+  }
+  function auditAltText(){
+    const imgs = Array.from(document.images || []);
+    imgs.forEach(img => {
+      const hasAlt = img.hasAttribute('alt');
+      if (!hasAlt) {
+        // Fallbacks: prefer data-alt, else title, else decorative alt
+        const dataAlt = img.getAttribute('data-alt');
+        const title = img.getAttribute('title');
+        if (dataAlt && dataAlt.trim()) {
+          img.setAttribute('alt', dataAlt.trim());
+        } else if (title && title.trim()) {
+          img.setAttribute('alt', title.trim());
+        } else {
+          img.setAttribute('alt', '');
+          img.setAttribute('role', 'presentation');
+          console.warn('[a11y] Imagen sin alt encontrada. Se estableció alt="" como decorativa. Añade alt o data-alt si es significativa.', img);
+        }
+      }
+    });
+  }
   function ensureOpenDyslexicLoaded(){
     if (document.getElementById('odyslexic-font')) return;
     const link = document.createElement('link');
@@ -89,6 +136,7 @@
         accPanel.style.transform = 'translateX(0)';
         if (accBtn) accBtn.setAttribute('aria-expanded', 'true');
   ensureButton();
+  announce('Panel de accesibilidad abierto');
         const first = accPanel.querySelector('input, button, [tabindex]');
         if (first) first.focus();
       } else {
@@ -100,6 +148,7 @@
         accPanel.style.transform = 'translateX(-100%)';
         if (accBtn) accBtn.setAttribute('aria-expanded', 'false');
   ensureButton();
+  announce('Panel de accesibilidad cerrado');
       }
     } catch (_) { /* silent */ }
   }
@@ -123,6 +172,7 @@
     };
     const noteEl = document.getElementById('accessibility-note');
     if (noteEl) noteEl.textContent = 'Modo: ' + (val || 'predeterminado') + (val ? ' — ' + (descriptions[val] || '') : ' — Sin cambios aplicados');
+  if (val) announce('Modo de accesibilidad activado: ' + val);
   }
   function init(){
     ensurePanel();
@@ -195,6 +245,8 @@
       r.addEventListener('click', applyAccessibility);
     });
     ensureButton();
+  ensureLiveRegion();
+  auditAltText();
     applyAccessibility();
   }
   if (document.readyState === 'loading') {
