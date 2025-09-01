@@ -6,6 +6,31 @@ Fecha: 2025-09-01
 ## Resumen
 Se implementó un conjunto de mejoras de accesibilidad orientadas a soporte visual, auditivo, motriz y cognitivo, alineadas con WCAG 2.1 AA, con un panel de ajustes activables por el usuario y mejoras técnicas globales.
 
+## Situación actual (snapshot)
+- UI de accesibilidad
+  - Botón flotante fijo (abajo-izquierda), siempre visible y navegable con teclado (Alt+A).
+  - Panel (role="dialog"): foco atrapado al abrir; cierre con Escape y clic fuera; aria-expanded en el botón; mensajes aria-live al abrir/cerrar y cambiar de modo.
+  - Skip link “Saltar al contenido principal” hacia `<main id="main">`; `nav` con `aria-label`; `*:focus-visible` global.
+- Modos (solo se aplican cuando se seleccionan)
+  - Visual: `html.acc-visual` aumenta font-size base (~1.15rem) y mejora leve contraste/saturación sobre `body > *` excluyendo `#accessibility-btn` y `#accessibility-panel`.
+  - Motriz: `html.acc-motriz` incrementa padding en enlaces/botones (objetivos más grandes).
+  - Cognitiva: `html.acc-cognitiva` incrementa el `line-height`.
+  - Dislexia: `html.acc-dislexia` aplica OpenDyslexic; carga on-demand (local `assets/css/opendyslexic.css` con fallback CDN).
+  - Auditiva: sin cambios visuales (preparado para subtítulos/transcripciones donde haya multimedia).
+- Robustez
+  - El filtro visual no afecta botón/panel; el botón permanece visible con z-index máximo.
+  - Auditoría de `alt` en cliente: rellena desde `data-alt`/`title` o marca decorativa (`alt=""`, `role="presentation"`) y avisa en consola.
+- Build y despliegue
+  - Build: PASS. Preview: cambios publicados en rama `preview`. Producción: pendiente de merge a `main`.
+- Observaciones de consola
+  - Advertencia `cdn.tailwindcss.com` solo en src; en dist se usa CSS compilado.
+  - Mensajes de extensiones y source maps de terceros: informativos; no afectan el sitio.
+- Pendientes recomendados
+  - Subir fuentes locales (assets/fonts) para OpenDyslexic (evitar CDN).
+  - Completar manualmente `alt` en imágenes significativas.
+  - Si hay video/audio: subtítulos VTT y transcripción; evitar autoplay con sonido > 3s o añadir control claro.
+  - Verificar contraste ≥ 4.5:1 (texto normal) y ≥ 3:1 (texto grande) y ajustar colores si hay casos límite.
+
 ## Controles y funciones
 - Botón flotante de accesibilidad siempre visible; atajo Alt+A.
 - Panel accesible (role="dialog"):
