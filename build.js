@@ -72,7 +72,7 @@ const ACCESS_PANEL_HTML = `<!-- accessibility-panel: dynamic via assets/js/acces
   const hasAccBtn = /id=["']accessibility-btn["']/i.test(templateHtml);
   if (!hasAccBtn) {
   // Inline fallback styles guarantee visibility even if Tailwind classes aren't present (e.g., purged CSS)
-  const accBtn = `\n<button id="accessibility-btn" type="button" aria-controls="accessibility-panel" aria-expanded="false" class="fixed bottom-6 right-6 z-50 p-3 rounded-full bg-[#0d9488] text-white shadow hover:bg-[#0d7a6b]" style="position:fixed;bottom:1.5rem;right:1.5rem;left:auto;z-index:99999;background-color:#0d9488;color:#fff;border-radius:9999px;padding:.75rem;box-shadow:0 10px 15px -3px rgba(0,0,0,.1),0 4px 6px -2px rgba(0,0,0,.05)" title="Accesibilidad (Alt+A)">A11y</button>`;
+  const accBtn = `\n<button id="accessibility-btn" type="button" aria-controls="accessibility-panel" aria-expanded="false" class="fixed bottom-6 left-6 z-50 p-3 rounded-full bg-[#0d9488] text-white shadow hover:bg-[#0d7a6b]" style="position:fixed;bottom:1.5rem;left:1.5rem;right:auto;z-index:99999;background-color:#0d9488;color:#fff;border-radius:9999px;padding:.75rem;box-shadow:0 10px 15px -3px rgba(0,0,0,.1),0 4px 6px -2px rgba(0,0,0,.05)" title="Accesibilidad (Alt+A)">A11y</button>`;
     if (/(<header[^>]*>)/i.test(templateHtml)) {
       // Place after header for better DOM ordering
       templateHtml = templateHtml.replace(/<\/header>/i, `</header>${accBtn}`);
@@ -361,7 +361,7 @@ if (fs.existsSync(inclusionSrc)) {
   // Insertar también el botón visible de accesibilidad si no existe
   const hasAccBtnInclusion = /id=["']accessibility-btn["']/i.test(inclusionHtml);
   // Inline fallback styles ensure visibility even if Tailwind classes are missing in the compiled CSS
-  const accBtnHtml = `\n<button id=\"accessibility-btn\" type=\"button\" aria-controls=\"accessibility-panel\" aria-expanded=\"false\" class=\"fixed bottom-6 right-6 z-50 p-3 rounded-full bg-[#0d9488] text-white shadow hover:bg-[#0d7a6b]\" style=\"position:fixed;bottom:1.5rem;right:1.5rem;left:auto;z-index:99999;background-color:#0d9488;color:#fff;border-radius:9999px;padding:.75rem;box-shadow:0 10px 15px -3px rgba(0,0,0,.1),0 4px 6px -2px rgba(0,0,0,.05)\" title=\"Accesibilidad (Alt+A)\">A11y</button>`;
+  const accBtnHtml = `\n<button id=\"accessibility-btn\" type=\"button\" aria-controls=\"accessibility-panel\" aria-expanded=\"false\" class=\"fixed bottom-6 left-6 z-50 p-3 rounded-full bg-[#0d9488] text-white shadow hover:bg-[#0d7a6b]\" style=\"position:fixed;bottom:1.5rem;left:1.5rem;right:auto;z-index:99999;background-color:#0d9488;color:#fff;border-radius:9999px;padding:.75rem;box-shadow:0 10px 15px -3px rgba(0,0,0,.1),0 4px 6px -2px rgba(0,0,0,.05)\" title=\"Accesibilidad (Alt+A)\">A11y</button>`;
   const injectBlock = hasAccBtnInclusion ? panelBlock : panelBlock + accBtnHtml;
   inclusionHtml = inclusionHtml.replace(/(<body[^>]*>)/i, `$1\n${injectBlock}`);
   // Insertar botón flotante después de <main> o al inicio de <main>

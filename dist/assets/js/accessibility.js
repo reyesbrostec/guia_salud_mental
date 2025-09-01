@@ -7,8 +7,8 @@
   try { if (accBtnEl.parentNode !== document.body) document.body.appendChild(accBtnEl); else document.body.appendChild(accBtnEl); } catch(_) {}
     accBtnEl.style.position = 'fixed';
   accBtnEl.style.bottom = '1.5rem';
-  accBtnEl.style.right = '1.5rem';
-  accBtnEl.style.left = 'auto';
+  accBtnEl.style.left = '1.5rem';
+  accBtnEl.style.right = 'auto';
   accBtnEl.style.zIndex = '2147483647';
     accBtnEl.style.display = 'inline-flex';
     accBtnEl.style.visibility = 'visible';
