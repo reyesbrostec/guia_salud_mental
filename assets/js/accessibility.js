@@ -1,5 +1,17 @@
 // accessibility.js: control del panel de accesibilidad (display-only, robusto)
 (function(){
+  function ensureButton(){
+    const accBtnEl = document.getElementById('accessibility-btn');
+    if (!accBtnEl) return;
+    accBtnEl.style.position = 'fixed';
+    accBtnEl.style.bottom = '1.5rem';
+    accBtnEl.style.left = '1.5rem';
+    accBtnEl.style.zIndex = '100001';
+    accBtnEl.style.display = 'inline-flex';
+    accBtnEl.style.visibility = 'visible';
+    accBtnEl.style.opacity = '1';
+    accBtnEl.style.pointerEvents = 'auto';
+  }
   function ensurePanel(){
     // Si no existe el panel en el DOM (caso index), créalo dinámicamente (sin botón)
     let accPanel = document.getElementById('accessibility-panel');
@@ -57,6 +69,7 @@
         accPanel.style.opacity = '1';
         accPanel.style.transform = 'translateX(0)';
         if (accBtn) accBtn.setAttribute('aria-expanded', 'true');
+  ensureButton();
         const first = accPanel.querySelector('input, button, [tabindex]');
         if (first) first.focus();
       } else {
@@ -67,6 +80,7 @@
         accPanel.style.opacity = '0';
         accPanel.style.transform = 'translateX(-100%)';
         if (accBtn) accBtn.setAttribute('aria-expanded', 'false');
+  ensureButton();
       }
     } catch (_) { /* silent */ }
   }
@@ -119,6 +133,7 @@
   accPanel.style.transform = 'translateX(0)';
   if (accBtn) accBtn.setAttribute('aria-expanded', 'true');
       }
+      ensureButton();
       accBtn && accBtn.addEventListener('click', toggle);
       // Atajo opcional: Alt+A para alternar panel
       window.addEventListener('keydown', (e) => {
@@ -132,6 +147,7 @@
       r.addEventListener('change', applyAccessibility);
       r.addEventListener('click', applyAccessibility);
     });
+    ensureButton();
     applyAccessibility();
   }
   if (document.readyState === 'loading') {
