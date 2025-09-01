@@ -3,22 +3,27 @@
   function ensureButton(){
     const accBtnEl = document.getElementById('accessibility-btn');
     if (!accBtnEl) return;
+  // Move to end of body to win stacking order within same context
+  try { if (accBtnEl.parentNode !== document.body) document.body.appendChild(accBtnEl); else document.body.appendChild(accBtnEl); } catch(_) {}
     accBtnEl.style.position = 'fixed';
   accBtnEl.style.bottom = '1.5rem';
   accBtnEl.style.right = '1.5rem';
   accBtnEl.style.left = 'auto';
-    accBtnEl.style.zIndex = '100001';
+  accBtnEl.style.zIndex = '2147483647';
     accBtnEl.style.display = 'inline-flex';
     accBtnEl.style.visibility = 'visible';
     accBtnEl.style.opacity = '1';
     accBtnEl.style.pointerEvents = 'auto';
+  accBtnEl.style.transform = 'none';
+  accBtnEl.style.filter = 'none';
+  accBtnEl.classList.remove('hidden');
   }
   function ensurePanel(){
     // Si no existe el panel en el DOM (caso index), créalo dinámicamente (sin botón)
     let accPanel = document.getElementById('accessibility-panel');
     if (!accPanel){
-      const style = document.createElement('style');
-      style.textContent = 'html.acc-visual{font-size:1.15rem}html.acc-visual body{filter:contrast(1.05)saturate(1.05)}html.acc-dislexia{font-family:\'OpenDyslexic\',Inter,sans-serif}html.acc-motriz a,html.acc-motriz button{padding:.75rem}html.acc-cognitiva{line-height:1.6}#accessibility-btn{position:fixed;z-index:99999!important;pointer-events:auto!important}#accessibility-panel{pointer-events:auto}';
+  const style = document.createElement('style');
+  style.textContent = 'html,body{transition:font-size .25s ease,line-height .25s ease,filter .25s ease}html.acc-visual{font-size:1.15rem}html.acc-visual body{filter:contrast(1.05)saturate(1.05)}html.acc-dislexia{font-family:\'OpenDyslexic\',Inter,sans-serif}html.acc-motriz a,html.acc-motriz button{padding:.75rem}html.acc-cognitiva{line-height:1.6}#accessibility-btn{position:fixed;z-index:2147483647!important;pointer-events:auto!important}#accessibility-panel{pointer-events:auto}';
       document.head.appendChild(style);
       accPanel = document.createElement('div');
       accPanel.id = 'accessibility-panel';
