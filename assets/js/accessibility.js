@@ -46,16 +46,26 @@
       const accBtn = document.getElementById('accessibility-btn');
       const accPanel = document.getElementById('accessibility-panel');
       if (!accPanel) return; // permite alternar sin botón
-      const isHidden = accPanel.style.display === 'none' || getComputedStyle(accPanel).display === 'none';
-      if (isHidden) {
+      // Determinar estado: si tiene clase 'visible', consideramos abierto
+      const isOpen = accPanel.classList.contains('visible') && getComputedStyle(accPanel).visibility !== 'hidden';
+      if (!isOpen) {
         accPanel.classList.remove('hidden');
         accPanel.style.display = 'block';
+        // Compatibilidad con estilos que usan transform/visibility
+        accPanel.classList.add('visible');
+        accPanel.style.visibility = 'visible';
+        accPanel.style.opacity = '1';
+        accPanel.style.transform = 'translateX(0)';
         if (accBtn) accBtn.setAttribute('aria-expanded', 'true');
         const first = accPanel.querySelector('input, button, [tabindex]');
         if (first) first.focus();
       } else {
         accPanel.classList.add('hidden');
+        accPanel.classList.remove('visible');
         accPanel.style.display = 'none';
+        accPanel.style.visibility = 'hidden';
+        accPanel.style.opacity = '0';
+        accPanel.style.transform = 'translateX(-100%)';
         if (accBtn) accBtn.setAttribute('aria-expanded', 'false');
       }
     } catch (_) { /* silent */ }
@@ -95,10 +105,18 @@
       if (initiallyHidden){
         accPanel.classList.add('hidden');
         accPanel.style.display = 'none';
+  accPanel.classList.remove('visible');
+  accPanel.style.visibility = 'hidden';
+  accPanel.style.opacity = '0';
+  accPanel.style.transform = 'translateX(-100%)';
   if (accBtn) accBtn.setAttribute('aria-expanded', 'false');
       } else {
         accPanel.classList.remove('hidden');
         accPanel.style.display = 'block';
+  accPanel.classList.add('visible');
+  accPanel.style.visibility = 'visible';
+  accPanel.style.opacity = '1';
+  accPanel.style.transform = 'translateX(0)';
   if (accBtn) accBtn.setAttribute('aria-expanded', 'true');
       }
       accBtn && accBtn.addEventListener('click', toggle);
