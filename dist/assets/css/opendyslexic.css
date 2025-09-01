@@ -1,0 +1,23 @@
+/* OpenDyslexic local font faces. Place font files under assets/fonts/. Fallback to system local names. */
+@font-face {
+  font-family: 'OpenDyslexic';
+  src:
+    local('OpenDyslexic Regular'),
+    local('OpenDyslexic-Regular'),
+    url('../fonts/OpenDyslexic-Regular.woff2') format('woff2'),
+    url('../fonts/OpenDyslexic-Regular.woff') format('woff');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'OpenDyslexic';
+  src:
+    local('OpenDyslexic Bold'),
+    local('OpenDyslexic-Bold'),
+    url('../fonts/OpenDyslexic-Bold.woff2') format('woff2'),
+    url('../fonts/OpenDyslexic-Bold.woff') format('woff');
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+}

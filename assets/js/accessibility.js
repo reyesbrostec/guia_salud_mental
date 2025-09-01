@@ -5,7 +5,12 @@
     const link = document.createElement('link');
     link.id = 'odyslexic-font';
     link.rel = 'stylesheet';
-    link.href = 'https://cdnjs.cloudflare.com/ajax/libs/OpenDyslexic/0.911/OpenDyslexic.min.css';
+    // Try local asset first
+    link.href = 'assets/css/opendyslexic.css';
+    link.onerror = () => {
+      // Fallback to CDN if local missing
+      link.href = 'https://cdnjs.cloudflare.com/ajax/libs/OpenDyslexic/0.911/OpenDyslexic.min.css';
+    };
     document.head.appendChild(link);
   }
   function ensureButton(){
